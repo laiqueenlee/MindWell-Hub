@@ -170,8 +170,8 @@
     </div>
     <!-- </c:if> -->
      
-    <!-- <c:if test="${roles == 'COUNSELOR'}">
-    <div class="video-area">
+    <!-- <c:if test="${roles == 'COUNSELOR'}"> -->
+    <!-- <div class="video-area">
         <div class="session-timer">Session: 00:12:34</div>
             <div class="counselor-box">
             <div class="counselor-icon"><i class="fa-solid fa-video"></i></div>
@@ -184,8 +184,8 @@
             <div style="font-weight: 600;">You</div>
             <div style="font-size: 12px; color: #999;">Counselor</div>
         </div>
-    </div>
-    </c:if> -->
+    </div> -->
+    <!--</c:if> -->
 
     <div class="session-details">
         <div class="session-details-title">Session Details</div>

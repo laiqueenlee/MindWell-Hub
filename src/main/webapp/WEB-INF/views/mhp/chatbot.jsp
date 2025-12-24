@@ -257,15 +257,15 @@
     </style>
 </head>
 <body>
-    
-    <c:choose>
+    <jsp:include page="/WEB-INF/views/includes/mhp-navbar.jsp" />
+    <!-- <c:choose>
         <c:when test="${not empty loggedInUser.fullName}">
             <c:set var="displayName" value="${loggedInUser.fullName}"/>
         </c:when>
         <c:otherwise>
             <c:set var="displayName" value="${loggedInUser.username}"/>
         </c:otherwise>
-    </c:choose>
+    </c:choose> -->
 
     <div class="page-header-strip">
         <div class="header-inner-container">

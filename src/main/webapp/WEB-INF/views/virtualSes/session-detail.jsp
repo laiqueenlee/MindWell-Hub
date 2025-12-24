@@ -150,30 +150,26 @@
             </div>
         </div>
 
-        <div style="display:flex; justify-content:space-between; margin-top:10px;">
+        <!-- MHP side with buttons -->
+        <!-- <div style="margin-top:20px; display:flex; justify-content:space-between;">
+            <c:if test="${roles == 'COUNSELOR'}">
+            <a href="${pageContext.request.contextPath}/sessions/confirm" class="btn btn-back">
+                <i class="fas fa-arrow-left"></i> Back to Sessions
+            </a>
 
-            <!-- <c:if test="${roles == 'COUNSELOR'}"> -->
-                <div>
-                    <a href="${pageContext.request.contextPath}/sessions/confirm" class="btn btn-back">
-                        <i class="fas fa-arrow-left"></i> Back to Sessions
-                    </a>
-                </div>
-                <div>
-                    <button class="btn btn-approve"><i class="fas fa-check"></i> Approve</button>
-                    <button class="btn btn-reject"><i class="fas fa-times"></i> Reject</button>
-                </div>
+            <div>
+                <button class="btn btn-approve"><i class="fas fa-check"></i> Approve</button>
+                <button class="btn btn-reject"><i class="fas fa-times"></i> Reject</button>
+            </div>
+            </c:if>
 
-            <!-- </c:if> -->
+        </div> -->
 
-            <!-- <c:if test="${roles == 'STUDENT'}">
-                <div>
-                    <a href="${pageContext.request.contextPath}/student/home">
-                        <button class="btn btn-back">
-                            <i class="fas fa-arrow-left"></i> Back to Home
-                        </button>
-                    </a>
-                </div>
-            </c:if> -->
+        <!--Student side with back to home button-->
+        <div style="margin-top:20px; display:flex; justify-content:space-between;">
+            <a href="${pageContext.request.contextPath}/student/home" class="btn btn-back">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
 
         </div>
 

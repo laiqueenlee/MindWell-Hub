@@ -128,9 +128,9 @@
                     <h1>Content Management</h1>
                     <p>Welcome back, ${user.fullName}. Create and manage educational content.</p>
                 </div>
-                <button class="btn-new" onclick="window.location.href='${pageContext.request.contextPath}/mhp/create-content'">
+                <!-- <button class="btn-new" onclick="window.location.href='${pageContext.request.contextPath}/mhp/create-content'">
                     <i class="fas fa-plus"></i> New Content
-                </button>
+                </button> -->
             </div>
 
             <div class="tabs">

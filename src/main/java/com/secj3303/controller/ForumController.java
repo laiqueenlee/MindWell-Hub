@@ -1,5 +1,6 @@
 package com.secj3303.controller;
 
+import com.secj3303.model.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -56,43 +57,53 @@ public class ForumController {
             @RequestParam("postContent") String content,
             @RequestParam("category") String category,
             @RequestParam(value = "postAnonymously", required = false) String anonymous,
-            Model model
+            Model model,
+            HttpSession session
     ) {
-        // Generate new ID
         int maxId = posts.stream()
                 .mapToInt(p -> Integer.parseInt(p.get("id")))
                 .max()
                 .orElse(0);
         String newId = String.valueOf(maxId + 1);
 
-        // Determine author
-        String author = (anonymous != null) ? "Anonymous" : "Current User";
-        String avatar = (anonymous != null) ? "A" : "U";
+        String author = "Current User";
+        String avatar = "U";
+
+        if (anonymous != null) {
+            author = "Anonymous";
+            avatar = "A";
+        } else {
+            Object logged = session.getAttribute("loggedInUser");
+            if (logged instanceof User) {
+                User u = (User) logged;
+                if (u.getFullName() != null && !u.getFullName().isEmpty()) {
+                    author = u.getFullName();
+                } else if (u.getUsername() != null && !u.getUsername().isEmpty()) {
+                    author = u.getUsername();
+                }
+                if (author != null && !author.isEmpty()) {
+                    avatar = author.substring(0, 1).toUpperCase();
+                }
+            }
+        }
 
         Map<String, String> newPost = makePost(
                 newId,
                 title,
                 author,
-                category,
+                category, 
                 content,
                 avatar,
-                "", // no badge
-                "0", // likes
-                "0", // replies
+                "",
+                "0",
+                "0",
                 "Just now"
         );
 
-        // Add new post at top
         posts.add(0, newPost);
-
-        // Optionally provide replies (empty by default)
         model.addAttribute("replies", Collections.emptyList());
-
-    // 1. Add attributes for the JSP to use
-        model.addAttribute("newPost", newPost); 
-        model.addAttribute("posts", posts);     
-
-        // 2. CRITICAL CHANGE: Return "student/new-post" instead of "student/forum"
+        model.addAttribute("newPost", newPost);
+        model.addAttribute("posts", posts);
         return "student/new-post";
     }
 

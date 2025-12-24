@@ -11,8 +11,8 @@
     
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #ffffff; color: #333; padding: 40px; }
-        .main-layout { display: flex; gap: 40px; max-width: 1400px; margin: 0 auto; }
+        body { background-color: #ffffff; color: #333; }
+        .main-layout { display: flex; gap: 40px; max-width: 1400px; margin: 0 auto; padding: 40px 60px; }
         .content-column { flex: 3; }
         .sidebar-column { flex: 1; }
         .page-header { margin-bottom: 25px; }
@@ -65,7 +65,7 @@
     </style>
 </head>
 <body>
-
+    <jsp:include page="/WEB-INF/views/includes/mhp-navbar.jsp" />
     <div class="main-layout">
         <div class="content-column">
             

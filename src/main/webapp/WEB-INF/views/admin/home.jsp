@@ -4,268 +4,236 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin Dashboard</title>
+
     <style>
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f9fafb;
             margin: 0;
-            padding: 20px 40px;
+            padding: 30px;
             color: #111827;
         }
 
-        h1 {
-            font-size: 28px;
-            margin-bottom: 5px;
-        }
-
-        h2 {
-            font-size: 18px;
-            margin-bottom: 5px;
-        }
-
-        small {
-            color: #6b7280;
-        }
-
-        /* Top Summary Cards */
-        .summary-cards {
-            display: flex;
-            gap: 20px;
-            margin: 20px 0 30px 0;
-            flex-wrap: wrap;
-        }
-
-        .summary-card {
-            background-color: #ffffff;
-            border-radius: 12px;
-            padding: 20px;
-            flex: 1;
-            min-width: 180px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: #111827;
-        }
-
-        .summary-card .info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .summary-card .info .number {
-            font-size: 24px;
-            font-weight: 700;
-        }
-
-        .summary-card .info .percent {
-            color: #10b981; /* green for positive growth */
-            font-weight: 500;
-        }
-
-        .summary-card .icon {
-            font-size: 28px;
-            background-color: #e0f7f6;
-            border-radius: 8px;
-            padding: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #14b8a6;
-        }
-
-        /* Tabs */
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .tab {
-            padding: 8px 16px;
-            border-radius: 12px;
-            background-color: #f3f4f6;
-            color: #6b7280;
-            font-weight: 500;
-            cursor: pointer;
-        }
-
-        .tab.active {
-            background-color: #ffffff;
-            color: #111827;
-            border: 1px solid #e5e7eb;
-        }
-
-        /* Dashboard Content */
-        .dashboard-content {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
         }
 
         .card {
-            background-color: #ffffff;
-            border-radius: 12px;
-            padding: 20px;
-            flex: 1;
-            min-width: 300px;
-            display: flex;
-            flex-direction: column;
+            background: white;
+            border-radius: 14px;
+            padding: 25px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04);
         }
 
-        /* User List */
-        .user-list, .distribution-list {
+        h2 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        small {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        /* Recent Registration User List */
+        .user-list {
+            margin-top: 20px;
             display: flex;
             flex-direction: column;
             gap: 12px;
-            margin-top: 15px;
         }
 
-        /* User Entry */
-        .user-entry {
+        .user-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 15px;
+            padding: 14px;
             border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            width: 100%;
-            box-sizing: border-box;
+            border-radius: 12px;
+            background: white;
         }
 
-        .user-info {
+        
+        .user-left {
             display: flex;
             flex-direction: column;
+            gap: 8px; /* more space between name, role, time */
         }
 
-        .user-info span {
+        .role-badge {
             font-size: 12px;
-            color: #6b7280;
-            margin-top: 3px;
+            color: #374151; /* dark gray text */
+            padding: 3px 10px;
+            border-radius: 9999px;      /* pill shape */
+            border: 1px solid #d1d5db;  /* light gray outline */
+            background-color: transparent; /* no fill */
+            display: inline-block;
+            width: fit-content;
         }
 
-        .badge {
-            padding: 4px 12px;
+        .time {
+            font-size: 13px;
+            color: #9ca3af;
+        }
+
+
+        .status-badge {
+            padding: 5px 14px;
             border-radius: 9999px;
             font-size: 12px;
             font-weight: 500;
-            color: #ffffff;
-            text-transform: capitalize;
+            text-transform: lowercase;
         }
 
-        .badge.active {
-            background-color: #14b8a6;
+        .status-active {
+            background: #06b6d4;
+            color: white;
         }
 
-        .badge.inactive {
-            background-color: #d1d5db;
+        .status-inactive {
+            background: #e5e7eb;
             color: #6b7280;
         }
 
-        /* User Distribution */
-        .distribution-item {
-            width: 100%;
-            box-sizing: border-box;
+        /* Progress Bars */
+        .distribution-section {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
-        .distribution-item .label {
+        .dist-item .label-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 5px;
             font-size: 14px;
+            margin-bottom: 6px;
         }
 
-        .progress-bar-container {
-            background-color: #e5e7eb;
-            border-radius: 8px;
+        .progress-container {
+            width: 100%;
             height: 10px;
+            background: #e5e7eb;
+            border-radius: 12px;
             overflow: hidden;
         }
 
-        .progress-bar {
+        .bar {
             height: 100%;
-            border-radius: 8px;
         }
 
-        .progress-student {
+        .bar-student {
             width: 87%;
-            background-color: #14b8a6;
+            background: #06b6d4;
         }
 
-        .progress-mhp {
+        .bar-mhp {
             width: 11%;
-            background-color: #3b82f6;
+            background: #3b82f6;
         }
 
-        .progress-admin {
+        .bar-admin {
             width: 2%;
-            background-color: #ec4899;
+            background: #ec4899;
         }
     </style>
 </head>
 <body>
+
     <jsp:include page="/WEB-INF/views/includes/admin-header.jsp" />
 
-    <!-- Dashboard Content -->
-    <div class="dashboard-content">
+    <div class="dashboard-grid">
 
-        <!-- Platform Growth -->
+        <!-- Recent Registrations -->
         <div class="card">
-            <h2>Platform Growth</h2>
-            <small>User acquisition trends</small>
+            <h2>Recent Registrations</h2>
+            <small>New users in the last 7 days</small>
 
-            <div style="margin-top: 25px;">
-                <div style="margin-bottom: 20px;">
-                    <strong>This Month</strong>
-                    <div style="color:#10b981; font-weight:600; margin-top:4px;">
-                        +156 users &#8599;
+            <div class="user-list">
+
+                <div class="user-row">
+                    <div class="user-left">
+                        <strong>Sarah Johnson</strong>
+                        <div class="role-badge">student</div>
+                        <span class="time">2 hours ago</span>
                     </div>
+                    <span class="status-badge status-active">active</span>
                 </div>
 
-                <div style="margin-bottom: 20px;">
-                    <strong>Last Month</strong>
-                    <div style="color:#111827; margin-top:4px;">
-                        +124 users
+                <div class="user-row">
+                    <div class="user-left">
+                        <strong>Dr. Mike Chen</strong>
+                        <div class="role-badge">mhp</div>
+                        <span class="time">5 hours ago</span>
                     </div>
+                    <span class="status-badge status-active">active</span>
                 </div>
 
-                <div>
-                    <strong>Growth Rate</strong>
-                    <div style="color:#10b981; font-weight:600; margin-top:4px;">
-                        +25.8%
+                <div class="user-row">
+                    <div class="user-left">
+                        <strong>Alex Thompson</strong>
+                        <div class="role-badge">student</div>
+                        <span class="time">1 day ago</span>
                     </div>
+                    <span class="status-badge status-active">active</span>
                 </div>
+
+                <div class="user-row">
+                    <div class="user-left">
+                        <strong>Emma Wilson</strong>
+                        <div class="role-badge">student</div>
+                        <span class="time">2 days ago</span>
+                    </div>
+                    <span class="status-badge status-inactive">inactive</span>
+                </div>
+
             </div>
         </div>
 
-        <!-- Engagement Metrics -->
+        <!-- User Distribution -->
         <div class="card">
-            <h2>Engagement Metrics</h2>
-            <small>User activity overview</small>
+            <h2>User Distribution</h2>
+            <small>By role and activity</small>
 
-            <div style="margin-top: 25px;">
-                <div style="margin-bottom: 20px;">
-                    <strong>Avg. Session Duration</strong>
-                    <div style="margin-top:4px;">
-                        18 min
+            <div class="distribution-section">
+
+                <div class="dist-item">
+                    <div class="label-row">
+                        <span>Students</span>
+                        <span>1,089 (87%)</span>
+                    </div>
+                    <div class="progress-container">
+                        <div class="bar bar-student"></div>
                     </div>
                 </div>
 
-                <div style="margin-bottom: 20px;">
-                    <strong>Daily Active Users</strong>
-                    <div style="margin-top:4px;">
-                        432
+                <div class="dist-item">
+                    <div class="label-row">
+                        <span>MHPs</span>
+                        <span>142 (11%)</span>
+                    </div>
+                    <div class="progress-container">
+                        <div class="bar bar-mhp"></div>
                     </div>
                 </div>
 
-                <div>
-                    <strong>Completion Rate</strong>
-                    <div style="margin-top:4px;">
-                        72%
+                <div class="dist-item">
+                    <div class="label-row">
+                        <span>Admins</span>
+                        <span>16 (2%)</span>
+                    </div>
+                    <div class="progress-container">
+                        <div class="bar bar-admin"></div>
                     </div>
                 </div>
+
             </div>
         </div>
 
     </div>
+
 </body>
 </html>

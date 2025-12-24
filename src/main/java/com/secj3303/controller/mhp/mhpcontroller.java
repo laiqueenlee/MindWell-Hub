@@ -119,4 +119,10 @@ public class mhpcontroller {
         // This assumes your file is located at: /WEB-INF/views/mhp/chatbot.jsp
         return "mhp/chatbot"; 
     }
+
+    @GetMapping("/logout")
+    public String mhpLogout(HttpSession session) {
+        session.invalidate();  // Invalidate the session to log out
+        return "redirect:/auth/login";  // Redirect to the login page
+    }
 }
