@@ -76,14 +76,14 @@
 </head>
 <body>
 <!-- When user is logged in -->
-<div th:if="${session.loggedInUser} != null"
-     th:with="u=${session.loggedInUser},
-              displayName=${u.fullName} != null && !#strings.isEmpty(u.fullName) ? ${u.fullName} : ${u.username},
-              ws=${wellnessScore} ?: 78,
-              completedAssessmentsVal=${completedAssessments} ?: 12,
-              learningModulesVal=${learningModulesCompleted} ?: '8/15',
-              forumPostsVal=${forumPosts} ?: 23,
-              badgesEarnedVal=${badgesEarned} ?: 5">
+<div th:if="${session.loggedInUser != null}"
+    th:with="u=${session.loggedInUser},
+            displayName=${u.fullName != null and !#strings.isEmpty(u.fullName) ? u.fullName : u.username},
+            ws=${wellnessScore} ?: 78,
+            completedAssessmentsVal=${completedAssessments} ?: 12,
+            learningModulesVal=${learningModulesCompleted} ?: '8/15',
+            forumPostsVal=${forumPosts} ?: 23,
+            badgesEarnedVal=${badgesEarned} ?: 5">
     <div class="page">
         <div class="header">
             <div>
@@ -225,7 +225,7 @@
 </div>
 
 <!-- When user is NOT logged in -->
-<div th:unless="${session.loggedInUser} != null" style="padding:40px;text-align:center;animation:fadeInUp 0.5s ease-out">
+<div th:unless="${session.loggedInUser != null}" style="padding:40px;text-align:center;animation:fadeInUp 0.5s ease-out">
     <h2>Please log in to view your dashboard</h2>
     <p><a th:href="@{/auth/login}" class="btn btn-primary">Go to Login</a></p>
 </div>
@@ -241,6 +241,7 @@
     })();
 
     function handleQuickAction(action){
+        // Thymeleaf resolves these to full context-aware paths, avoiding double context segments
         var routes = {
             'assessment': /*[[@{/student/assessment/}]]*/ '/student/assessment/',
             'content': /*[[@{/content/browse}]]*/ '/content/browse',
@@ -248,8 +249,7 @@
             'progress': /*[[@{/student/dashboard}]]*/ '/student/dashboard',
             'session': /*[[@{/sessions/book}]]*/ '/sessions/book'
         };
-        var base = /*[[@{/}]]*/ '/';
-        if(routes[action]){ window.location.href = base.replace(/\/$/, '') + routes[action]; }
+        if(routes[action]){ window.location.href = routes[action]; }
     }
 
     document.querySelectorAll('.stat, .quick-item, .badge').forEach(function(el){
