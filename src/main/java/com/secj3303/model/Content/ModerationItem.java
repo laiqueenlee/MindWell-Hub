@@ -1,19 +1,44 @@
-package com.secj3303.model;
+package com.secj3303.model.Content;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "MODERATION_ITEM")
 public class ModerationItem {
     
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "moderation_id")
     private int id;
+
+    // "type" is often a reserved SQL keyword, so we map it to "item_type"
+    @Column(name = "item_type")
     private String type;        // "Forum Post", "Comment", "Article"
+
+    @Column(name = "priority")
     private String priority;    // "high", "medium", "low"
+
+    @Column(name = "title")
     private String title;
+
+    @Column(name = "author")
     private String author;
+
+    @Column(name = "flag_reason")
     private String flagReason;
-    private String status;      // "PENDING", "APPROVED", "REMOVED"
-    
+
+    @Column(name = "status")
+    private String status = "PENDING"; // Default value initialized here
+
     public ModerationItem() {}
 
-    public ModerationItem(int id, String type, String priority, String title, String author, String flagReason) {
-        this.id = id;
+    // Constructor updated to match your logic
+    public ModerationItem(String type, String priority, String title, String author, String flagReason) {
         this.type = type;
         this.priority = priority;
         this.title = title;

@@ -54,4 +54,10 @@ public class UserDaoHibernate implements UserDao {
         q.setParameter("email", email);
         return q.uniqueResult();
     }
+
+    @Override
+    public long countAllUsers() {
+        Query<Long> query = sessionFactory.getCurrentSession().createQuery("select count(u) from User u", Long.class);
+        return query.uniqueResult();
+    }
 }
