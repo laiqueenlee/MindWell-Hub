@@ -62,6 +62,25 @@
         .btn-icon-action { background: none; border: none; color: #e74c3c; cursor: pointer; font-size: 1rem; }
         .btn-add-option { background: none; border: 1px dashed #00d2d3; color: #00d2d3; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; margin-top: 5px; }
         .btn-add-option:hover { background: #e0fbfb; }
+
+        .badge {
+    font-size: 0.8rem;
+    padding: 5px 12px;
+    border-radius: 20px;
+    color: white;
+    margin-left: 15px;
+    vertical-align: middle;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+    display: inline-block;
+}
+.badge-published {
+    background-color: #00b894; /* Green */
+}
+.badge-draft {
+    background-color: #95a5a6; /* Grey */
+}
     </style>
 </head>
 <body>
@@ -84,7 +103,15 @@
             </div>
 
             <div class="form-card">
-                <div class="form-title">${isEdit ? 'Edit Content' : 'Create New Content'}</div>
+               <div class="form-title">
+    <span th:text="${isEdit ? 'Edit Content' : 'Create New Content'}">Create New Content</span>
+
+    <span th:if="${isEdit}" 
+          class="badge"
+          th:classappend="${content.status == 'published' ? 'badge-published' : 'badge-draft'}" 
+          th:text="${content.status}">
+    </span>
+</div>
                 <span class="form-subtitle">${isEdit ? 'Update your existing content details below' : 'Share your expertise with students'}</span>
 
                 <!-- FORM START -->
@@ -94,8 +121,6 @@
                     <input type="hidden" name="id" value="${content.id}">
                     <input type="hidden" name="status" id="statusInput" value="${content.status != null ? content.status : 'draft'}">
                     
-                    <!-- This hidden field will collect data from the dynamic fields before submit -->
-                    <textarea name="contentBody" id="realContentBody" style="display:none;">${content.contentBody}</textarea>
 
                     <!-- Title -->
                     <div class="form-group">
