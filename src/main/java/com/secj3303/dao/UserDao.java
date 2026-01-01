@@ -11,4 +11,6 @@ public interface UserDao {
     void delete(User user);
 
     User findByEmail(String email);
+
+    long countAllUsers();
 }
