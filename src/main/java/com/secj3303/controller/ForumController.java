@@ -1,271 +1,224 @@
 package com.secj3303.controller;
 
-import com.secj3303.model.User;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
-import java.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.secj3303.dao.ForumPostDao;
+import com.secj3303.dao.ForumReplyDao;
+import com.secj3303.model.ForumPost;
+import com.secj3303.model.ForumReply;
+import com.secj3303.model.User;
 
 /**
  * Combined ForumController
  * - GET  /student/forum        -> list view (student/peer.jsp) with "posts"
  * - GET  /forum/post?id={id}   -> single post view (student/post.jsp) with "post" and "replies"
  * - GET  /forum/post/{id}      -> same as above (path variable)
- * - POST /forum/submit-post    -> add a new post (in-memory)
+ * - POST /forum/submit-post    -> add a new post
  */
 @Controller
+@RequestMapping("/student/forum")
 public class ForumController {
+    private static final Logger log = LoggerFactory.getLogger(ForumController.class);
 
-    // 1. STATIC LIST: in-memory posts store for the running app
-    private static List<Map<String, String>> posts = new ArrayList<>();
+    private final ForumPostDao postDao;
+    private final ForumReplyDao replyDao;
+    private final com.secj3303.dao.ForumPostLikeDao likeDao;
 
-    // 2. STATIC BLOCK: initialize sample data once
-    static {
-        posts.add(makePost("1", "Managing exam stress - what works for you?", "Anonymous", "Stress",
-                "Finals are coming up and I'm feeling overwhelmed. What strategies have helped you cope with academic pressure?",
-                "A", "Moderated", "24", "18", "2 hours ago"));
-
-        posts.add(makePost("2", "How to deal with imposter syndrome", "Anonymous", "Anxiety",
-                "Sometimes I feel like I don't belong here and everyone is better than me. Can anyone relate?",
-                "A", "Moderated", "43", "31", "1 day ago"));
-
-        posts.add(makePost("3", "Small wins: share one thing you accomplished today", "StudentUser", "Wellness",
-                "I finished a short workout and it really lifted my mood — what about you?",
-                "S", "Moderated", "12", "6", "3 hours ago"));
+    public ForumController(ForumPostDao postDao, ForumReplyDao replyDao, com.secj3303.dao.ForumPostLikeDao likeDao) {
+        this.postDao = postDao;
+        this.replyDao = replyDao;
+        this.likeDao = likeDao;
     }
 
     // --- PAGE ROUTES ---
 
-    @GetMapping("/student/forum")
-    public String forumIndex(Model model) {
-        model.addAttribute("posts", posts);
-        return "student/peer";
+    @GetMapping
+    public String forumIndex(Model model, HttpSession session) {
+        List<ForumPost> posts = postDao.findAllDesc();
+        // Ensure the view always gets a list and log the size for quick verification
+        int count = posts == null ? 0 : posts.size();
+        log.info("[ForumController] posts fetched: {}", count);
+        if (posts != null) {
+            for (ForumPost pp : posts) {
+                log.info("[ForumController] post id={} title='{}' likes={} replies={} createdAt={}",
+                    pp.getId(), pp.getTitle(), pp.getLikes(), pp.getReplyCount(), pp.getCreatedAt());
+            }
+        }
+        model.addAttribute("posts", posts == null ? java.util.Collections.emptyList() : posts);
+        // Determine which posts the current user has liked
+        User u = (User) session.getAttribute("loggedInUser");
+        java.util.Set<Long> likedPostIds = new java.util.HashSet<>();
+        if (u != null && posts != null) {
+            Long userId = Long.valueOf(u.getId());
+            for (ForumPost pp : posts) {
+                try {
+                    if (likeDao.findByPostAndUser(pp.getId(), userId) != null) {
+                        likedPostIds.add(pp.getId());
+                    }
+                } catch (Exception ex) {
+                    log.debug("Error checking like for post {}: {}", pp.getId(), ex.toString());
+                }
+            }
+        }
+        model.addAttribute("likedPostIds", likedPostIds);
+        return "student/peer"; // JSP view
     }
 
-    @GetMapping("/student/new-post")
-    public String showCreatePostPage() {
+    @GetMapping("/new-post")
+    public String newPostForm() {
         return "student/new-post";
+    }
+
+    @GetMapping("/post/{id}")
+    public String viewPostByPath(@PathVariable Long id, Model model, HttpSession session) {
+        return viewPostById(id, model, session);
+    }
+
+    @GetMapping("/post")
+    public String viewPostByParam(@RequestParam(name = "id", required = false) Long id,
+                                  Model model, HttpSession session) {
+        return viewPostById(id, model, session);
+    }
+
+    private String viewPostById(Long id, Model model, HttpSession session) {
+        if (id == null) {
+            return "redirect:/student/forum";
+        }
+        ForumPost post = postDao.findById(id);
+        if (post == null) {
+            return "redirect:/student/forum";
+        }
+        List<ForumReply> replies = replyDao.findByPostId(post.getId());
+        model.addAttribute("post", post);
+        model.addAttribute("replies", replies);
+        // liked flag for current user
+        User u = (User) (session != null ? session.getAttribute("loggedInUser") : null);
+        boolean liked = false;
+        if (u != null) {
+            try {
+                com.secj3303.model.ForumPostLike existing = likeDao.findByPostAndUser(post.getId(), Long.valueOf(u.getId()));
+                liked = existing != null;
+            } catch (Exception ex) {
+                log.debug("Error checking like for post {}: {}", post.getId(), ex.toString());
+            }
+        }
+        model.addAttribute("liked", liked);
+        return "student/post";
     }
 
     // --- ACTION ROUTES ---
 
-    @PostMapping("/forum/submit-post")
+    @PostMapping("/submit-post")
     public String submitPost(
-            @RequestParam("postTitle") String title,
-            @RequestParam("postContent") String content,
-            @RequestParam("category") String category,
-            @RequestParam(value = "postAnonymously", required = false) String anonymous,
-            Model model,
-            HttpSession session
-    ) {
-        int maxId = posts.stream()
-                .mapToInt(p -> Integer.parseInt(p.get("id")))
-                .max()
-                .orElse(0);
-        String newId = String.valueOf(maxId + 1);
+            @RequestParam String postTitle,
+            @RequestParam String postContent,
+            @RequestParam String category,
+            @RequestParam(required=false) String postAnonymously,
+            HttpSession session,
+            RedirectAttributes ra) {
+        User u = (User) session.getAttribute("loggedInUser");
+        String author = resolveAuthor(u, postAnonymously != null);
+        String avatar = author.isEmpty() ? "A" : author.substring(0,1).toUpperCase();
 
-        String author = "Current User";
-        String avatar = "U";
+        ForumPost p = new ForumPost();
+        p.setTitle(postTitle);
+        p.setContent(postContent);
+        p.setCategory(category);
+        p.setAuthorName(author);
+        p.setAuthorId(u != null ? Long.valueOf(u.getId()) : null);
+        p.setAvatar(avatar);
+        // initialize counts to avoid null handling later
+        p.setReplyCount(p.getReplyCount() == null ? 0 : p.getReplyCount());
+        p.setLikes(p.getLikes() == null ? 0 : p.getLikes());
+        postDao.save(p);
+        ra.addFlashAttribute("newPostId", p.getId());
+        return "redirect:/student/forum";
+    }
 
-        if (anonymous != null) {
-            author = "Anonymous";
-            avatar = "A";
+    @PostMapping("/addReply")
+    public String addReply(@RequestParam Long postId,
+                           @RequestParam String content,
+                           HttpSession session) {
+        ForumPost post = postDao.findById(postId);
+        if (post == null) return "redirect:/student/forum";
+
+        User u = (User) session.getAttribute("loggedInUser");
+        String author = resolveAuthor(u, false);
+        String avatar = author.isEmpty() ? "U" : author.substring(0,1).toUpperCase();
+
+        ForumReply r = new ForumReply(postId, author, avatar, content);
+        r.setAuthorId(u != null ? Long.valueOf(u.getId()) : null);
+        replyDao.save(r);
+        // guard against null replyCount
+        Integer current = post.getReplyCount();
+        post.setReplyCount((current == null ? 0 : current) + 1);
+        postDao.save(post);
+
+        return "redirect:/student/forum/post/" + postId;
+    }
+
+    @PostMapping(value = "/toggle-like", produces = "application/json")
+    @org.springframework.web.bind.annotation.ResponseBody
+    public java.util.Map<String, Object> toggleLike(@RequestParam Long postId, HttpSession session) {
+        java.util.Map<String, Object> resp = new java.util.HashMap<>();
+        User u = (User) session.getAttribute("loggedInUser");
+        if (u == null) {
+            resp.put("ok", false);
+            resp.put("error", "not-authenticated");
+            return resp;
+        }
+
+        ForumPost post = postDao.findById(postId);
+        if (post == null) {
+            resp.put("ok", false);
+            resp.put("error", "post-not-found");
+            return resp;
+        }
+
+        Long userId = Long.valueOf(u.getId());
+        com.secj3303.model.ForumPostLike existing = likeDao.findByPostAndUser(postId, userId);
+        if (existing != null) {
+            // unlike
+            likeDao.delete(existing);
+            Integer likes = post.getLikes() == null ? 0 : post.getLikes();
+            post.setLikes(Math.max(0, likes - 1));
+            postDao.save(post);
+            resp.put("ok", true);
+            resp.put("liked", false);
+            resp.put("likes", post.getLikes());
+            return resp;
         } else {
-            Object logged = session.getAttribute("loggedInUser");
-            if (logged instanceof User) {
-                User u = (User) logged;
-                if (u.getFullName() != null && !u.getFullName().isEmpty()) {
-                    author = u.getFullName();
-                } else if (u.getUsername() != null && !u.getUsername().isEmpty()) {
-                    author = u.getUsername();
-                }
-                if (author != null && !author.isEmpty()) {
-                    avatar = author.substring(0, 1).toUpperCase();
-                }
-            }
-        }
-
-        Map<String, String> newPost = makePost(
-                newId,
-                title,
-                author,
-                category, 
-                content,
-                avatar,
-                "",
-                "0",
-                "0",
-                "Just now"
-        );
-
-        posts.add(0, newPost);
-        model.addAttribute("replies", Collections.emptyList());
-        model.addAttribute("newPost", newPost);
-        model.addAttribute("posts", posts);
-        return "student/new-post";
-    }
-
-    // --- VIEW SINGLE POST (both param and path variants) ---
-
-    @GetMapping("/forum/post")
-    public String viewPostByParam(@RequestParam(name = "id", required = false, defaultValue = "1") String id,
-                                  Model model) {
-        return viewPostById(id, model);
-    }
-
-    @GetMapping("/forum/post/{id}")
-    public String viewPostByPath(@PathVariable String id, Model model) {
-        return viewPostById(id, model);
-    }
-
-    private String viewPostById(String id, Model model) {
-        Map<String, String> foundPost = posts.stream()
-                .filter(p -> p.get("id").equals(id))
-                .findFirst()
-                .orElse(null);
-
-        if (foundPost != null) {
-            model.addAttribute("post", foundPost);
-
-            // Limit replies to the post's replyCount (safety check)
-            List<Map<String, String>> allReplies = sampleReplies();
-            int targetCount = 0;
-            try {
-                targetCount = Integer.parseInt(foundPost.getOrDefault("replyCount", "0"));
-            } catch (NumberFormatException e) {
-                targetCount = Math.min(allReplies.size(), 5);
-            }
-            if (targetCount > allReplies.size()) {
-                targetCount = allReplies.size();
-            }
-            List<Map<String, String>> limitedReplies = allReplies.subList(0, targetCount);
-            model.addAttribute("replies", limitedReplies);
-            return "student/post";
-        } else {
-            return "redirect:/student/forum";
+            // like
+            com.secj3303.model.ForumPostLike like = new com.secj3303.model.ForumPostLike(postId, userId);
+            likeDao.save(like);
+            Integer likes = post.getLikes() == null ? 0 : post.getLikes();
+            post.setLikes(likes + 1);
+            postDao.save(post);
+            resp.put("ok", true);
+            resp.put("liked", true);
+            resp.put("likes", post.getLikes());
+            return resp;
         }
     }
 
-    // --- HELPERS ---
-
-    private static Map<String, String> makePost(String id, String title, String author, String category, String content,
-                                                String avatar, String badge, String likes, String replyCount, String time) {
-        Map<String, String> p = new HashMap<>();
-        p.put("id", id);
-        p.put("title", title);
-        p.put("author", author);
-        p.put("category", category);
-        p.put("excerpt", content);
-        p.put("content", content);
-        p.put("avatar", avatar);
-        p.put("badge", badge);
-        p.put("likes", likes);
-        p.put("replyCount", replyCount);
-        p.put("time", time);
-        return p;
-    }
-
-    private List<Map<String,String>> sampleReplies() {
-        List<Map<String,String>> replies = new ArrayList<>();
-        replies.add(makeReply("Relax_Bro", "Ali • 1 hour ago", "Take deep breaths and remember that exams don't define you. You've got this!", "R"));
-        replies.add(makeReply("Sam", "45 minutes ago", "Breaking study time into short sessions, getting enough sleep and quick breaks really helps.", "S"));
-        replies.add(makeReply("Daniel", "12 minutes ago", "I find that taking regular breaks, staying positive, and getting enough rest helps me manage exam stress better.", "D"));
-        replies.add(makeReply("Maya", "8 minutes ago", "Exercise has been a game-changer for me. Even a 15-minute walk helps clear my mind and reduce anxiety.", "M"));
-        replies.add(makeReply("Jordan", "5 minutes ago", "Making a realistic study schedule has helped me feel more in control. I break down what I need to study by day and it feels less overwhelming.", "J"));
-        replies.add(makeReply("Lisa", "3 minutes ago", "Meditation apps like Headspace or Calm have really helped me. Just 10 minutes a day makes a difference.", "L"));
-        replies.add(makeReply("Chris", "2 minutes ago", "Study groups help me stay accountable and motivated. Plus, explaining concepts to others really reinforces my own understanding.", "C"));
-        replies.add(makeReply("Emma", "1 minute ago", "I keep healthy snacks nearby while studying. Proper nutrition really affects my concentration and mood.", "E"));
-        replies.add(makeReply("Tyler", "Just now", "Limiting caffeine has surprisingly helped me. I was drinking too much coffee which made my anxiety worse.", "T"));
-        replies.add(makeReply("Nina", "Just now", "Talk to your professors if you're struggling! Most are really understanding and can offer guidance or extensions if needed.", "N"));
-        replies.add(makeReply("Alex", "Just now", "I use the Pomodoro technique - 25 minutes of focused study, then a 5-minute break. It keeps me from burning out.", "A"));
-        replies.add(makeReply("Kate", "Just now", "Remember to reach out to campus counseling services if you need extra support. They're there to help!", "K"));
-        replies.add(makeReply("Relax_Bro", "Ali • 1 hour ago", "Take deep breaths and remember that exams don't define you. You've got this!", "R"));
-        replies.add(makeReply("Sam", "45 minutes ago", "Breaking study time into short sessions, getting enough sleep and quick breaks really helps.", "S"));
-        replies.add(makeReply("Daniel", "12 minutes ago", "I find that taking regular breaks, staying positive, and getting enough rest helps me manage exam stress better.", "D"));
-        replies.add(makeReply("Maya", "8 minutes ago", "Exercise has been a game-changer for me. Even a 15-minute walk helps clear my mind and reduce anxiety.", "M"));
-        replies.add(makeReply("Jordan", "5 minutes ago", "Making a realistic study schedule has helped me feel more in control. I break down what I need to study by day and it feels less overwhelming.", "J"));
-        replies.add(makeReply("Lisa", "3 minutes ago", "Meditation apps like Headspace or Calm have really helped me. Just 10 minutes a day makes a difference.", "L"));
-        replies.add(makeReply("Chris", "2 minutes ago", "Study groups help me stay accountable and motivated. Plus, explaining concepts to others really reinforces my own understanding.", "C"));
-        replies.add(makeReply("Emma", "1 minute ago", "I keep healthy snacks nearby while studying. Proper nutrition really affects my concentration and mood.", "E"));
-        replies.add(makeReply("Tyler", "Just now", "Limiting caffeine has surprisingly helped me. I was drinking too much coffee which made my anxiety worse.", "T"));
-        replies.add(makeReply("Nina", "Just now", "Talk to your professors if you're struggling! Most are really understanding and can offer guidance or extensions if needed.", "N"));
-        replies.add(makeReply("Alex", "Just now", "I use the Pomodoro technique - 25 minutes of focused study, then a 5-minute break. It keeps me from burning out.", "A"));
-        replies.add(makeReply("Kate", "Just now", "Remember to reach out to campus counseling services if you need extra support. They're there to help!", "K"));
-        return replies;
-    }
-
-    private Map<String,String> makeReply(String author, String time, String content, String avatar) {
-        Map<String,String> r = new HashMap<>();
-        r.put("author", author);
-        r.put("time", time);
-        r.put("content", content);
-        r.put("avatar", avatar);
-        return r;
-    }
-
-    @PostMapping("/forum/addReply")
-    public String addReply(
-            @RequestParam("postId") String postId,
-            @RequestParam("content") String content,
-            Model model,
-            HttpSession session
-    ) {
-        // Find post
-        Map<String, String> foundPost = posts.stream()
-                .filter(p -> p.get("id").equals(postId))
-                .findFirst()
-                .orElse(null);
-
-        if (foundPost == null) {
-            return "redirect:/student/forum";
-        }
-
-        // Determine author from session (loggedInUser), fallback to "Current User"
-        String author = "Current User";
-        Object logged = session.getAttribute("loggedInUser");
-        if (logged instanceof com.secj3303.model.User) {
-            com.secj3303.model.User u = (com.secj3303.model.User) logged;
-            if (u.getFullName() != null && !u.getFullName().isEmpty()) {
-                author = u.getFullName();
-            } else if (u.getUsername() != null && !u.getUsername().isEmpty()) {
-                author = u.getUsername();
-            }
-        }
-
-        // Create new reply with resolved author
-        Map<String, String> newReply = new HashMap<>();
-        newReply.put("author", author);
-        newReply.put("time", "Just now");
-        newReply.put("content", content);
-        newReply.put("avatar", "U");
-
-        // Update the post's replyCount first (safety)
-        int newCount = 1;
-        try {
-            int rc = Integer.parseInt(foundPost.getOrDefault("replyCount", "0"));
-            newCount = rc + 1;
-        } catch (NumberFormatException ignored) {
-            newCount = 1;
-        }
-        foundPost.put("replyCount", String.valueOf(newCount));
-
-        // Build a replies list: prepend the new reply to the sample replies
-        List<Map<String, String>> allReplies = new ArrayList<>(sampleReplies());
-        allReplies.add(0, newReply);
-
-        // Limit the replies list to the post's replyCount (safety check)
-        int targetCount = newCount;
-        if (targetCount > allReplies.size()) {
-            targetCount = allReplies.size();
-        }
-        List<Map<String, String>> limitedReplies = new ArrayList<>(allReplies.subList(0, targetCount));
-
-        model.addAttribute("post", foundPost);
-        model.addAttribute("replies", limitedReplies);
-
-        // Render the newreply view which shows the post with updated replies
-        return "student/newreply";
+    private String resolveAuthor(User u, boolean anon) {
+        if (anon) return "Anonymous";
+        if (u == null) return "Current User";
+        if (u.getFullName() != null && !u.getFullName().isEmpty()) return u.getFullName();
+        if (u.getUsername() != null && !u.getUsername().isEmpty()) return u.getUsername();
+        return "Current User";
     }
 }
