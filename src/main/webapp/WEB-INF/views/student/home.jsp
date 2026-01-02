@@ -1,7 +1,5 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -80,161 +78,162 @@
 </head>
 <body>
 
-<c:if test="${not empty sessionScope.loggedInUser}">
-    <c:set var="u" value="${sessionScope.loggedInUser}" />
-    <c:set var="displayName" value="${not empty u.fullName ? u.fullName : u.username}" />
-    <c:set var="ws" value="${not empty wellnessScore ? wellnessScore : 78}" />
-    <c:set var="completedAssessmentsVal" value="${not empty completedAssessments ? completedAssessments : 12}" />
-    <c:set var="learningModulesVal" value="${not empty learningModulesCompleted ? learningModulesCompleted : '8/15'}" />
-    <c:set var="forumPostsVal" value="${not empty forumPosts ? forumPosts : 23}" />
-    <c:set var="badgesEarnedVal" value="${not empty badgesEarned ? badgesEarned : 5}" />
+<c:choose>
+    <c:when test="${not empty sessionScope.loggedInUser}">
+        <c:set var="u" value="${sessionScope.loggedInUser}" />
+        <c:set var="displayName" value="${not empty u.fullName ? u.fullName : u.username}" />
+        <c:set var="ws" value="${not empty wellnessScore ? wellnessScore : 78}" />
+        <c:set var="completedAssessmentsVal" value="${not empty completedAssessments ? completedAssessments : 12}" />
+        <c:set var="learningModulesVal" value="${not empty learningModulesCompleted ? learningModulesCompleted : '8/15'}" />
+        <c:set var="forumPostsVal" value="${not empty forumPosts ? forumPosts : 23}" />
+        <c:set var="badgesEarnedVal" value="${not empty badgesEarned ? badgesEarned : 5}" />
 
-    <div class="page">
-        <div class="header">
-            <div>
-                <div class="title">Welcome back, <span>${displayName}</span> &#128075;</div>
-                <div class="subtitle">Here's your wellness journey at a glance</div>
+        <div class="page">
+            <div class="header">
+                <div>
+                    <div class="title">Welcome back, <span>${displayName}</span> 👋</div>
+                    <div class="subtitle">Here's your wellness journey at a glance</div>
+                </div>
+                <div style="text-align:right">
+                    <div style="font-size:13px;color:var(--muted)">Role: <strong>${u.role}</strong></div>
+                    <div style="margin-top:8px"><a href="${pageContext.request.contextPath}/auth/logout" class="btn btn-ghost">Log out</a></div>
+                </div>
             </div>
-            <div style="text-align:right">
-                <div style="font-size:13px;color:var(--muted)">Role: <strong>${u.role}</strong></div>
-                <div style="margin-top:8px"><a href="${pageContext.request.contextPath}/auth/logout" class="btn btn-ghost">Log out</a></div>
+
+            <div class="grid">
+                <div class="main">
+                    <div class="card stats">
+                        <div class="stat" tabindex="0" role="button" aria-label="View completed assessments">
+                            <h3>${completedAssessmentsVal}</h3>
+                            <p>Completed Assessments</p>
+                        </div>
+                        <div class="stat" tabindex="0" role="button" aria-label="View learning modules">
+                            <h3>${learningModulesVal}</h3>
+                            <p>Learning Modules</p>
+                        </div>
+                        <div class="stat" tabindex="0" role="button" aria-label="View forum posts">
+                            <h3>${forumPostsVal}</h3>
+                            <p>Forum Posts</p>
+                        </div>
+                        <div class="stat" tabindex="0" role="button" aria-label="View badges earned">
+                            <h3>${badgesEarnedVal}</h3>
+                            <p>Badges Earned</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h4>Quick Actions</h4>
+                        <div class="quick-actions">
+                            <div class="quick-item" tabindex="0" role="button" onclick="handleQuickAction('assessment')">
+                                <strong>Take Assessment</strong>
+                                <small>Check your mood today</small>
+                            </div>
+                            <div class="quick-item" tabindex="0" role="button" onclick="handleQuickAction('content')">
+                                <strong>Browse Content</strong>
+                                <small>Learn something new</small>
+                            </div>
+                            <div class="quick-item" tabindex="0" role="button" onclick="handleQuickAction('forum')">
+                                <strong>Join Forum</strong>
+                                <small>Connect with peers</small>
+                            </div>
+                            <div class="quick-item" tabindex="0" role="button" onclick="handleQuickAction('session')">
+                                <strong>Book Session</strong>
+                                <small>Schedule counselling</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card recommendations">
+                        <h4>🤖 AI Recommendations for You</h4>
+                        <div class="rec-item">
+                            <div>
+                                <div style="font-weight:700">Managing Study Stress</div>
+                                <div class="rec-meta">Video · 15 min · 95% match</div>
+                            </div>
+                            <div><a href="${pageContext.request.contextPath}/student/content/study-stress" class="btn btn-ghost">View</a></div>
+                        </div>
+                        <div class="rec-item">
+                            <div>
+                                <div style="font-weight:700">Sleep Hygiene Basics</div>
+                                <div class="rec-meta">Article · 5 min · 88% match</div>
+                            </div>
+                            <div><a href="${pageContext.request.contextPath}/student/content/sleep-hygiene" class="btn btn-ghost">View</a></div>
+                        </div>
+                        <div class="rec-item">
+                            <div>
+                                <div style="font-weight:700">Breathing Exercises</div>
+                                <div class="rec-meta">Interactive · 10 min · 92% match</div>
+                            </div>
+                            <div><a href="${pageContext.request.contextPath}/student/content/breathing" class="btn btn-ghost">View</a></div>
+                        </div>
+                    </div>
+
+                    <div class="card recent-activity">
+                        <h4>Recent Activity</h4>
+                        <ul>
+                            <li>Completed Stress Assessment <span class="time-ago">2 hours ago</span></li>
+                            <li>Earned 'Mindful Learner' Badge <span class="time-ago">1 day ago</span></li>
+                            <li>Viewed 'Coping with Anxiety' Module <span class="time-ago">2 days ago</span></li>
+                            <li>Posted in Support Forum <span class="time-ago">3 days ago</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <aside class="right">
+                    <div class="card wellness">
+                        <h4>Wellness Score</h4>
+                        <div class="score"><span>${ws}</span> <small style="font-size:12px;color:var(--muted)">/100</small></div>
+                        <div class="progress">
+                            <i id="progressBar" data-ws="${ws}"></i>
+                        </div>
+                        <div class="wellness-details">
+                            <div>Engagement <span style="float:right;font-weight:700">85%</span></div>
+                            <div>Consistency <span style="float:right;font-weight:700">72%</span></div>
+                            <div>Progress <span style="float:right;font-weight:700">80%</span></div>
+                        </div>
+                    </div>
+
+                    <div class="card achievements" style="margin-top:14px">
+                        <h4>🏆 Latest Achievements</h4>
+                        <div class="badge" tabindex="0">Mindful Learner — Completed 5 modules</div>
+                        <div class="badge" tabindex="0">Consistent Tracker — 7 day streak</div>
+                        <div class="badge" tabindex="0">Community Helper — 10+ helpful posts</div>
+                    </div>
+
+                    <div class="card" style="margin-top:14px">
+                        <h4>📅 Upcoming</h4>
+                        <div style="font-size:13px;color:var(--muted)"><b>Counseling Session with Dr Mitchell</b></div>
+                        <br>
+                        <div style="margin-top:8px">
+                            <a href="${pageContext.request.contextPath}/sessions/detail" class="btn btn-primary-grey">View Details</a>
+                        </div>
+                        &nbsp;
+                        <div style="margin-top:8px">
+                            <a href="${pageContext.request.contextPath}/sessions/meeting" class="btn btn-primary">Start Session</a>
+                        </div>
+                    </div>
+
+                    <a href="${pageContext.request.contextPath}/student/chatbot" class="ai-link-wrapper">
+                        <div class="ai-card">
+                            <div class="ai-content">
+                                <div class="ai-title">Ask AI <i class="fas fa-robot" style="color:var(--teal);"></i></div>
+                                <div class="ai-subtitle">Ask me anything!</div>
+                            </div>
+                            <div class="ai-action-icon"><i class="fas fa-arrow-right"></i></div>
+                        </div>
+                    </a>
+
+                </aside>
             </div>
         </div>
-
-        <div class="grid">
-            <div class="main">
-                <div class="card stats">
-                    <div class="stat" tabindex="0" role="button" aria-label="View completed assessments">
-                        <h3>${completedAssessmentsVal}</h3>
-                        <p>Completed Assessments</p>
-                    </div>
-                    <div class="stat" tabindex="0" role="button" aria-label="View learning modules">
-                        <h3>${learningModulesVal}</h3>
-                        <p>Learning Modules</p>
-                    </div>
-                    <div class="stat" tabindex="0" role="button" aria-label="View forum posts">
-                        <h3>${forumPostsVal}</h3>
-                        <p>Forum Posts</p>
-                    </div>
-                    <div class="stat" tabindex="0" role="button" aria-label="View badges earned">
-                        <h3>${badgesEarnedVal}</h3>
-                        <p>Badges Earned</p>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h4>Quick Actions</h4>
-                    <div class="quick-actions">
-                        <div class="quick-item" tabindex="0" role="button" onclick="handleQuickAction('assessment')">
-                            <strong>Take Assessment</strong>
-                            <small>Check your mood today</small>
-                        </div>
-                        <div class="quick-item" tabindex="0" role="button" onclick="handleQuickAction('content')">
-                            <strong>Browse Content</strong>
-                            <small>Learn something new</small>
-                        </div>
-                        <div class="quick-item" tabindex="0" role="button" onclick="handleQuickAction('forum')">
-                            <strong>Join Forum</strong>
-                            <small>Connect with peers</small>
-                        </div>
-                        <div class="quick-item" tabindex="0" role="button" onclick="handleQuickAction('session')">
-                            <strong>Book Session</strong>
-                            <small>Schedule counselling</small>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card recommendations">
-                    <h4>🤖 AI Recommendations for You</h4>
-                    <div class="rec-item">
-                        <div>
-                            <div style="font-weight:700">Managing Study Stress</div>
-                            <div class="rec-meta">Video · 15 min · 95% match</div>
-                        </div>
-                        <div><a href="${pageContext.request.contextPath}/student/content/study-stress" class="btn btn-ghost">View</a></div>
-                    </div>
-                    <div class="rec-item">
-                        <div>
-                            <div style="font-weight:700">Sleep Hygiene Basics</div>
-                            <div class="rec-meta">Article · 5 min · 88% match</div>
-                        </div>
-                        <div><a href="${pageContext.request.contextPath}/student/content/sleep-hygiene" class="btn btn-ghost">View</a></div>
-                    </div>
-                    <div class="rec-item">
-                        <div>
-                            <div style="font-weight:700">Breathing Exercises</div>
-                            <div class="rec-meta">Interactive · 10 min · 92% match</div>
-                        </div>
-                        <div><a href="${pageContext.request.contextPath}/student/content/breathing" class="btn btn-ghost">View</a></div>
-                    </div>
-                </div>
-
-                <div class="card recent-activity">
-                    <h4>Recent Activity</h4>
-                    <ul>
-                        <li>Completed Stress Assessment <span class="time-ago">2 hours ago</span></li>
-                        <li>Earned 'Mindful Learner' Badge <span class="time-ago">1 day ago</span></li>
-                        <li>Viewed 'Coping with Anxiety' Module <span class="time-ago">2 days ago</span></li>
-                        <li>Posted in Support Forum <span class="time-ago">3 days ago</span></li>
-                    </ul>
-                </div>
-            </div>
-
-            <aside class="right">
-                <div class="card wellness">
-                    <h4>Wellness Score</h4>
-                    <div class="score"><span>${ws}</span> <small style="font-size:12px;color:var(--muted)">/100</small></div>
-                    <div class="progress">
-                        <i id="progressBar" data-ws="${ws}"></i>
-                    </div>
-                    <div class="wellness-details">
-                        <div>Engagement <span style="float:right;font-weight:700">85%</span></div>
-                        <div>Consistency <span style="float:right;font-weight:700">72%</span></div>
-                        <div>Progress <span style="float:right;font-weight:700">80%</span></div>
-                    </div>
-                </div>
-
-                <div class="card achievements" style="margin-top:14px">
-                    <h4>🏆 Latest Achievements</h4>
-                    <div class="badge" tabindex="0">Mindful Learner — Completed 5 modules</div>
-                    <div class="badge" tabindex="0">Consistent Tracker — 7 day streak</div>
-                    <div class="badge" tabindex="0">Community Helper — 10+ helpful posts</div>
-                </div>
-
-                <div class="card" style="margin-top:14px">
-                    <h4>📅 Upcoming</h4>
-                    <div style="font-size:13px;color:var(--muted)"><b>Counseling Session with Dr Mitchell</b></div>
-                    <br>
-                    <div style="margin-top:8px">
-                        <a href="${pageContext.request.contextPath}/sessions/detail" class="btn btn-primary-grey">View Details</a>
-                    </div>
-                    &nbsp;
-                    <div style="margin-top:8px">
-                        <a href="${pageContext.request.contextPath}/sessions/meeting" class="btn btn-primary">Start Session</a>
-                    </div>
-                </div>
-
-                <a href="${pageContext.request.contextPath}/student/chatbot" class="ai-link-wrapper">
-                    <div class="ai-card">
-                        <div class="ai-content">
-                            <div class="ai-title">Ask AI <i class="fas fa-robot" style="color:var(--teal);"></i></div>
-                            <div class="ai-subtitle">Ask me anything!</div>
-                        </div>
-                        <div class="ai-action-icon"><i class="fas fa-arrow-right"></i></div>
-                    </div>
-                </a>
-
-            </aside>
+    </c:when>
+    <c:otherwise>
+        <div style="padding:40px;text-align:center;animation:fadeInUp 0.5s ease-out">
+            <h2>Please log in to view your dashboard</h2>
+            <p><a href="${pageContext.request.contextPath}/auth/login" class="btn btn-primary">Go to Login</a></p>
         </div>
-    </div>
-</c:if>
-
-<c:if test="${empty sessionScope.loggedInUser}">
-    <div style="padding:40px;text-align:center;animation:fadeInUp 0.5s ease-out">
-        <h2>Please log in to view your dashboard</h2>
-        <p><a href="${pageContext.request.contextPath}/auth/login" class="btn btn-primary">Go to Login</a></p>
-    </div>
-</c:if>
+    </c:otherwise>
+</c:choose>
 
 <script>
     (function(){
@@ -247,12 +246,13 @@
     })();
 
     function handleQuickAction(action){
+        var base = '${pageContext.request.contextPath}';
         var routes = {
-            'assessment': '${pageContext.request.contextPath}/student/assessment/',
-            'content': '${pageContext.request.contextPath}/content/browse',
-            'forum': '${pageContext.request.contextPath}/student/forum',
-            'progress': '${pageContext.request.contextPath}/student/dashboard',
-            'session': '${pageContext.request.contextPath}/sessions/book'
+            'assessment': base + '/student/assessment/',
+            'content': base + '/content/browse',
+            'forum': base + '/student/forum',
+            'progress': base + '/student/dashboard',
+            'session': base + '/sessions/book'
         };
         if(routes[action]){ window.location.href = routes[action]; }
     }

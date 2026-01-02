@@ -6,6 +6,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" content="${_csrf.token}" />
+    <meta name="_csrf_header" content="${_csrf.headerName}" />
     <title>Peer Support Forum - MindWell</title>
     <style>
         :root {
@@ -113,6 +115,8 @@
             transition: var(--transition);
             white-space: nowrap;
             box-shadow: 0 2px 8px rgba(0, 191, 165, 0.3);
+            text-decoration: none;
+            display: inline-block;
         }
 
         .new-post-btn:hover {
@@ -153,6 +157,27 @@
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-muted);
+            font-size: 16px;
+        }
+
+        #searchClear {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            color: var(--text-muted);
+            display: none;
+            padding: 4px;
+            line-height: 1;
+            transition: var(--transition);
+        }
+
+        #searchClear:hover {
+            color: var(--text-primary);
         }
 
         /* Category Filter */
@@ -161,7 +186,7 @@
             gap: 8px;
             margin-bottom: 24px;
             overflow-x: auto;
-            padding: 8px 4px 4px; /* give a little top padding so button borders are not visually clipped */
+            padding: 8px 4px 4px;
             -webkit-overflow-scrolling: touch;
             animation: fadeIn 0.5s ease-out 0.3s backwards;
         }
@@ -186,7 +211,7 @@
             transition: var(--transition);
             white-space: nowrap;
             font-weight: 500;
-            background-clip: padding-box; /* ensure full rounded border is rendered */
+            background-clip: padding-box;
             -webkit-background-clip: padding-box;
             position: relative;
         }
@@ -201,7 +226,7 @@
             background: var(--primary);
             color: white;
             border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(0, 191, 165, 0.06); /* subtle ring so top edge looks complete */
+            box-shadow: 0 0 0 4px rgba(0, 191, 165, 0.06);
         }
 
         /* Posts Section */
@@ -235,7 +260,6 @@
             display: flex;
             align-items: flex-start;
             gap: 12px;
-            margin-bottom: 12px;
         }
 
         .post-avatar {
@@ -319,53 +343,56 @@
 
         .post-interactions {
             display: flex;
-            gap: 20px;
+            gap: 12px;
+            align-items: center;
             padding-top: 12px;
             border-top: 1px solid var(--border-light);
         }
 
         .interaction-btn {
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 6px;
             background: transparent;
-            border: none;
-            color: var(--text-muted);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
             font-size: 13px;
             cursor: pointer;
             transition: var(--transition);
-            padding: 4px 8px;
-            border-radius: 6px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
         }
 
         .interaction-btn:hover {
             background: var(--border-light);
+            border-color: var(--primary);
             color: var(--text-primary);
         }
 
         .interaction-btn.liked {
-            color: var(--primary);
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary-dark);
+        }
+
+        .interaction-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .interaction-icon {
             font-size: 16px;
         }
 
-        /* make reply link match button styling (no underline, inherit color) */
-        .post-interactions a.interaction-btn {
-            text-decoration: none;
-            color: inherit;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 8px;
-            border-radius: 6px;
+        .interaction-btn .count {
+            font-weight: 600;
+            color: var(--text-primary);
         }
 
-        .post-interactions a.interaction-btn:hover {
-            background: var(--border-light);
-            color: var(--text-primary);
-            text-decoration: none;
+        .interaction-btn.liked .count {
+            color: var(--primary-dark);
         }
 
         /* Community Guidelines */
@@ -419,47 +446,6 @@
             opacity: 0.3;
         }
 
-        /* Reply preview inside post list */
-        .reply-preview {
-            margin: 8px 0 12px;
-            padding: 12px;
-            background: #fbfdfe;
-            border-radius: 8px;
-            border: 1px solid #eef6f3;
-        }
-        .reply-preview-item {
-            display: flex;
-            gap: 10px;
-            align-items: flex-start;
-            padding: 6px 0;
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-        .reply-preview-avatar {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 12px;
-            flex-shrink: 0;
-        }
-        .reply-preview-body {
-            flex: 1;
-        }
-        .reply-preview-author {
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-right: 6px;
-        }
-        .reply-preview-text {
-            color: var(--text-secondary);
-        }
-
         /* Animations */
         @keyframes fadeIn {
             from { opacity: 0; }
@@ -510,6 +496,7 @@
 
             .new-post-btn {
                 width: 100%;
+                text-align: center;
             }
 
             .post {
@@ -533,6 +520,15 @@
             .post-text {
                 font-size: 13px;
             }
+
+            .post-interactions {
+                gap: 8px;
+            }
+
+            .interaction-btn {
+                padding: 5px 10px;
+                font-size: 12px;
+            }
         }
 
         /* Accessibility */
@@ -551,6 +547,7 @@
 </head>
 <body>
     <%@ include file="/WEB-INF/views/includes/navbar.jsp" %>
+
     <div class="forum-container">
         <header>
             <h1>Peer Support Forum</h1>
@@ -560,23 +557,22 @@
         <!-- Top Bar with Tabs and New Post Button -->
         <div class="top-bar">
             <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('recent', event)">
+                <button class="tab-btn active" data-tab="recent" onclick="switchTab('recent', event)">
                     <span>🕐</span> Recent
                 </button>
-                <button class="tab-btn" onclick="switchTab('popular', event)">
+                <button class="tab-btn" data-tab="popular" onclick="switchTab('popular', event)">
                     <span>⭐</span> Popular
                 </button>
             </div>
-            <button class="new-post-btn" onclick="window.location.href='${pageContext.request.contextPath}/student/new-post'">
-                + New Post
-            </button>
+            <a href="${pageContext.request.contextPath}/student/forum/new-post" class="new-post-btn">+ New Post</a>
         </div>
 
         <!-- Search Bar -->
         <div class="search-container">
             <div class="search-wrapper">
                 <span class="search-icon">🔍</span>
-                <input type="text" class="search-input" placeholder="Search posts..." id="searchInput" onkeyup="searchPosts()">
+                <input type="text" class="search-input" placeholder="Search posts..." id="searchInput" />
+                <button id="searchClear" aria-label="Clear search">✖</button>
             </div>
         </div>
 
@@ -594,7 +590,8 @@
         <!-- Posts Section -->
         <div class="posts-section" id="postsSection">
             <c:forEach var="p" items="${posts}">
-<div class="post" data-category="${p.category}" onclick="viewPost(<c:out value='${p.id}'/>)">                    <div class="post-header">
+                <div class="post" data-category="${p.category}" onclick="viewPost('${p.id}')">
+                    <div class="post-header">
                         <div class="post-avatar"><c:out value="${p.avatar}"/></div>
                         <div class="post-content">
                             <div class="post-title-row">
@@ -605,21 +602,28 @@
                             </div>
 
                             <div class="post-info">
-                                <span><c:out value="${p.author}"/></span>
+                                <span><c:out value="${p.authorName}"/></span>
                                 <span><c:out value="${p.category}"/></span>
-                                <span><c:out value="${p.time}"/></span>
+                                <span><c:out value="${fn:replace(p.createdAt,'T',' ')}"/></span>
                             </div>
 
-                            <p class="post-text"><c:out value="${p.excerpt}"/></p>
+                            <p class="post-text"><c:out value="${p.content}"/></p>
 
                             <div class="post-interactions">
-                                <button class="interaction-btn" onclick="toggleLike(event, this)">
+                                <c:set var="isLiked" value="false"/>
+                                <c:forEach var="lid" items="${likedPostIds}">
+                                    <c:if test="${lid == p.id}">
+                                        <c:set var="isLiked" value="true"/>
+                                    </c:if>
+                                </c:forEach>
+                                <button class="interaction-btn ${isLiked ? 'liked' : ''}"
+                                        onclick="toggleLike(event, this, '${p.id}')">
                                     <span class="interaction-icon">👍</span>
                                     <span class="count"><c:out value="${p.likes}"/></span>
                                 </button>
 
                                 <a class="interaction-btn"
-                                   href="${pageContext.request.contextPath}/forum/post/<c:out value='${p.id}'/>"
+                                   href="${pageContext.request.contextPath}/student/forum/post/${p.id}"
                                    onclick="event.stopPropagation()"
                                    role="button"
                                    aria-label="View replies">
@@ -647,146 +651,183 @@
     </div>
 
     <script>
-    // --- NEW HELPER: Convert time strings to minutes for sorting ---
-    function parseTime(timeStr) {
-        timeStr = timeStr.toLowerCase().trim();
+        const contextPath = '${pageContext.request.contextPath}/';
         
-        // "Just now" is the newest possible time (0 minutes ago)
-        if (timeStr.includes('just now')) return 0;
-        
-        // Extract the number (e.g., "2" from "2 hours ago")
-        const matches = timeStr.match(/(\d+)/);
-        const val = matches ? parseInt(matches[0]) : 999999;
-        
-        // Convert everything to minutes
-        if (timeStr.includes('minute')) return val;
-        if (timeStr.includes('hour')) return val * 60;
-        if (timeStr.includes('day')) return val * 1440; // 24 * 60
-        if (timeStr.includes('week')) return val * 10080;
-        
-        return val; // Fallback
-    }
-
-    // Switch between Recent and Popular tabs
-    function switchTab(tab, evt) {
-        // 1. Update active tab button style
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        if (evt && evt.target) {
-            const btn = evt.target.closest('.tab-btn');
-            if (btn) btn.classList.add('active');
+        function filterByCategory(btn, category) {
+            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.post').forEach(post => {
+                post.style.display = (category === 'All' || post.dataset.category === category) ? 'block' : 'none';
+            });
+            checkEmptyState();
         }
 
-        // 2. Get all posts
-        const postsSection = document.getElementById('postsSection');
-        const posts = Array.from(postsSection.querySelectorAll('.post'));
-
-        // 3. Sort Logic
-        if (tab === 'popular') {
-            // Sort by Likes (Highest number first)
-            posts.sort((a, b) => {
-                const aLikes = parseInt(a.querySelector('.interaction-btn .count').textContent) || 0;
-                const bLikes = parseInt(b.querySelector('.interaction-btn .count').textContent) || 0;
-                return bLikes - aLikes;
-            });
-        } else {
-            // Sort by Time (Smallest "time ago" first)
-            posts.sort((a, b) => {
-                // We target the LAST span in .post-info because that's where the time is
-                const aText = a.querySelector('.post-info span:last-child').textContent;
-                const bText = b.querySelector('.post-info span:last-child').textContent;
-                
-                return parseTime(aText) - parseTime(bText);
-            });
-        }
-
-        // 4. Re-append sorted elements to the DOM
-        posts.forEach(p => postsSection.appendChild(p));
-    }
-
-    // --- EXISTING FUNCTIONS (Unchanged) ---
-
-    function filterByCategory(btn, category) {
-        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-
-        const posts = document.querySelectorAll('.post');
-        posts.forEach(post => {
-            if (category === 'All' || post.dataset.category === category) {
-                post.style.display = 'block';
-            } else {
-                post.style.display = 'none';
-            }
-        });
-        checkEmptyState();
-    }
-
-    function searchPosts() {
-        const input = document.getElementById('searchInput');
-        const filter = input.value.toLowerCase();
-        const posts = document.querySelectorAll('.post');
-
-        posts.forEach(post => {
-            const title = post.querySelector('h3').textContent.toLowerCase();
-            const text = post.querySelector('.post-text').textContent.toLowerCase();
+        function checkEmptyState() {
+            const postsSection = document.getElementById('postsSection');
+            const visiblePosts = Array.from(document.querySelectorAll('.post')).filter(p => p.style.display !== 'none');
             
-            if (title.includes(filter) || text.includes(filter)) {
-                post.style.display = 'block';
+            const existingEmpty = postsSection.querySelector('.empty-state');
+            if (existingEmpty) {
+                existingEmpty.remove();
+            }
+
+            if (visiblePosts.length === 0) {
+                const emptyState = document.createElement('div');
+                emptyState.className = 'empty-state';
+                emptyState.innerHTML = `
+                    <div class="empty-state-icon">💬</div>
+                    <p>No posts found</p>
+                `;
+                postsSection.appendChild(emptyState);
+            }
+        }
+
+        // Search functionality
+        function searchPosts() {
+            const input = document.getElementById('searchInput');
+            const clearBtn = document.getElementById('searchClear');
+            const filter = input ? input.value.toLowerCase().trim() : '';
+
+            if (clearBtn) clearBtn.style.display = filter ? 'block' : 'none';
+
+            const posts = document.querySelectorAll('.post');
+            posts.forEach(post => {
+                const titleEl = post.querySelector('h3');
+                const title = titleEl ? titleEl.textContent.toLowerCase() : '';
+                const match = !filter || title.includes(filter);
+                post.style.display = match ? 'block' : 'none';
+            });
+            checkEmptyState();
+        }
+
+        // Clear button and input wiring
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.getElementById('searchInput');
+            const clearBtn = document.getElementById('searchClear');
+            if (!input || !clearBtn) return;
+            
+            clearBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                input.value = '';
+                searchPosts();
+                input.focus();
+            });
+            
+            input.addEventListener('input', () => searchPosts());
+            searchPosts();
+        });
+
+        function viewPost(postId) {
+            window.location.href = '${pageContext.request.contextPath}/student/forum/post/' + postId;
+        }
+
+        // store original order for 'recent' sorting
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.post').forEach((p, i) => p.dataset.origOrder = i);
+        });
+
+        // sort posts for 'popular' or restore 'recent'
+        function switchTab(tab, evt) {
+            // update active button
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
+
+            const postsSection = document.getElementById('postsSection');
+            const posts = Array.from(postsSection.querySelectorAll('.post'));
+
+            if (tab === 'popular') {
+                posts.sort((a, b) => {
+                    const aLikes = parseInt((a.querySelector('.interaction-btn .count') || {textContent: '0'}).textContent) || 0;
+                    const bLikes = parseInt((b.querySelector('.interaction-btn .count') || {textContent: '0'}).textContent) || 0;
+                    if (bLikes !== aLikes) return bLikes - aLikes;
+                    // tie-breaker: replies
+                    const aReplyEl = a.querySelector('a.interaction-btn');
+                    const bReplyEl = b.querySelector('a.interaction-btn');
+                    const aReplies = aReplyEl ? parseInt((aReplyEl.textContent || '').match(/(\d+)/)?.[0] || 0) : 0;
+                    const bReplies = bReplyEl ? parseInt((bReplyEl.textContent || '').match(/(\d+)/)?.[0] || 0) : 0;
+                    return bReplies - aReplies;
+                });
             } else {
-                post.style.display = 'none';
+                // recent: restore original server-provided order
+                posts.sort((a, b) => (parseInt(a.dataset.origOrder) || 0) - (parseInt(b.dataset.origOrder) || 0));
             }
-        });
-        checkEmptyState();
-    }
 
-    function toggleLike(event, btn) {
-        event.stopPropagation();
-        btn.classList.toggle('liked');
-        
-        const countSpan = btn.querySelector('.count');
-        let count = parseInt(countSpan.textContent);
-        
-        if (btn.classList.contains('liked')) {
-            count++;
-        } else {
-            count--;
-        }
-        countSpan.textContent = count;
-    }
-
-    function viewPost(postId) {
-        window.location.href = '${pageContext.request.contextPath}/forum/post/' + postId;
-    }
-
-    function checkEmptyState() {
-        const postsSection = document.getElementById('postsSection');
-        const visiblePosts = Array.from(document.querySelectorAll('.post')).filter(p => p.style.display !== 'none');
-        
-        const existingEmpty = postsSection.querySelector('.empty-state');
-        if (existingEmpty) {
-            existingEmpty.remove();
+            // re-append in new order
+            posts.forEach(p => postsSection.appendChild(p));
         }
 
-        if (visiblePosts.length === 0) {
-            const emptyState = document.createElement('div');
-            emptyState.className = 'empty-state';
-            emptyState.innerHTML = `
-                <div class="empty-state-icon">💬</div>
-                <p>No posts found</p>
-            `;
-            postsSection.appendChild(emptyState);
-        }
-    }
+        async function toggleLike(event, btn, postId) {
+            event.stopPropagation();
+            try {
+                const csrfMeta = document.querySelector('meta[name="_csrf"]');
+                const csrfHeaderMeta = document.querySelector('meta[name="_csrf_header"]');
+                const headers = { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' };
+                
+                if (csrfMeta && csrfHeaderMeta) {
+                    const headerNameRaw = csrfHeaderMeta.getAttribute('content');
+                    const headerName = headerNameRaw ? headerNameRaw.trim() : '';
+                    const token = csrfMeta.getAttribute('content');
+                    const validName = headerName && /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/.test(headerName);
+                    
+                    if (validName) {
+                        headers[headerName] = token;
+                    } else {
+                        console.warn('Skipping invalid CSRF header name:', headerNameRaw);
+                    }
+                }
 
-    // Keyboard accessibility
-    document.querySelectorAll('.post').forEach(post => {
-        post.setAttribute('tabindex', '0');
-        post.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                post.click();
+                btn.disabled = true;
+                let resp;
+                
+                try {
+                    console.debug('toggleLike headers:', headers);
+                    resp = await fetch('${pageContext.request.contextPath}/student/forum/toggle-like', {
+                        method: 'POST',
+                        headers,
+                        body: new URLSearchParams({ postId })
+                    });
+                } catch (fetchErr) {
+                    console.error('fetch error', fetchErr);
+                    alert('Network error. Please try again.');
+                    return;
+                }
+
+                if (!resp.ok) {
+                    const txt = await resp.text().catch(() => '');
+                    console.error('toggle-like non-OK response', resp.status, txt);
+                    alert('Server error: ' + resp.status);
+                    return;
+                }
+
+                let data;
+                try {
+                    data = await resp.json();
+                } catch (parseErr) {
+                    console.error('invalid json from toggle-like', parseErr);
+                    alert('Server returned invalid response.');
+                    return;
+                }
+
+                if (!data.ok) {
+                    if (data.error === 'not-authenticated') {
+                        window.location.href = '${pageContext.request.contextPath}/login';
+                        return;
+                    }
+                    console.warn('toggle-like error', data);
+                    alert('Unable to like: ' + (data.error || 'unknown'));
+                    return;
+                }
+
+                // Success - update UI
+                btn.classList.toggle('liked', !!data.liked);
+                const countSpan = btn.querySelector('.count');
+                if (countSpan) countSpan.textContent = data.likes;
+            } catch (e) {
+                console.error('unexpected error in toggleLike', e);
+                alert('Network error. Please try again.');
+            } finally {
+                try { btn.disabled = false; } catch (_) {}
             }
-        });
-    }); 
-</script>
+        }
+    </script>
 </body>
 </html>
