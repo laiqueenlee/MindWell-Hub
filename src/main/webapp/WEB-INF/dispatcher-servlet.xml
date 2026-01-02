@@ -18,35 +18,16 @@
   <context:component-scan base-package="com.secj3303.controller,com.secj3303.config,com.secj3303.dao" />
   <mvc:annotation-driven />
 
-
-  <bean id="templateResolver" class="org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver">
+  <!-- JSP View Resolver -->
+  <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
     <property name="prefix" value="/WEB-INF/views/" />
-    <property name="suffix" value=".html" />
-    <property name="templateMode" value="HTML" />
-    <property name="characterEncoding" value="UTF-8" />
-    <property name="cacheable" value="false" />
-  </bean>
-
-  <bean id="templateEngine" class="org.thymeleaf.spring5.SpringTemplateEngine">
-    <property name="templateResolver" ref="templateResolver"/>
-    <property name="enableSpringELCompiler" value="true"/>
-    <property name="additionalDialects">
-        <set>
-            <bean class="org.thymeleaf.extras.springsecurity5.dialect.SpringSecurityDialect"/>
-        </set>
-    </property>
-  </bean>
-
-
-
-  <bean class="org.thymeleaf.spring5.view.ThymeleafViewResolver">
-    <property name="templateEngine" ref="templateEngine" />
-    <property name="characterEncoding" value="UTF-8" />
+    <property name="suffix" value=".jsp" />
+    <property name="contentType" value="text/html;charset=UTF-8" />
   </bean>
 
   <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
   <property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />
-  <property name="url" value="jdbc:mysql://localhost:3306/mindwell?useSSL=false&amp;serverTimezone=UTC" />
+  <property name="url" value="jdbc:mysql://localhost:3307/mindwell?useSSL=false&amp;serverTimezone=UTC" />
   <property name="username" value="root" /> 
   <property name="password" value="" />
   </bean>
