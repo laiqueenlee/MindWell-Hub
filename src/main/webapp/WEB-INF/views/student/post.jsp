@@ -1,25 +1,30 @@
-﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" content="${_csrf.token}" />
+    <meta name="_csrf_header" content="${_csrf.headerName}" />
     <title><c:out value="${post.title}"/> - Peer Support Forum</title>
     <style>
         :root {
-            --primary: #5dd5c3; 
-            --primary-dark: #4cc4b3;
+            --primary: #00bfa5;
+            --primary-dark: #00897b;
             --primary-light: #e0f7f4;
             --text-primary: #1a1a1a;
             --text-secondary: #666;
-            --bg-page: #f8fafb; 
+            --text-muted: #999;
+            --bg-page: #f8fafb;
             --bg-card: #ffffff;
             --border: #e5e7eb;
-            --radius: 12px; 
+            --border-light: #f0f2f4;
+            --radius: 12px;
             --shadow: 0 2px 8px rgba(0,0,0,0.06);
+            --shadow-hover: 0 4px 16px rgba(0,0,0,0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
@@ -41,62 +46,65 @@
             padding: 24px 20px;
         }
 
-        /* --- Header Section (UPDATED) --- */
+        /* Header Section */
         .header {
             margin-bottom: 24px;
-            display: flex;              /* Enables side-by-side layout */
-            justify-content: space-between; /* Pushes text left, button right */
-            align-items: center;        /* Vertically centers them */
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            animation: fadeInDown 0.5s ease-out;
         }
 
-        .header h1 {
+        .header-content h1 {
             font-size: 28px;
             font-weight: 700;
-            margin-bottom: 6px;
             color: var(--text-primary);
+            margin-bottom: 6px;
         }
 
-        .header p {
-            color: var(--text-secondary);
+        .header-content p {
             font-size: 14px;
+            color: var(--text-secondary);
         }
 
-        /* --- Back Link (UPDATED) --- */
         .back-link {
             display: inline-flex;
             align-items: center;
-            color: var(--text-secondary); /* or use var(--primary) for teal */
+            gap: 6px;
+            color: var(--text-secondary);
             text-decoration: none;
             font-size: 14px;
             font-weight: 600;
-            transition: all 0.2s;
-            
-            /* Optional: Make it look like a button */
             background-color: white;
-            padding: 8px 16px;
+            padding: 10px 18px;
             border-radius: 8px;
             border: 1px solid var(--border);
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            transition: var(--transition);
+            white-space: nowrap;
         }
 
         .back-link:hover {
-            color: var(--primary);
+            background-color: var(--border-light);
             border-color: var(--primary);
-            transform: translateY(-1px);
+            color: var(--primary);
+            transform: translateX(-2px);
         }
 
-        /* --- Post Card Styles --- */
+        /* Post Card */
         .post-card {
             background-color: var(--bg-card);
             border-radius: var(--radius);
-            padding: 30px;
+            padding: 32px;
             margin-bottom: 24px;
             box-shadow: var(--shadow);
+            animation: fadeInUp 0.5s ease-out 0.1s backwards;
         }
 
         .post-header {
             display: flex;
             align-items: flex-start;
+            gap: 16px;
             margin-bottom: 20px;
         }
 
@@ -111,80 +119,133 @@
             justify-content: center;
             font-weight: 600;
             font-size: 18px;
-            margin-right: 16px;
             flex-shrink: 0;
-            box-shadow: 0 2px 4px rgba(93, 213, 195, 0.3);
         }
 
         .post-meta {
-            flex-grow: 1;
+            flex: 1;
         }
 
         .post-title {
             font-size: 20px;
             font-weight: 700;
             color: var(--text-primary);
-            margin-bottom: 6px;
-            line-height: 1.3;
+            margin-bottom: 8px;
+            line-height: 1.4;
         }
 
         .post-info {
             display: flex;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
             font-size: 13px;
-            color: var(--text-secondary);
+            color: var(--text-muted);
+            flex-wrap: wrap;
+        }
+
+        .post-info span {
+            display: inline-flex;
+            align-items: center;
         }
 
         .badge {
-            background-color: #e8f5e9;
-            color: #2e7d32;
             padding: 4px 10px;
-            border-radius: 20px;
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-radius: 12px;
             font-size: 11px;
-            font-weight: 700;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
         .post-content {
-            color: #4b5563;
-            margin-bottom: 24px;
-            font-size: 16px;
+            font-size: 15px;
+            color: var(--text-secondary);
             line-height: 1.7;
+            margin-bottom: 20px;
+            padding: 20px 0;
+            border-top: 1px solid var(--border-light);
+            border-bottom: 1px solid var(--border-light);
         }
 
         .post-stats {
             display: flex;
-            gap: 24px;
-            padding-top: 16px;
-            border-top: 1px solid var(--border);
-            font-size: 14px;
-            color: var(--text-secondary);
-            font-weight: 500;
+            gap: 12px;
+            align-items: center;
         }
 
         .stat {
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+            font-size: 14px;
+            color: var(--text-secondary);
         }
 
-        /* --- Reply Form --- */
+        .stat span {
+            font-size: 16px;
+        }
+
+        .interaction-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid var(--border);
+            background: transparent;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .interaction-btn:hover {
+            background: var(--border-light);
+            border-color: var(--primary);
+            color: var(--text-primary);
+        }
+
+        .interaction-btn .count {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .interaction-btn.liked {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary-dark);
+        }
+
+        .interaction-btn.liked .count {
+            color: var(--primary-dark);
+        }
+
+        .interaction-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .interaction-icon {
+            font-size: 18px;
+        }
+
+        /* Reply Form */
         .reply-form-card {
             background-color: var(--bg-card);
             border-radius: var(--radius);
             padding: 24px;
             margin-bottom: 24px;
             box-shadow: var(--shadow);
+            animation: fadeInUp 0.5s ease-out 0.2s backwards;
         }
-        
-        .reply-form-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 16px;
+
+        .reply-form-card h3 {
+            font-size: 18px;
+            font-weight: 700;
             color: var(--text-primary);
+            margin-bottom: 16px;
         }
 
         .reply-textarea {
@@ -192,19 +253,23 @@
             padding: 16px;
             border: 1px solid var(--border);
             border-radius: 8px;
-            font-family: inherit;
-            font-size: 14px;
-            resize: vertical;
             min-height: 120px;
             margin-bottom: 16px;
-            outline: none;
-            transition: all 0.2s;
-            background-color: #fff;
+            font-family: inherit;
+            font-size: 14px;
+            color: var(--text-primary);
+            resize: vertical;
+            transition: var(--transition);
         }
 
         .reply-textarea:focus {
+            outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        .reply-textarea::placeholder {
+            color: var(--text-muted);
         }
 
         .submit-btn {
@@ -216,35 +281,55 @@
             font-weight: 600;
             font-size: 14px;
             cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 2px 4px rgba(93, 213, 195, 0.2);
+            transition: var(--transition);
+            box-shadow: 0 2px 8px rgba(0, 191, 165, 0.3);
         }
 
         .submit-btn:hover {
             background-color: var(--primary-dark);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 191, 165, 0.4);
         }
 
-        /* --- Replies Section --- */
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Replies Section */
         .replies-section {
-            background-color: var(--bg-card);
-            border-radius: var(--radius);
-            padding: 10px 30px;
-            box-shadow: var(--shadow);
+            animation: fadeIn 0.5s ease-out 0.3s backwards;
+        }
+
+        .replies-header {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 16px;
         }
 
         .reply {
-            padding: 24px 0;
-            border-bottom: 1px solid var(--border);
+            background-color: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            animation: fadeInUp 0.5s ease-out backwards;
         }
 
-        .reply:last-child {
-            border-bottom: none;
+        .reply:nth-child(1) { animation-delay: 0.1s; }
+        .reply:nth-child(2) { animation-delay: 0.2s; }
+        .reply:nth-child(3) { animation-delay: 0.3s; }
+        .reply:nth-child(4) { animation-delay: 0.4s; }
+
+        .reply:hover {
+            box-shadow: var(--shadow-hover);
         }
 
         .reply-header {
             display: flex;
             align-items: center;
+            gap: 12px;
             margin-bottom: 12px;
         }
 
@@ -252,37 +337,149 @@
             width: 36px;
             height: 36px;
             border-radius: 50%;
-            background-color: #f3f4f6;
-            color: var(--text-secondary);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 600;
-            margin-right: 12px;
             font-size: 14px;
+            flex-shrink: 0;
         }
 
         .reply-meta {
-            display: flex;
-            flex-direction: column;
+            flex: 1;
         }
 
         .reply-author {
+            font-size: 14px;
             font-weight: 600;
             color: var(--text-primary);
-            font-size: 14px;
+            margin-bottom: 2px;
         }
 
         .reply-time {
             font-size: 12px;
-            color: #999;
+            color: var(--text-muted);
         }
 
         .reply-content {
-            color: #4b5563;
             font-size: 14px;
-            margin-left: 48px;
+            color: var(--text-secondary);
             line-height: 1.6;
+            padding-left: 48px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 60px 20px;
+            background-color: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+
+        .empty-state p {
+            font-size: 15px;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px 12px;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header-content h1 {
+                font-size: 24px;
+            }
+
+            .back-link {
+                align-self: flex-start;
+            }
+
+            .post-card {
+                padding: 20px;
+            }
+
+            .post-header {
+                gap: 12px;
+            }
+
+            .avatar {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+
+            .post-title {
+                font-size: 18px;
+            }
+
+            .reply-form-card {
+                padding: 20px;
+            }
+
+            .reply {
+                padding: 16px;
+            }
+
+            .reply-content {
+                padding-left: 0;
+                margin-top: 8px;
+            }
+        }
+
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+
+        button:focus, textarea:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
         }
     </style>
 </head>
@@ -290,38 +487,46 @@
     <%@ include file="/WEB-INF/views/includes/navbar.jsp" %>
     
     <div class="container">
+        <!-- Header -->
         <div class="header">
-            <div>
+            <div class="header-content">
                 <h1>Peer Support Forum</h1>
                 <p>A safe space to share, connect, and support each other</p>
             </div>
-            <a href="${pageContext.request.contextPath}/student/forum" class="back-link">← Back to Forum</a>
+            <a href="${pageContext.request.contextPath}/student/forum" class="back-link">
+                ← Back to Forum
+            </a>
         </div>
 
-        <div class="post-card">
+        <!-- Post Card -->
+        <div class="post-card" data-post-id="${post.id}">
             <div class="post-header">
                 <div class="avatar"><c:out value="${post.avatar}"/></div>
                 <div class="post-meta">
                     <div class="post-title"><c:out value="${post.title}"/></div>
                     <div class="post-info">
-                        <span><c:out value="${post.author}"/></span>
+                        <span><c:out value="${post.authorName}"/></span>
                         <span>•</span>
-                        <span class="badge"><c:out value="${post.badge}"/></span>
-                        <span>•</span>
+                        <c:if test="${not empty post.badge}">
+                            <span class="badge"><c:out value="${post.badge}"/></span>
+                            <span>•</span>
+                        </c:if>
                         <span><c:out value="${post.category}"/></span>
                         <span>•</span>
-                        <span><c:out value="${post.time}"/></span>
+                            <span><c:out value="${fn:replace(post.createdAt,'T',' ')}"/></span>
                     </div>
                 </div>
             </div>
+            
             <div class="post-content">
                 <c:out value="${post.content}"/>
             </div>
+            
             <div class="post-stats">
-                <div class="stat">
-                    <span>👍</span>
-                    <span><c:out value="${post.likes}"/></span>
-                </div>
+                <button class="interaction-btn" onclick="toggleLikePost(event, this)" id="likeBtn">
+                    <span class="interaction-icon">👍</span>
+                    <span class="count"><c:out value="${post.likes}"/></span>
+                </button>
                 <div class="stat">
                     <span>💬</span>
                     <span><c:out value="${post.replyCount}"/> replies</span>
@@ -329,45 +534,128 @@
             </div>
         </div>
 
-        <div class="reply-form-card">
-            <div class="reply-form-title">Join the discussion</div>
-            <form action="${pageContext.request.contextPath}/forum/addReply" method="POST">
-                
-                <input type="hidden" name="postId" value="${post.id}" />
-                
-                <textarea 
-                    name="content" 
-                    class="reply-textarea" 
-                    placeholder="Type your reply here... Be kind and supportive."
-                    required></textarea>
-                    
-                <button type="submit" class="submit-btn">Post Reply</button>
-            </form>
-        </div>
+        <!-- Reply Form -->
+        <form action="${pageContext.request.contextPath}/student/forum/addReply" method="post" class="reply-form-card">
+            <h3>Join the discussion</h3>
+            <input type="hidden" name="postId" value="${post.id}" />
+            <textarea name="content" class="reply-textarea" placeholder="Type your reply here... Be kind and supportive." required></textarea>
+            <button type="submit" class="submit-btn">Post Reply</button>
+        </form>
 
+        <!-- Replies Section -->
         <div class="replies-section">
+            <c:if test="${not empty replies}">
+                <h2 class="replies-header">Replies</h2>
+            </c:if>
+            
             <c:if test="${empty replies}">
-                <div style="text-align: center; color: #999; padding: 40px 20px;">
-                    <div style="font-size: 24px; margin-bottom: 10px;">💬</div>
+                <div class="empty-state">
+                    <div class="empty-state-icon">💬</div>
                     <p>No replies yet. Be the first to share your thoughts!</p>
                 </div>
             </c:if>
-
+            
             <c:forEach var="r" items="${replies}">
                 <div class="reply">
                     <div class="reply-header">
                         <div class="reply-avatar"><c:out value="${r.avatar}"/></div>
                         <div class="reply-meta">
-                            <div class="reply-author"><c:out value="${r.author}"/></div>
-                            <div class="reply-time"><c:out value="${r.time}"/></div>
+                            <div class="reply-author"><c:out value="${r.authorName}"/></div>
+                            <div class="reply-time"><c:out value="${fn:replace(r.createdAt,'T',' ')}"/></div>
                         </div>
                     </div>
-                    <div class="reply-content">
-                        <c:out value="${r.content}"/>
-                    </div>
+                    <div class="reply-content"><c:out value="${r.content}"/></div>
                 </div>
             </c:forEach>
         </div>
     </div>
+
+    <script>
+        const contextPath = '${pageContext.request.contextPath}/';
+        
+        async function toggleLikePost(event, btn) {
+            event && event.stopPropagation && event.stopPropagation();
+            const postEl = btn.closest('.post-card');
+            if (!postEl) return;
+            const postId = postEl.getAttribute('data-post-id');
+            if (!postId) return;
+            
+            try {
+                const form = new URLSearchParams();
+                form.append('postId', postId);
+                
+                // Include CSRF header if present (sanitize header name)
+                const csrfMeta = document.querySelector('meta[name="_csrf"]');
+                const csrfHeaderMeta = document.querySelector('meta[name="_csrf_header"]');
+                const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
+                
+                if (csrfMeta && csrfHeaderMeta) {
+                    const headerNameRaw = csrfHeaderMeta.getAttribute('content');
+                    const headerName = headerNameRaw ? headerNameRaw.trim() : '';
+                    const token = csrfMeta.getAttribute('content');
+                    const validName = headerName && /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/.test(headerName);
+                    
+                    if (validName) {
+                        headers[headerName] = token;
+                    } else {
+                        console.warn('Skipping invalid CSRF header name:', headerNameRaw);
+                    }
+                }
+
+                btn.disabled = true;
+                let res;
+                
+                try {
+                    console.debug('toggleLikePost headers:', headers);
+                    res = await fetch(contextPath + 'student/forum/toggle-like', {
+                        method: 'POST',
+                        headers,
+                        body: form.toString()
+                    });
+                } catch (fetchErr) {
+                    console.error('fetch error', fetchErr);
+                    alert('Network error. Please try again.');
+                    btn.disabled = false;
+                    return;
+                }
+
+                if (!res.ok) {
+                    const txt = await res.text().catch(() => '');
+                    console.error('toggle-like non-OK', res.status, txt);
+                    alert('Server error: ' + res.status);
+                    btn.disabled = false;
+                    return;
+                }
+
+                let data;
+                try {
+                    data = await res.json();
+                } catch (parseErr) {
+                    console.error('invalid json', parseErr);
+                    alert('Server returned invalid response.');
+                    btn.disabled = false;
+                    return;
+                }
+
+                if (data.ok) {
+                    const countSpan = btn.querySelector('.count');
+                    if (countSpan) countSpan.textContent = data.likes;
+                    if (data.liked) btn.classList.add('liked'); 
+                    else btn.classList.remove('liked');
+                } else {
+                    if (data.error === 'not-authenticated') {
+                        window.location.href = contextPath + 'login';
+                    } else {
+                        console.warn('toggle-like failed', data);
+                    }
+                }
+
+                btn.disabled = false;
+            } catch (e) {
+                console.error('toggleLikePost error', e);
+                btn.disabled = false;
+            }
+        }
+    </script>
 </body>
 </html>
