@@ -1,25 +1,28 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Admin Dashboard</title>
-
+    
     <style>
+        /* 1. PAGE SETUP (Matches JSP padding and font) */
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f9fafb;
             margin: 0;
-            padding: 30px;
-            color: #111827;
         }
 
+        /* 2. GRID LAYOUT (Restored from JSP) */
         .dashboard-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr 1fr; /* Two equal columns */
             gap: 25px;
         }
 
+        /* 3. CARD STYLING (Restored from JSP) */
         .card {
             background: white;
             border-radius: 14px;
@@ -31,6 +34,7 @@
             font-size: 20px;
             font-weight: 600;
             margin-bottom: 2px;
+            margin-top: 0;
         }
 
         small {
@@ -38,7 +42,7 @@
             color: #6b7280;
         }
 
-        /* Recent Registration User List */
+        /* 4. RECENT REGISTRATIONS (Restored "Boxed" Row Style) */
         .user-list {
             margin-top: 20px;
             display: flex;
@@ -51,25 +55,24 @@
             justify-content: space-between;
             align-items: center;
             padding: 14px;
-            border: 1px solid #e5e7eb;
+            border: 1px solid #e5e7eb; /* The border around each user */
             border-radius: 12px;
             background: white;
         }
 
-        
         .user-left {
             display: flex;
             flex-direction: column;
-            gap: 8px; /* more space between name, role, time */
+            gap: 8px; /* Spacing between Name, Role, Time */
         }
 
         .role-badge {
             font-size: 12px;
-            color: #374151; /* dark gray text */
+            color: #374151; 
             padding: 3px 10px;
-            border-radius: 9999px;      /* pill shape */
-            border: 1px solid #d1d5db;  /* light gray outline */
-            background-color: transparent; /* no fill */
+            border-radius: 9999px;      
+            border: 1px solid #d1d5db;  
+            background-color: transparent; 
             display: inline-block;
             width: fit-content;
         }
@@ -79,7 +82,7 @@
             color: #9ca3af;
         }
 
-
+        /* 5. STATUS BADGES (Restored Cyan Color) */
         .status-badge {
             padding: 5px 14px;
             border-radius: 9999px;
@@ -89,7 +92,7 @@
         }
 
         .status-active {
-            background: #06b6d4;
+            background: #06b6d4; /* Cyan */
             color: white;
         }
 
@@ -98,7 +101,7 @@
             color: #6b7280;
         }
 
-        /* Progress Bars */
+        /* 6. USER DISTRIBUTION (Restored Colors & Shapes) */
         .distribution-section {
             margin-top: 20px;
             display: flex;
@@ -127,17 +130,17 @@
 
         .bar-student {
             width: 87%;
-            background: #06b6d4;
+            background: #06b6d4; /* Cyan */
         }
 
         .bar-mhp {
             width: 11%;
-            background: #3b82f6;
+            background: #3b82f6; /* Blue */
         }
 
         .bar-admin {
             width: 2%;
-            background: #ec4899;
+            background: #ec4899; /* Pink */
         }
     </style>
 </head>
@@ -147,7 +150,6 @@
 
     <div class="dashboard-grid">
 
-        <!-- Recent Registrations -->
         <div class="card">
             <h2>Recent Registrations</h2>
             <small>New users in the last 7 days</small>
@@ -193,7 +195,6 @@
             </div>
         </div>
 
-        <!-- User Distribution -->
         <div class="card">
             <h2>User Distribution</h2>
             <small>By role and activity</small>
