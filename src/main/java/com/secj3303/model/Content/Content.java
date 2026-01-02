@@ -4,6 +4,7 @@ import javax.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.secj3303.model.Content.ContentProgress;
 
 @Entity
 @Table(name = "CONTENT")
@@ -16,6 +17,10 @@ public class Content {
 
     @Column(name = "title", nullable = false)
     private String title;
+
+    // --- NEW FIELD ADDED ---
+    @Column(name = "description", length = 500) 
+    private String description;
 
     @Column(name = "category")
     private String category;
@@ -40,6 +45,12 @@ public class Content {
     @OneToMany(mappedBy = "content", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<QuizQuestion> quizQuestions = new ArrayList<>();
 
+    // --- FIX FOR 500 ERROR IS HERE ---
+    // This tells Hibernate: "If this Content is deleted, delete all matching ContentProgress rows first"
+    @OneToMany(mappedBy = "content", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<ContentProgress> contentProgress = new ArrayList<>();
+    // ---------------------------------
+
     @Column(name = "difficulty")
     private String difficulty;
 
@@ -48,6 +59,13 @@ public class Content {
 
     @Column(name = "points")
     private int points;
+
+    // 1. ADD THIS FIELD
+    @Column(name = "author")
+    private String author;
+
+    @Column(name = "flag_reason")
+private String flagReason;
 
     // --- Constructors ---
     public Content() {}
@@ -73,6 +91,10 @@ public class Content {
         question.setContent(this);
     }
 
+    public void setFlagReason(String flagReason) {
+    this.flagReason = flagReason;
+}
+
     // --- Getters and Setters ---
 
     public int getId() { return id; }
@@ -80,6 +102,10 @@ public class Content {
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
+
+    // --- NEW GETTER/SETTER ---
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
     public String getCategory() { return category; }
     public void setCategory(String category) { this.category = category; }
@@ -102,6 +128,11 @@ public class Content {
     public List<QuizQuestion> getQuizQuestions() { return quizQuestions; }
     public void setQuizQuestions(List<QuizQuestion> quizQuestions) { this.quizQuestions = quizQuestions; }
 
+    // --- NEW GETTER/SETTER FOR FIX ---
+    public List<ContentProgress> getContentProgress() { return contentProgress; }
+    public void setContentProgress(List<ContentProgress> contentProgress) { this.contentProgress = contentProgress; }
+    // ---------------------------------
+
     public String getDifficulty() { return difficulty; }
     public void setDifficulty(String difficulty) { this.difficulty = difficulty; }
 
@@ -110,4 +141,17 @@ public class Content {
 
     public int getPoints() { return points; }
     public void setPoints(int points) { this.points = points; }
+
+    // 2. ADD THESE GETTERS AND SETTERS (Crucial!)
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    // Getter and Setter
+public String getFlagReason() { return flagReason; }
+
 }
