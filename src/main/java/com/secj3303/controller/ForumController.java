@@ -1,5 +1,6 @@
 package com.secj3303.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -17,8 +18,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.secj3303.dao.ForumPostDao;
 import com.secj3303.dao.ForumReplyDao;
+import com.secj3303.dao.ModerationItemDao;
+import com.secj3303.dao.StudentReportDao;
 import com.secj3303.model.ForumPost;
 import com.secj3303.model.ForumReply;
+import com.secj3303.model.Report.StudentReport;
 import com.secj3303.model.User;
 
 /**
@@ -36,11 +40,15 @@ public class ForumController {
     private final ForumPostDao postDao;
     private final ForumReplyDao replyDao;
     private final com.secj3303.dao.ForumPostLikeDao likeDao;
-
-    public ForumController(ForumPostDao postDao, ForumReplyDao replyDao, com.secj3303.dao.ForumPostLikeDao likeDao) {
+    private final StudentReportDao studentReportDao;
+    private final ModerationItemDao moderationItemDao;
+    public ForumController(ForumPostDao postDao, ForumReplyDao replyDao, com.secj3303.dao.ForumPostLikeDao likeDao,
+                           StudentReportDao studentReportDao, ModerationItemDao moderationItemDao) {
         this.postDao = postDao;
         this.replyDao = replyDao;
         this.likeDao = likeDao;
+        this.studentReportDao = studentReportDao;
+        this.moderationItemDao = moderationItemDao;
     }
 
     // --- PAGE ROUTES ---
@@ -220,5 +228,97 @@ public class ForumController {
         if (u.getFullName() != null && !u.getFullName().isEmpty()) return u.getFullName();
         if (u.getUsername() != null && !u.getUsername().isEmpty()) return u.getUsername();
         return "Current User";
+    }
+
+    @PostMapping(value = "/report", produces = "application/json")
+    @org.springframework.web.bind.annotation.ResponseBody
+    public java.util.Map<String, Object> reportPostAction(@RequestParam(required=false) Long postId,
+                                                           @RequestParam(required=false) Long replyId,
+                                                           @RequestParam String reason,
+                                                           @RequestParam(required=false) String details,
+                                                           HttpSession session) {
+        java.util.Map<String, Object> resp = new java.util.HashMap<>();
+        User u = (User) session.getAttribute("loggedInUser");
+        Integer reporterId = (u != null) ? Integer.valueOf(u.getId()) : null;
+        // Validate: require either postId or replyId
+        if (postId == null && replyId == null) {
+            resp.put("ok", false);
+            resp.put("error", "missing-target");
+            resp.put("message", "Either postId or replyId must be provided.");
+            return resp;
+        }
+
+        // If replyId present, persist report with replyId only (postId will be null per request)
+        Long persistPostId = (replyId != null) ? null : postId;
+        Long persistReplyId = (replyId != null) ? replyId : null;
+
+        // Persist StudentReport record
+        StudentReport sr = new StudentReport(reporterId, persistPostId, persistReplyId, reason, details == null ? "" : details);
+        try {
+            studentReportDao.save(sr);
+        } catch (Exception ex) {
+            resp.put("ok", false);
+            resp.put("error", "report-save-failed");
+            return resp;
+        }
+
+        // Do NOT create a ModerationItem; reports are persisted in STUDENT_REPORT only.
+
+        resp.put("ok", true);
+        return resp;
+    }
+
+    @PostMapping("/deletePost")
+    public String deletePostAction(@RequestParam Long postId, HttpSession session, RedirectAttributes ra) {
+        User u = (User) session.getAttribute("loggedInUser");
+        ForumPost post = postDao.findById(postId);
+        if (post == null) return "redirect:/student/forum";
+        if (u == null || post.getAuthorId() == null || !post.getAuthorId().equals(Long.valueOf(u.getId()))) {
+            ra.addFlashAttribute("error", "Not authorized to delete this post.");
+            return "redirect:/student/forum/post/" + postId;
+        }
+        postDao.delete(postId);
+        ra.addFlashAttribute("message", "Post deleted.");
+        return "redirect:/student/forum";
+    }
+
+    @PostMapping("/deleteReply")
+    public String deleteReplyAction(@RequestParam Long replyId, HttpSession session, RedirectAttributes ra) {
+        User u = (User) session.getAttribute("loggedInUser");
+        ForumReply r = replyDao.findById(replyId);
+        if (r == null) return "redirect:/student/forum";
+        if (u == null || r.getAuthorId() == null || !r.getAuthorId().equals(Long.valueOf(u.getId()))) {
+            ra.addFlashAttribute("error", "Not authorized to delete this reply.");
+            return "redirect:/student/forum/post/" + r.getPostId();
+        }
+        // delete reply and decrement parent post reply count
+        Long postId = r.getPostId();
+        replyDao.delete(replyId);
+        ForumPost p = postDao.findById(postId);
+        if (p != null) {
+            Integer cnt = p.getReplyCount() == null ? 0 : p.getReplyCount();
+            p.setReplyCount(Math.max(0, cnt - 1));
+            postDao.save(p);
+        }
+        ra.addFlashAttribute("message", "Reply deleted.");
+        return "redirect:/student/forum/post/" + postId;
+    }
+
+    @PostMapping("/editPost")
+    public String editPostAction(@RequestParam Long postId, @RequestParam String title, @RequestParam String content, HttpSession session, RedirectAttributes ra) {
+        User u = (User) session.getAttribute("loggedInUser");
+        ForumPost post = postDao.findById(postId);
+        if (post == null) return "redirect:/student/forum";
+        if (u == null || post.getAuthorId() == null || !post.getAuthorId().equals(Long.valueOf(u.getId()))) {
+            ra.addFlashAttribute("error", "Not authorized to edit this post.");
+            return "redirect:/student/forum/post/" + postId;
+        }
+        post.setTitle(title);
+        post.setContent(content);
+        // Update the timestamp to reflect the edit using the existing createdAt field
+        post.setCreatedAt(LocalDateTime.now());
+        postDao.save(post);
+        ra.addFlashAttribute("message", "Post updated.");
+        return "redirect:/student/forum/post/" + postId;
     }
 }

@@ -24,6 +24,21 @@ public class ForumReplyDao {
                 .getResultList();
     }
 
+    @Transactional(readOnly = true)
+    public ForumReply findById(Long id) {
+        if (id == null) return null;
+        Session session = sessionFactory.getCurrentSession();
+        return session.get(ForumReply.class, id);
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        if (id == null) return;
+        Session session = sessionFactory.getCurrentSession();
+        ForumReply r = session.get(ForumReply.class, id);
+        if (r != null) session.delete(r);
+    }
+
     @Transactional
     public void save(ForumReply reply) {
         sessionFactory.getCurrentSession().saveOrUpdate(reply);

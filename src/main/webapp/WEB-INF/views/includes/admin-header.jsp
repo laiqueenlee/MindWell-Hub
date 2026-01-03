@@ -185,23 +185,28 @@
     </div>
 
     <div class="tabs">
-        <a href="${pageContext.request.contextPath}/admin/user-management" 
-           class="tab-link ${fn:contains(pageContext.request.requestURI, 'user-management') ? 'active' : ''}">
+          <a href="${pageContext.request.contextPath}/admin/user-management" 
+              class="tab-link ${fn:contains(pageContext.request.requestURI, '/admin/user-management') ? 'active' : ''}">
            User Management
         </a>
 
-        <a href="${pageContext.request.contextPath}/admin/content-quality" 
-           class="tab-link ${fn:contains(pageContext.request.requestURI, 'content-quality') ? 'active' : ''}">
+          <a href="${pageContext.request.contextPath}/admin/content-quality" 
+              class="tab-link ${fn:contains(pageContext.request.requestURI, '/admin/content-quality') ? 'active' : ''}">
            Content Quality
         </a>
 
-        <a href="${pageContext.request.contextPath}/admin/moderation-queue" 
-           class="tab-link ${fn:contains(pageContext.request.requestURI, 'moderation-queue') ? 'active' : ''}">
-           Moderation Queue
+          <a href="${pageContext.request.contextPath}/admin/moderation-queue" 
+              class="tab-link ${fn:contains(pageContext.request.requestURI, '/admin/moderation-queue') ? 'active' : ''}">
+              Content Moderation Queue
         </a>
 
-        <a href="${pageContext.request.contextPath}/admin/platform-analytics" 
-           class="tab-link ${fn:contains(pageContext.request.requestURI, 'platform-analytics') ? 'active' : ''}">
+          <a href="${pageContext.request.contextPath}/admin/forum-moderation-queue" 
+              class="tab-link ${fn:contains(pageContext.request.requestURI, '/admin/forum-moderation-queue') ? 'active' : ''}">
+              Forum Moderation Queue
+        </a>
+
+          <a href="${pageContext.request.contextPath}/admin/platform-analytics" 
+              class="tab-link ${fn:contains(pageContext.request.requestURI, '/admin/platform-analytics') ? 'active' : ''}">
            Platform Analytics
         </a>
     </div>

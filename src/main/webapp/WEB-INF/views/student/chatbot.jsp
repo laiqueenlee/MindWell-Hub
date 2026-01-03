@@ -17,14 +17,14 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background-color: #f8fafb; /* MindWell light grey background */
+            background-color: #f8fafb; 
             height: 100vh;
             display: flex;
             flex-direction: column;
             color: #1a1a1a;
         }
 
-        /* --- Header Styling (Fixed Layout) --- */
+        /* --- Header Styling --- */
         .page-header-strip {
             background-color: #fff;
             border-bottom: 1px solid #e5e7eb;
@@ -46,12 +46,6 @@
             color: #1a1a1a;
         }
 
-        .header-title p {
-            font-size: 14px;
-            color: #666;
-            margin-top: 2px;
-        }
-
         /* --- Button Styling --- */
         .btn-back {
             display: inline-flex;
@@ -69,7 +63,7 @@
         }
 
         .btn-back:hover {
-            border-color: #5dd5c3; /* MindWell Teal */
+            border-color: #5dd5c3; 
             color: #5dd5c3;
             transform: translateY(-1px);
         }
@@ -82,12 +76,12 @@
             max-width: 900px;
             width: 100%;
             margin: 0 auto;
-            padding: 24px 20px 0 20px; /* Added top padding */
+            padding: 24px 20px 0 20px;
             min-height: 0;
         }
 
         .assistant-header {
-            background-color: #fff; /* Changed to white for card look */
+            background-color: #fff;
             border: 1px solid #e5e7eb;
             border-radius: 12px;
             padding: 16px;
@@ -130,12 +124,10 @@
             padding-bottom: 20px;
         }
 
-        /* Scrollbar Styling */
         .chat-box::-webkit-scrollbar { width: 6px; }
         .chat-box::-webkit-scrollbar-track { background: transparent; }
         .chat-box::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
 
-        /* Empty State */
         .empty-state {
             text-align: center;
             margin: auto;
@@ -153,7 +145,7 @@
         .suggestion {
             background-color: white;
             border: 1px solid #e5e7eb;
-            border-radius: 24px; /* Pill shape */
+            border-radius: 24px;
             padding: 10px 20px;
             font-size: 14px;
             color: #1a1a1a;
@@ -161,6 +153,7 @@
             transition: all 0.2s;
             display: inline-block;
             box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            margin: 5px;
         }
 
         .suggestion:hover {
@@ -168,7 +161,6 @@
             color: #5dd5c3;
         }
 
-        /* Messages */
         .chat-message {
             padding: 12px 16px;
             margin-bottom: 12px;
@@ -187,14 +179,13 @@
         }
 
         .user-message {
-            background-color: #5dd5c3; /* MindWell Teal */
+            background-color: #5dd5c3;
             color: white;
             align-self: flex-end;
             border-bottom-right-radius: 2px;
             box-shadow: 0 1px 2px rgba(93, 213, 195, 0.3);
         }
 
-        /* Input Area */
         .input-container {
             background-color: #fff;
             border-top: 1px solid #e5e7eb;
@@ -272,8 +263,8 @@
     <div class="page-header-strip">
         <div class="header-inner-container">
             <div class="header-title">
-                <h1>Hello, <c:out value="${displayName}" default="Student"/></h1>
-                </div>
+                <h1>Welcome, <c:out value="${displayName}" default="Student"/></h1>
+            </div>
             
             <a href="#" class="btn-back" onclick="if(history.length>1){ history.back(); } else { window.location.href='${pageContext.request.contextPath}/'; } return false;">
                 ← Back
@@ -283,30 +274,36 @@
 
     <div class="chat-container">
         <div class="assistant-header">
-            <div class="assistant-icon">🧠</div>
+            <div class="assistant-icon">✨</div>
             <div class="assistant-info">
-                <h2>AI Mental Health Assistant</h2>
-                <p>Get personalized mental health guidance and support.</p>
+                <h2>Virtual Mental Health Coach</h2>
+                <p>AI-powered support for stress management and mental literacy[cite: 28, 33].</p>
             </div>
         </div>
         
         <div class="chat-box" id="chatBox">
             <div class="empty-state" id="emptyState">
-                <div class="empty-icon">✨</div>
-                <p class="empty-text">Start a conversation with the AI assistant</p>
-                <div class="suggestion" onclick="fillPrompt('Teach me how to manage stress')">
-                    Teach me how to manage stress
+                <div class="empty-icon">🤝</div>
+                <p class="empty-text">How can I support your well-being today?</p>
+                <div class="suggestion" onclick="fillPrompt('Help me recognize mental health symptoms')">
+                    Recognizing symptoms 
+                </div>
+                <div class="suggestion" onclick="fillPrompt('Give me some stress management techniques')">
+                    Stress management 
+                </div>
+                <div class="suggestion" onclick="fillPrompt('Tell me about available telehealth options')">
+                    Professional support [cite: 18, 28]
                 </div>
             </div>
 
             <div class="messages-area" id="messagesArea">
-                </div>
+            </div>
         </div>
     </div>
 
     <div class="input-container">
         <div class="input-wrapper">
-            <input type="text" class="input-box" id="userMessage" placeholder="Type your message...">
+            <input type="text" class="input-box" id="userMessage" placeholder="Ask about coping strategies or modules...">
             <button class="send-button" id="sendButton" onclick="sendMessage()">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="22" y1="2" x2="11" y2="13"></line>
@@ -317,6 +314,8 @@
     </div>
 
     <script>
+        // JS logic with clickable educational links added
+        var basePath = '${pageContext.request.contextPath}';
         function fillPrompt(text) {
             document.getElementById("userMessage").value = text;
             document.getElementById("userMessage").focus();
@@ -335,7 +334,6 @@
                 messagesArea.classList.add("active");
             }
 
-            // User Message
             var userDiv = document.createElement("div");
             userDiv.classList.add("chat-message", "user-message");
             userDiv.textContent = userMessage;
@@ -344,7 +342,6 @@
             chatBox.scrollTop = chatBox.scrollHeight;
             document.getElementById("userMessage").value = "";
 
-            // Typing Indicator
             var typingDiv = document.createElement("div");
             typingDiv.classList.add("chat-message", "bot-message");
             typingDiv.id = "typingIndicator";
@@ -354,7 +351,6 @@
             messagesArea.appendChild(typingDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
 
-            // Bot Response Simulation
             setTimeout(function() {
                 var indicator = document.getElementById("typingIndicator");
                 if (indicator) indicator.remove();
@@ -362,7 +358,7 @@
                 var botResponse = getBotResponse(userMessage);
                 var botDiv = document.createElement("div");
                 botDiv.classList.add("chat-message", "bot-message");
-                botDiv.textContent = botResponse;
+                botDiv.innerHTML = botResponse;
                 messagesArea.appendChild(botDiv);
 
                 chatBox.scrollTop = chatBox.scrollHeight;
@@ -371,17 +367,18 @@
 
         function getBotResponse(message) {
             message = message.toLowerCase();
-            
+
+            // Provide expressive clickable links to hub pages (use controller routes under the app)
             if (message.includes("stress")) {
-                return "Managing stress is important. Try deep breathing, regular sleep, physical activity, and mindfulness. Would you like details on any of these?";
-            } else if (message.includes("anxiety")) {
-                return "For anxiety, grounding techniques (5-4-3-2-1), muscle relaxation, and talking to someone you trust can help significantly.";
-            } else if (message.includes("sleep")) {
-                return "Good sleep hygiene involves a routine, cool room, and no screens before bed. How has your sleep been lately?";
-            } else if (message.includes("sad") || message.includes("depress")) {
-                return "I'm sorry you feel this way. Maintaining routine, exercise, and social connection helps. Please consider talking to a professional if it persists.";
+                return 'Our Hub provides interactive modules on stress management techniques. <a href="' + basePath + '/student/education">Open stress modules</a>.';
+            } else if (message.includes("symptom") || message.includes("recognize")) {
+                return 'Mental health literacy starts with recognizing signs of anxiety or depression. <a href="' + basePath + '/student/assessment/">Take a self-assessment</a>.';
+            } else if (message.includes("telehealth") || message.includes("professional") || message.includes("help")) {
+                return 'The Hub offers access to certified coaches and scheduling. <a href="' + basePath + '/virtualSes/book-session-page">Book a telehealth session</a>.';
+            } else if (message.includes("peer") || message.includes("community")|| message.includes("forum")) {
+                return 'Join our anonymous peer support forums. <a href="' + basePath + '/student/forum">Visit peer forums</a>.';
             } else {
-                return "I'm here to support you. Ask me about stress, anxiety, sleep, mindfulness, or anything on your mind.";
+                return 'I\'m your Digital Mental Health Literacy assistant. <a href="' + basePath + '/content/browse">Browse educational modules</a> for modules, self-care routines, or professional support.';
             }
         }
 

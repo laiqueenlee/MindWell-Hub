@@ -5,14 +5,8 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.beans.factory.annotation.Autowired; 
 
-import com.secj3303.dao.ContentDao;
-import com.secj3303.dao.ContentProgressDao;
-import com.secj3303.model.ChatbotModel;
 import com.secj3303.model.User;
 
 @Controller
@@ -113,23 +107,10 @@ public class studentcontroller {
     // return "redirect:/forum";
     // }
 
-    private ChatbotModel chatbotModel = new ChatbotModel();
-
     @GetMapping("/chatbot")
     public String showChatbotPage(Model model) {
-        // Static data for chatbot responses
-        model.addAttribute("chatbotResponses", chatbotModel.getResponse("default"));
+        // Serve the static chatbot JSP; remove server-side AI invocation.
         return "/student/chatbot"; 
-    }
-
-    // Method to handle sending messages (in the case of dynamic user input)
-    @PostMapping("/chatbot")
-    public String handleUserMessage(@RequestParam("userMessage") String userMessage, Model model) {
-        // Get the chatbot response based on user message
-        String botResponse = chatbotModel.getResponse(userMessage);
-
-        model.addAttribute("chatbotResponses", botResponse);
-        return "/student/chatbot";
     }
 
     // ... inside StudentController class ...
