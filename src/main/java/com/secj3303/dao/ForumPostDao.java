@@ -36,4 +36,10 @@ public class ForumPostDao {
     public void save(ForumPost post) {
         sessionFactory.getCurrentSession().saveOrUpdate(post);
     }
+
+    @Transactional
+    public void delete(Long id) {
+        ForumPost p = findById(id);
+        if (p != null) sessionFactory.getCurrentSession().delete(p);
+    }
 }

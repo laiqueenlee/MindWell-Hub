@@ -8,16 +8,6 @@ public class UserRepository {
     // In-memory user list (acts like a fake DB)
     private static final List<User> users = new ArrayList<>();
 
-    static {
-        // Some default users for testing
-        users.add(new User("student1", "1234", "Student One",
-                "student1@example.com", Role.STUDENT));
-        users.add(new User("admin1", "1234", "Admin One",
-                "admin1@example.com", Role.ADMIN));
-        users.add(new User("mhp1", "1234", "Counsellor One",
-                "mhp1@example.com", Role.MENTAL_HEALTH_PROFESSIONAL));
-    }
-
     public static User findByUsernameAndPasswordAndRole(String username, String password, Role role) {
         for (User u : users) {
             if (u.getUsername().equals(username)

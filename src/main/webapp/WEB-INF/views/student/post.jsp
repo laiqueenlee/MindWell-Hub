@@ -99,6 +99,7 @@
             margin-bottom: 24px;
             box-shadow: var(--shadow);
             animation: fadeInUp 0.5s ease-out 0.1s backwards;
+            position: relative;
         }
 
         .post-header {
@@ -268,6 +269,79 @@
             box-shadow: 0 0 0 3px var(--primary-light);
         }
 
+        /* Card menu styles (copied from peer.jsp) */
+        .card-menu {
+            position: absolute;
+            right: 18px;
+            top: 18px;
+            z-index: 1200;
+        }
+
+        .card-menu .menu-btn {
+            background: rgba(0, 0, 0, 0.04);
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 8px 10px;
+            border-radius: 8px;
+            color: var(--text-secondary);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            line-height: 1;
+        }
+
+        .card-menu .menu-btn:hover {
+            background: rgba(0, 191, 165, 0.1);
+            color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        .menu-dropdown {
+            position: absolute;
+            right: 0;
+            top: 42px !important;
+            min-width: 180px;
+            background: white;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            border-radius: 12px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08);
+            z-index: 1100;
+            overflow: hidden;
+            animation: dropdownFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 12px 16px;
+            background: transparent;
+            border: none;
+            text-align: left;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            position: relative;
+        }
+
+        .menu-item:first-child::before { content: "🚩"; font-size: 16px; }
+        .menu-item:nth-child(2)::before { content: "✏️"; font-size: 16px; }
+        .menu-item:nth-child(3)::before { content: "🗑️"; font-size: 16px; }
+
+        .menu-item:hover { background: rgba(0,191,165,0.04); color: var(--primary-dark); padding-left: 20px; }
+        .menu-item:active { background: rgba(0,191,165,0.15); transform: scale(0.98); }
+        .menu-item:last-child { color: #dc2626; border-top: 1px solid rgba(0, 0, 0, 0.05); }
+        .menu-item:last-child:hover { background: rgba(220,38,38,0.04); color: #b91c1c; }
+
         .reply-textarea::placeholder {
             color: var(--text-muted);
         }
@@ -315,6 +389,7 @@
             box-shadow: var(--shadow);
             transition: var(--transition);
             animation: fadeInUp 0.5s ease-out backwards;
+            position: relative;
         }
 
         .reply:nth-child(1) { animation-delay: 0.1s; }
@@ -481,6 +556,31 @@
             outline: 2px solid var(--primary);
             outline-offset: 2px;
         }
+            .report-btn { padding: 6px 10px; font-size: 12px; border-radius: 8px; background: #fff; border: 1px solid var(--border); color: #ef4444; cursor: pointer; }
+            .report-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1200; align-items: center; justify-content: center; }
+            .report-modal { background: white; width: 92%; max-width: 520px; border-radius: 10px; padding: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
+            .report-modal h3 { margin-bottom: 8px; font-size: 16px; }
+            .report-modal .actions { display:flex; justify-content:flex-end; gap:8px; margin-top:12px; }
+            /* Modal overlay/card (peer.jsp style) */
+            .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); display: none; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px); }
+
+            .modal-card { background: var(--bg-card); width: 90%; max-width: 450px; border-radius: var(--radius); box-shadow: 0 10px 25px rgba(0,0,0,0.2); animation: fadeInUp 0.3s ease-out; }
+
+            .modal-header { padding: 16px 20px; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; }
+            .modal-body { padding: 20px; }
+
+            .report-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-primary); }
+
+            .report-select, .report-textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 16px; font-family: inherit; }
+            .report-textarea { height: 100px; resize: none; }
+
+            .modal-footer { padding: 16px 20px; border-top: 1px solid var(--border-light); display: flex; justify-content: flex-end; gap: 10px; }
+
+            .btn-secondary { background: #f3f4f6; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; }
+
+            .btn-report-submit { background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+
+            .close-modal { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-muted); }
     </style>
 </head>
 <body>
@@ -516,6 +616,17 @@
                             <span><c:out value="${fn:replace(post.createdAt,'T',' ')}"/></span>
                     </div>
                 </div>
+                <!-- three-dot menu (styled like peer.jsp) -->
+                <div class="card-menu">
+                    <button class="menu-btn" onclick="event.stopPropagation(); toggleMenu(this)" aria-haspopup="true" aria-expanded="false">⋯</button>
+                    <div class="menu-dropdown" onclick="event.stopPropagation()" style="display:none;">
+                        <button class="menu-item" onclick="reportPost(null, '${post.id}')">Report</button>
+                        <c:if test="${sessionScope.loggedInUser != null and sessionScope.loggedInUser.id == post.authorId}">
+                            <button class="menu-item" onclick="openEditModal('${post.id}')">Edit</button>
+                            <button class="menu-item" onclick="confirmDeletePost('${post.id}')">Delete</button>
+                        </c:if>
+                    </div>
+                </div>
             </div>
             
             <div class="post-content">
@@ -523,7 +634,7 @@
             </div>
             
             <div class="post-stats">
-                <button class="interaction-btn" onclick="toggleLikePost(event, this)" id="likeBtn">
+                <button class="interaction-btn ${liked ? 'liked' : ''}" onclick="toggleLikePost(event, this)" id="likeBtn">
                     <span class="interaction-icon">👍</span>
                     <span class="count"><c:out value="${post.likes}"/></span>
                 </button>
@@ -562,6 +673,17 @@
                         <div class="reply-meta">
                             <div class="reply-author"><c:out value="${r.authorName}"/></div>
                             <div class="reply-time"><c:out value="${fn:replace(r.createdAt,'T',' ')}"/></div>
+                        </div>
+                        <div style="margin-left:8px; display:flex; align-items:flex-start; gap:8px;">
+                                <div class="card-menu">
+                                    <button class="menu-btn" onclick="event.stopPropagation(); toggleMenu(this)" aria-haspopup="true" aria-expanded="false">⋯</button>
+                                    <div class="menu-dropdown" onclick="event.stopPropagation()" style="display:none;">
+                                        <button class="menu-item" onclick="openReportModalForReply(this); return false;" data-reply-id="${r.id}">Report</button>
+                                        <c:if test="${sessionScope.loggedInUser != null and sessionScope.loggedInUser.id == r.authorId}">
+                                            <button class="menu-item" onclick="confirmDeleteReply('${r.id}')">Delete</button>
+                                        </c:if>
+                                    </div>
+                                </div>
                         </div>
                     </div>
                     <div class="reply-content"><c:out value="${r.content}"/></div>
@@ -656,6 +778,232 @@
                 btn.disabled = false;
             }
         }
+    </script>
+
+        <!-- Report Modal (hidden by default) -->
+        <div id="reportModal" class="modal-overlay" style="display:none;">
+            <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="reportModalTitle">
+                <div class="modal-header">
+                    <h3 id="reportModalTitle">Report Post</h3>
+                    <button class="close-modal" onclick="closeReportModal()" aria-label="Close report form">&times;</button>
+                </div>
+                <form id="reportForm">
+                    <input type="hidden" id="reportPostId" name="postId">
+                    <input type="hidden" id="reportReplyId" name="replyId">
+                    <div class="modal-body">
+                        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
+                            Help us understand what's wrong with this post. Your report is anonymous.
+                        </p>
+
+                        <label class="report-label">Reason for reporting</label>
+                        <select id="reportReason" name="reason" class="report-select" required>
+                            <option value="" disabled selected>Select a reason...</option>
+                            <option value="harassment">Harassment or bullying</option>
+                            <option value="spam">Spam or misleading</option>
+                            <option value="inappropriate">Inappropriate content</option>
+                            <option value="self-harm">Self-harm or safety concerns</option>
+                            <option value="other">Other</option>
+                        </select>
+
+                        <label class="report-label">Additional Details (Optional)</label>
+                        <textarea id="reportDetails" name="details" class="report-textarea" placeholder="Provide more context..."></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary" onclick="closeReportModal()">Cancel</button>
+                        <button type="submit" class="btn-report-submit">Submit Report</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    <script>
+        function reportPost(event, postId){
+            if (event) event.stopPropagation && event.stopPropagation();
+            const el = document.getElementById('reportPostId');
+            if (el) el.value = postId;
+            const modal = document.getElementById('reportModal');
+            if (modal) modal.style.display = 'flex';
+        }
+
+        function closeReportModal(){
+            const modal = document.getElementById('reportModal');
+            if (modal) modal.style.display = 'none';
+            const form = document.getElementById('reportForm');
+            if (form) form.reset();
+            const replyEl = document.getElementById('reportReplyId');
+            if (replyEl) replyEl.value = '';
+        }
+
+        // attach submit handler similar to peer.jsp but include replyId when present
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('reportForm');
+            if (!form) return;
+                form.addEventListener('submit', async function(e){
+                e.preventDefault();
+                const postIdEl = document.getElementById('reportPostId');
+                const replyIdEl = document.getElementById('reportReplyId');
+                const postId = postIdEl ? postIdEl.value : '';
+                const replyId = replyIdEl ? replyIdEl.value : '';
+                const reasonSel = document.getElementById('reportReason').value;
+                const details = document.getElementById('reportDetails').value || '';
+                const fullReason = reasonSel + (details ? ': ' + details : '');
+
+                const params = new URLSearchParams();
+                // If reporting a reply, send only replyId (server will associate post if needed).
+                if (replyId) {
+                    params.append('replyId', replyId);
+                } else {
+                    params.append('postId', postId);
+                }
+                // send reason and details separately so StudentReport stores both fields
+                params.append('reason', reasonSel);
+                params.append('details', details);
+
+                const csrfMeta = document.querySelector('meta[name="_csrf"]');
+                const csrfHeaderMeta = document.querySelector('meta[name="_csrf_header"]');
+                const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
+                if (csrfMeta && csrfHeaderMeta){
+                    const headerName = csrfHeaderMeta.getAttribute('content') || '';
+                    const token = csrfMeta.getAttribute('content');
+                    if(headerName && token) headers[headerName] = token;
+                }
+
+                try{
+                    const res = await fetch(contextPath + 'student/forum/report', {
+                        method: 'POST', headers, body: params.toString()
+                    });
+                    if (!res.ok){
+                        const txt = await res.text().catch(()=>res.statusText);
+                        alert('Failed to send report: ' + res.status + '\n' + txt);
+                        return;
+                    }
+                    closeReportModal();
+                    alert('Report submitted. Thank you.');
+                } catch(err){
+                    console.error(err);
+                    alert('Network error sending report.');
+                }
+            });
+        });
+
+        // helper to open report modal for a reply while preserving reply id
+        function openReportModalForReply(btn){
+            var replyId = btn.getAttribute('data-reply-id');
+            var postId = document.querySelector('.post-card').getAttribute('data-post-id') || '${post.id}';
+            var replyEl = document.getElementById('reportReplyId');
+            if (replyEl) replyEl.value = replyId || '';
+            reportPost(null, postId);
+        }
+    </script>
+    
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal-overlay" style="display:none;">
+        <div class="modal-card" role="dialog">
+            <div class="modal-header">
+                <h3>Edit Post</h3>
+                <button class="close-modal" onclick="closeEditModal()">&times;</button>
+            </div>
+            <form id="editForm">
+                <input type="hidden" id="editPostId" name="postId">
+                <div class="modal-body">
+                    <label class="report-label">Title</label>
+                    <input id="editTitle" name="title" class="report-select" />
+                    <label class="report-label">Content</label>
+                    <textarea id="editContent" name="content" class="report-textarea"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeEditModal()">Cancel</button>
+                    <button type="submit" class="btn-report-submit">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // menu toggle
+        function toggleMenu(btn){
+            var dd = btn.nextElementSibling;
+            if(!dd) return;
+            // close other open menus
+            document.querySelectorAll('.menu-dropdown').forEach(function(d){ if(d!==dd) d.style.display='none'; });
+            dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
+        }
+
+        document.addEventListener('click', function(e){
+            if(!e.target.closest('.menu-btn')){
+                document.querySelectorAll('.menu-dropdown').forEach(function(d){ d.style.display='none'; });
+            }
+        });
+
+        function confirmDeletePost(postId){
+            if(!confirm('Delete this post? This cannot be undone.')) return;
+            // submit form
+            const form = new FormData(); form.append('postId', postId);
+            submitPostAction('/student/forum/deletePost', form, function(){ window.location.href = contextPath + 'student/forum'; });
+        }
+
+        function confirmDeleteReply(replyId){
+            if(!confirm('Delete this reply? This cannot be undone.')) return;
+            const form = new FormData(); form.append('replyId', replyId);
+            // will redirect back to post page when done
+            submitPostAction('/student/forum/deleteReply', form, function(){ location.reload(); });
+        }
+
+        function submitPostAction(url, formData, cb){
+            const csrfMeta = document.querySelector('meta[name="_csrf"]');
+            const csrfHeaderMeta = document.querySelector('meta[name="_csrf_header"]');
+            const headers = {};
+            if (csrfMeta && csrfHeaderMeta){
+                const headerNameRaw = csrfHeaderMeta.getAttribute('content');
+                const headerName = headerNameRaw ? headerNameRaw.trim() : '';
+                const token = csrfMeta.getAttribute('content');
+                const validName = headerName && /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/.test(headerName);
+                if (validName) {
+                    headers[headerName] = token;
+                } else {
+                    console.warn('Skipping invalid CSRF header name:', headerNameRaw);
+                }
+            }
+            // If caller passed a FormData, convert to URL-encoded body so Spring @RequestParam reads it reliably
+            let bodyToSend = formData;
+            if (typeof FormData !== 'undefined' && formData instanceof FormData) {
+                const params = new URLSearchParams();
+                for (const pair of formData.entries()) { params.append(pair[0], pair[1]); }
+                bodyToSend = params.toString();
+                headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
+            }
+
+            fetch(contextPath + url.replace(/^[\/]+/,''), { method:'POST', headers: headers, body: bodyToSend })
+                .then(async r => {
+                    if (!r.ok) {
+                        const txt = await r.text().catch(() => '');
+                        throw new Error('HTTP ' + r.status + ' ' + txt);
+                    }
+                    return r.text();
+                })
+                .then(t => { if (cb) cb(); })
+                .catch(e => { alert('Action failed: ' + e.message); console.error('submitPostAction error', e); });
+        }
+
+        function openEditModal(postId){
+            // prefill with current values
+            document.getElementById('editPostId').value = postId;
+            document.getElementById('editTitle').value = document.querySelector('.post-title').textContent.trim();
+            document.getElementById('editContent').value = document.querySelector('.post-content').textContent.trim();
+            document.getElementById('editModal').style.display = 'flex';
+        }
+
+        function closeEditModal(){ document.getElementById('editModal').style.display='none'; }
+
+        (function(){
+            var editFormEl = document.getElementById('editForm');
+            if (!editFormEl) return;
+            editFormEl.addEventListener('submit', function(e){
+                e.preventDefault();
+                var form = new FormData(e.target);
+                submitPostAction('/student/forum/editPost', form, function(){ window.location.reload(); });
+            });
+        })();
     </script>
 </body>
 </html>
