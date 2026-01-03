@@ -15,17 +15,20 @@ import com.secj3303.model.Content.ContentProgress;
 @RequestMapping("/student/module")
 public class StudentContentController {
 
-    @Autowired private ContentDao contentDao;
-    @Autowired private ContentProgressDao progressDao;
+    @Autowired
+    private ContentDao contentDao;
+    @Autowired
+    private ContentProgressDao progressDao;
 
     @GetMapping("/view")
     public String viewModule(@RequestParam("id") int contentId, Model model, HttpSession session) {
         User user = (User) session.getAttribute("loggedInUser");
-        if (user == null) return "redirect:/auth/login";
+        if (user == null)
+            return "redirect:/auth/login";
 
         Content content = contentDao.findByIdWithAssociations(contentId);
         ContentProgress progress = progressDao.findByUserAndContent(user.getId(), contentId);
-        
+
         int percent = (progress != null) ? progress.getProgressPercent() : 0;
         int rating = (progress != null) ? progress.getRating() : 0;
         int lastPage = (progress != null) ? progress.getLastVisitedPage() : 0;
@@ -41,12 +44,13 @@ public class StudentContentController {
     }
 
     @PostMapping("/save-progress")
-    public String saveProgress(@RequestParam("contentId") int contentId, 
-                               @RequestParam("percent") int percent,
-                               @RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex, // NEW param
-                               HttpSession session) {
+    public String saveProgress(@RequestParam("contentId") int contentId,
+            @RequestParam("percent") int percent,
+            @RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex, // NEW param
+            HttpSession session) {
         User user = (User) session.getAttribute("loggedInUser");
-        if (user == null) return "redirect:/auth/login";
+        if (user == null)
+            return "redirect:/auth/login";
 
         ContentProgress cp = getOrCreateProgress(user, contentId);
         cp.setProgressPercent(percent);
@@ -56,18 +60,17 @@ public class StudentContentController {
         return "redirect:/content/browse";
     }
 
-    // ... (Keep submit-quiz, reset-quiz, submit-rating, and helper methods exactly as they were) ...
-    
     @PostMapping("/submit-quiz")
-    public String submitQuiz(@RequestParam("contentId") int contentId, 
-                             @RequestParam("answers") String answers,
-                             HttpSession session) {
+    public String submitQuiz(@RequestParam("contentId") int contentId,
+            @RequestParam("answers") String answers,
+            HttpSession session) {
         User user = (User) session.getAttribute("loggedInUser");
-        if (user == null) return "redirect:/auth/login";
+        if (user == null)
+            return "redirect:/auth/login";
 
         ContentProgress cp = getOrCreateProgress(user, contentId);
-        cp.setProgressPercent(100); 
-        cp.setQuizAnswers(answers); 
+        cp.setProgressPercent(100);
+        cp.setQuizAnswers(answers);
         progressDao.saveOrUpdate(cp);
         return "redirect:/student/module/view?id=" + contentId;
     }
@@ -75,27 +78,29 @@ public class StudentContentController {
     @PostMapping("/reset-quiz")
     public String resetQuiz(@RequestParam("contentId") int contentId, HttpSession session) {
         User user = (User) session.getAttribute("loggedInUser");
-        if (user == null) return "redirect:/auth/login";
+        if (user == null)
+            return "redirect:/auth/login";
 
         ContentProgress cp = progressDao.findByUserAndContent(user.getId(), contentId);
         if (cp != null) {
             cp.setProgressPercent(80);
-            cp.setQuizAnswers(null); 
+            cp.setQuizAnswers(null);
             progressDao.saveOrUpdate(cp);
         }
         return "redirect:/student/module/view?id=" + contentId;
     }
 
     @PostMapping("/submit-rating")
-    public String submitRating(@RequestParam("contentId") int contentId, 
-                               @RequestParam("rating") int rating, 
-                               HttpSession session) {
+    public String submitRating(@RequestParam("contentId") int contentId,
+            @RequestParam("rating") int rating,
+            HttpSession session) {
         User user = (User) session.getAttribute("loggedInUser");
-        if (user == null) return "redirect:/auth/login";
+        if (user == null)
+            return "redirect:/auth/login";
 
         ContentProgress cp = getOrCreateProgress(user, contentId);
         cp.setRating(rating);
-        cp.setProgressPercent(100); 
+        cp.setProgressPercent(100);
         progressDao.saveOrUpdate(cp);
 
         return "redirect:/content/browse";

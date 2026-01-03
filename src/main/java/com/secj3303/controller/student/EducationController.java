@@ -36,28 +36,30 @@ public class EducationController {
         this.progressDao = progressDao;
     }
 
-   @GetMapping("/browse")
+    @GetMapping("/browse")
     public String showLegacyEducationPage(Model model, HttpSession session) {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
-        if (loggedInUser == null) { return "redirect:/auth/login"; }
-        
+        if (loggedInUser == null) {
+            return "redirect:/auth/login";
+        }
+
         // 1. Fetch ALL content from DAO
         List<Content> allContent = contentDao.findAll();
 
-        // 2. FILTER the list: Keep only content where status is "published"
+        // 2. FILTER the list: Keep only content where status is "Published"
         List<Content> modules = allContent.stream()
-                .filter(c -> "approved".equalsIgnoreCase(c.getStatus()))
+                .filter(c -> "Published".equalsIgnoreCase(c.getStatus()))
                 .collect(Collectors.toList());
 
         // --- CREATE THE MAP (Only for published modules) ---
         Map<Integer, Integer> progressMap = new HashMap<>();
-    
+
         for (Content module : modules) {
             ContentProgress cp = progressDao.findByUserAndContent(loggedInUser.getId(), module.getId());
             int percent = (cp != null) ? cp.getProgressPercent() : 0;
             progressMap.put(module.getId(), percent);
         }
-    
+
         // --- SEND THE MAP & FILTERED MODULES ---
         model.addAttribute("progressMap", progressMap);
         model.addAttribute("user", loggedInUser);
@@ -65,23 +67,26 @@ public class EducationController {
 
         return "/student/education"; 
     }
+
     @GetMapping("/view/{id}")
-    public String viewContent(@PathVariable("id") int id, 
-                              @RequestParam(defaultValue = "1") int page, 
-                              Model model, 
-                              HttpSession session) {
-        
+    public String viewContent(@PathVariable("id") int id,
+            @RequestParam(defaultValue = "1") int page,
+            Model model,
+            HttpSession session) {
+
         User loggedInUser = (User) session.getAttribute("loggedInUser");
-        if (loggedInUser == null) return "redirect:/auth/login";
+        if (loggedInUser == null)
+            return "redirect:/auth/login";
 
         Content content = contentDao.findByIdWithAssociations(id);
-        if (content == null) return "redirect:/content/browse";
+        if (content == null)
+            return "redirect:/content/browse";
 
         // ============================================================
         // 5. NEW CODE: FETCH SAVED PROGRESS FROM DATABASE
         // ============================================================
         ContentProgress savedProgress = progressDao.findByUserAndContent(loggedInUser.getId(), id);
-        
+
         int percent = (savedProgress != null) ? savedProgress.getProgressPercent() : 0;
         int rating = (savedProgress != null) ? savedProgress.getRating() : 0;
         int lastPage = (savedProgress != null) ? savedProgress.getLastVisitedPage() : 0;
@@ -100,9 +105,7 @@ public class EducationController {
         // Keep existing logic for "Article" type to ensure backward compatibility
         if ("Article".equals(content.getType())) {
             int totalSections = content.getArticleSections().size();
-            
-            // Note: We don't strictly need this redirect logic if using the new JS module-view, 
-            // but we keep it safe for now.
+
             if (page < 1 || page > totalSections) {
                 // If we have a saved page, maybe we want to redirect there?
                 // For now, let's just let the view handle it via 'lastPage' variable.
@@ -116,8 +119,8 @@ public class EducationController {
                 model.addAttribute("hasNextPage", page < totalSections);
                 model.addAttribute("nextPage", page + 1);
             }
-        } 
-        
+        }
+
         return "/student/module-view";
     }
 }

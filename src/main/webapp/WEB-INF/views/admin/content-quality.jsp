@@ -104,7 +104,7 @@
                         <i class="bi bi-activity"></i>
                         <span>In Review</span>
                     </div>
-                    <div class="cq-metric-value">23</div>
+                    <div class="cq-metric-value">${pendingCount}</div>
                     <div class="cq-metric-sub">Pending approval</div>
                 </div>
 
@@ -113,12 +113,12 @@
                         <i class="bi bi-x-circle"></i>
                         <span>Flagged</span>
                     </div>
-                    <div class="cq-metric-value">7</div>
+                    <div class="cq-metric-value">${flaggedCount}</div>
                     <div class="cq-metric-sub">Needs attention</div>
                 </div>
             </div>
 
-            <div class="cq-list-section">
+           <div class="cq-list-section" id="contentListContainer">
                 <h4 class="cq-list-header">All Content</h4>
 
                 <c:if test="${empty contentList}">
@@ -126,20 +126,23 @@
                 </c:if>
 
                 <c:forEach var="content" items="${contentList}">
-                    <c:if test="${content.status == 'published'}">
-                        <div class="cq-content-item">
+                    <c:if test="${content.status == 'Published'}">
+                        
+                        <c:set var="rawRating" value="${ratingMap[content.id]}" />
+                        <c:set var="displayRating" value="${rawRating != null ? rawRating : 0}" />
+
+                        <div class="cq-content-item" data-rating="${displayRating}">
                             <div class="cq-content-info">
                                 <span class="cq-content-title">${content.title}</span>
-                                <span class="cq-content-stats">${content.category} • ${content.points} pts</span>
+                                <span class="cq-content-stats">${content.category} </span>
                             </div>
                             
                             <div class="cq-rating-box">
                                 <i class="bi bi-star-fill star-icon"></i>
                                 
-                                <c:set var="rating" value="${ratingMap[content.id]}" />
                                 <c:choose>
-                                    <c:when test="${rating > 0}">
-                                        <fmt:formatNumber value="${rating}" type="number" minFractionDigits="1" maxFractionDigits="1" />
+                                    <c:when test="${displayRating > 0}">
+                                        <fmt:formatNumber value="${displayRating}" type="number" minFractionDigits="1" maxFractionDigits="1" />
                                     </c:when>
                                     <c:otherwise>
                                         N/A
@@ -153,6 +156,26 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const container = document.getElementById('contentListContainer');
+            // Get all items that have the class 'cq-content-item'
+            // We ignore the h4 header and empty message, picking only the content rows
+            const items = Array.from(container.querySelectorAll('.cq-content-item'));
+
+            // Sort the array based on the data-rating attribute
+            items.sort((a, b) => {
+                const ratingA = parseFloat(a.getAttribute('data-rating')) || 0;
+                const ratingB = parseFloat(b.getAttribute('data-rating')) || 0;
+                return ratingB - ratingA; // Descending order (Highest first)
+            });
+
+            items.forEach(item => {
+                container.appendChild(item);
+            });
+        });
+    </script>
 
 </body>
 </html>

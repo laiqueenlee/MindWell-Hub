@@ -32,9 +32,11 @@
         .badge { font-size: 0.85rem; padding: 3px 10px; border-radius: 15px; font-weight: 600; text-transform: capitalize; color: white; }
         .badge-published { background-color: #00d2d3; }
         .badge-draft { background-color: #95a5a6; }
-        .badge-flagged { background-color: #ef4444; } /* Red */
-.badge-approved { background-color: #166534; } /* Green */
+        .badge-flagged { background-color: #ef4444; } 
+.badge-approved { background-color: #166534; }
+.badge-pending { background-color: #f39c12; } 
         .badge-type { background-color: #f8f9fa; border: 1px solid #eee; color: #7f8c8d; }
+
         
         .actions { display: flex; gap: 15px; color: #95a5a6; }
         .actions i { cursor: pointer; transition: color 0.2s; }
@@ -113,8 +115,11 @@
                             <c:if test="${item.status == 'Flagged'}">
                                 <c:set var="statusClass" value="badge-flagged" />
                             </c:if>
+                
+                            <c:if test="${item.status == 'Pending'}">
+                            <c:set var="statusClass" value="badge-pending" />
+                        </c:if>
 
-                            <%-- Apply the calculated class --%>
                             <span class="badge ${statusClass}">
                                 ${item.status}
                             </span>

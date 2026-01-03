@@ -344,8 +344,8 @@
                         <button type="button" class="btn-submit btn-save-draft" onclick="submitContent('draft')">
                             ${isEdit ? 'Update as Draft' : 'Save as Draft'}
                         </button>
-                        <button type="button" class="btn-submit btn-publish" onclick="submitContent('published')">
-                            ${isEdit ? 'Update & Publish' : 'Publish'}
+                        <button type="button" class="btn-submit btn-publish" onclick="submitContent('Pending')">
+                            ${isEdit ? 'Update & Publish' : 'Update & Publish'}
                         </button>
                     </div>
 
@@ -589,6 +589,8 @@
                     alert("Please enter a video URL.");
                     return;
                 }
+
+                var formattedUrl = convertToEmbedUrl(videoUrl);
                 
                 createHiddenInput('videoSections[0].id', vidId);
                 createHiddenInput('videoSections[0].videoUrl', videoUrl);
@@ -646,6 +648,24 @@
 
             form.submit();
         }
+
+        // Add this helper function to convert any YouTube link to an Embed link
+function convertToEmbedUrl(url) {
+    if (!url) return "";
+    
+    // Regular expression to find the Video ID from various YouTube URL formats
+    // Handles: youtube.com/watch?v=ID, youtu.be/ID, youtube.com/embed/ID
+    var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    var match = url.match(regExp);
+
+    if (match && match[2].length === 11) {
+        // Return the correct embed format
+        return "https://www.youtube.com/embed/" + match[2];
+    } else {
+        // If regex fails, return the original URL (or handle error)
+        return url;
+    }
+}
     </script>
     
 </body>

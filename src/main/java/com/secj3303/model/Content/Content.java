@@ -4,7 +4,6 @@ import javax.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.secj3303.model.Content.ContentProgress;
 
 @Entity
 @Table(name = "CONTENT")
@@ -19,7 +18,7 @@ public class Content {
     private String title;
 
     // --- NEW FIELD ADDED ---
-    @Column(name = "description", length = 500) 
+    @Column(name = "description", length = 500)
     private String description;
 
     @Column(name = "category")
@@ -29,13 +28,11 @@ public class Content {
     private String date;
 
     @Column(name = "status")
-    private String status;      
+    private String status;
 
     @Column(name = "content_type")
     private String type; // Values: "Video", "Article", "Interactive"
 
-   
-  
     @OneToMany(mappedBy = "content", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<VideoSection> videoSections = new ArrayList<>();
 
@@ -45,8 +42,6 @@ public class Content {
     @OneToMany(mappedBy = "content", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<QuizQuestion> quizQuestions = new ArrayList<>();
 
-    // --- FIX FOR 500 ERROR IS HERE ---
-    // This tells Hibernate: "If this Content is deleted, delete all matching ContentProgress rows first"
     @OneToMany(mappedBy = "content", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ContentProgress> contentProgress = new ArrayList<>();
     // ---------------------------------
@@ -65,84 +60,153 @@ public class Content {
     private String author;
 
     @Column(name = "flag_reason")
-private String flagReason;
+    private String flagReason;
 
     // --- Constructors ---
-    public Content() {}
+    public Content() {
+    }
 
-    
     public void addVideoSection(VideoSection video) {
         videoSections.add(video);
         video.setContent(this);
     }
-    
+
     public void removeVideoSection(VideoSection video) {
         videoSections.remove(video);
         video.setContent(null);
     }
-    
+
     public void addArticleSection(ArticleSection section) {
         articleSections.add(section);
         section.setContent(this);
     }
-    
+
     public void addQuizQuestion(QuizQuestion question) {
         quizQuestions.add(question);
         question.setContent(this);
     }
 
     public void setFlagReason(String flagReason) {
-    this.flagReason = flagReason;
-}
+        this.flagReason = flagReason;
+    }
 
     // --- Getters and Setters ---
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getId() {
+        return id;
+    }
 
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     // --- NEW GETTER/SETTER ---
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getDescription() {
+        return description;
+    }
 
-    public String getCategory() { return category; }
-    public void setCategory(String category) { this.category = category; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-    public String getDate() { return date; }
-    public void setDate(String date) { this.date = date; }
+    public String getCategory() {
+        return category;
+    }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
-    public String getType() { return type; }
-    public void setType(String type) { this.type = type; }
+    public String getDate() {
+        return date;
+    }
 
-    public List<VideoSection> getVideoSections() { return videoSections; }
-    public void setVideoSections(List<VideoSection> videoSections) { this.videoSections = videoSections; }
+    public void setDate(String date) {
+        this.date = date;
+    }
 
-    public List<ArticleSection> getArticleSections() { return articleSections; }
-    public void setArticleSections(List<ArticleSection> articleSections) { this.articleSections = articleSections; }
+    public String getStatus() {
+        return status;
+    }
 
-    public List<QuizQuestion> getQuizQuestions() { return quizQuestions; }
-    public void setQuizQuestions(List<QuizQuestion> quizQuestions) { this.quizQuestions = quizQuestions; }
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public List<VideoSection> getVideoSections() {
+        return videoSections;
+    }
+
+    public void setVideoSections(List<VideoSection> videoSections) {
+        this.videoSections = videoSections;
+    }
+
+    public List<ArticleSection> getArticleSections() {
+        return articleSections;
+    }
+
+    public void setArticleSections(List<ArticleSection> articleSections) {
+        this.articleSections = articleSections;
+    }
+
+    public List<QuizQuestion> getQuizQuestions() {
+        return quizQuestions;
+    }
+
+    public void setQuizQuestions(List<QuizQuestion> quizQuestions) {
+        this.quizQuestions = quizQuestions;
+    }
 
     // --- NEW GETTER/SETTER FOR FIX ---
-    public List<ContentProgress> getContentProgress() { return contentProgress; }
-    public void setContentProgress(List<ContentProgress> contentProgress) { this.contentProgress = contentProgress; }
+    public List<ContentProgress> getContentProgress() {
+        return contentProgress;
+    }
+
+    public void setContentProgress(List<ContentProgress> contentProgress) {
+        this.contentProgress = contentProgress;
+    }
     // ---------------------------------
 
-    public String getDifficulty() { return difficulty; }
-    public void setDifficulty(String difficulty) { this.difficulty = difficulty; }
+    public String getDifficulty() {
+        return difficulty;
+    }
 
-    public int getDuration() { return duration; }
-    public void setDuration(int duration) { this.duration = duration; }
+    public void setDifficulty(String difficulty) {
+        this.difficulty = difficulty;
+    }
 
-    public int getPoints() { return points; }
-    public void setPoints(int points) { this.points = points; }
+    public int getDuration() {
+        return duration;
+    }
 
-    // 2. ADD THESE GETTERS AND SETTERS (Crucial!)
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
+    }
+
     public String getAuthor() {
         return author;
     }
@@ -151,7 +215,8 @@ private String flagReason;
         this.author = author;
     }
 
-    // Getter and Setter
-public String getFlagReason() { return flagReason; }
+    public String getFlagReason() {
+        return flagReason;
+    }
 
 }

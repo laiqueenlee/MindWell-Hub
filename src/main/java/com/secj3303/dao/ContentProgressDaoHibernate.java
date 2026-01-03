@@ -47,18 +47,26 @@ public class ContentProgressDaoHibernate implements ContentProgressDao {
 
     @Override
     public Double getUserAverageProgress(int userId) {
-        // Join ContentProgress with Content to check the status
-        String hql = "SELECT AVG(cp.progressPercent) " +
+
+        String sumHql = "SELECT COALESCE(SUM(cp.progressPercent), 0) " +
                 "FROM ContentProgress cp " +
                 "WHERE cp.user.id = :uid " +
-                "AND cp.content.status = 'Approved'"; // <--- Only Approved Content
+                "AND cp.content.status = 'Published'";
 
-        Query<Double> query = sessionFactory.getCurrentSession().createQuery(hql, Double.class);
-        query.setParameter("uid", userId);
+        Query<Long> sumQuery = sessionFactory.getCurrentSession().createQuery(sumHql, Long.class);
+        sumQuery.setParameter("uid", userId);
+        Long totalUserProgress = sumQuery.uniqueResult();
 
-        Double avg = query.uniqueResult();
+        // TOTAL COUNT of approved content existing in the system
+        String countHql = "SELECT COUNT(c) FROM Content c WHERE c.status = 'Published'";
+        Query<Long> countQuery = sessionFactory.getCurrentSession().createQuery(countHql, Long.class);
+        Long totalPublishedContent = countQuery.uniqueResult();
 
-        return (avg != null) ? avg : 0.0;
+        // Calculate the Average
+        if (totalPublishedContent == null || totalPublishedContent == 0) {
+            return 0.0;
+        }
+        return (double) totalUserProgress / totalPublishedContent;
     }
 
     @Override
@@ -68,7 +76,7 @@ public class ContentProgressDaoHibernate implements ContentProgressDao {
         String hql = "SELECT COUNT(cp) FROM ContentProgress cp " +
                 "WHERE cp.user.id = :uid " +
                 "AND cp.progressPercent = 100 " +
-                "AND cp.content.status = 'Approved'";
+                "AND cp.content.status = 'Published'";
 
         Query<Long> query = sessionFactory.getCurrentSession().createQuery(hql, Long.class);
         query.setParameter("uid", userId);
