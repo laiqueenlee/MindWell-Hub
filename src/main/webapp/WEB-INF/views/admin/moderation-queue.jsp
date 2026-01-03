@@ -204,7 +204,7 @@
             <c:if test="${empty moderationItems}">
                 <div style="text-align: center; color: #6b7280; padding: 40px;">
                     <i class="bi bi-check-circle" style="font-size: 48px; color: #10b981; display: block; margin-bottom: 10px;"></i>
-                    <p>All caught up! No published content to review.</p>
+                    <p>All caught up! No pending content to review.</p>
                 </div>
             </c:if>
 
@@ -253,7 +253,7 @@
                 </button>
                 
                 <a href="#" id="modalBtnRemove" class="btn-mq btn-remove" onclick="return confirm('Confirm Removal?')">Remove</a>
-                <a href="#" id="modalBtnApprove" class="btn-mq btn-approve" onclick="return confirm('Confirm Verification?')">Verify</a>
+                <a href="#" id="modalBtnApprove" class="btn-mq btn-approve" onclick="return confirm('Approve this published content?')">Approve</a>
             </div>
         </div>
     </div>

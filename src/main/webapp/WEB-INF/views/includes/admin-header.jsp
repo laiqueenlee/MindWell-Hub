@@ -150,7 +150,7 @@
         <div class="summary-card">
             <div class="info">
                 <div>Total Users</div>
-                <div class="number">${not empty totalUsers ? totalUsers : '1,247'}</div>
+                <div class="number">${not empty totalUsers ? totalUsers : '0'}</div>
                 <div class="percent">+12%</div>
             </div>
             <div class="icon">👤</div> 
@@ -159,7 +159,7 @@
         <div class="summary-card">
             <div class="info">
                 <div>Active Content</div>
-                <div class="number">156</div>
+                <div class="number">${not empty activeContentCount ? activeContentCount : 0}</div>
                 <div class="percent">+8%</div>
             </div>
             <div class="icon">📄</div>

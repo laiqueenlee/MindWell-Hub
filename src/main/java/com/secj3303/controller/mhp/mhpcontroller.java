@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.secj3303.dao.ContentDao;
-// import com.secj3303.model.ContentRepository;
 import com.secj3303.model.Role;
 import com.secj3303.model.User;
 import com.secj3303.model.Content.Content;
@@ -21,7 +20,6 @@ public class mhpcontroller {
 
     private final ContentDao contentDao;
 
-    // 2. Inject it using the Constructor (Matches your AuthController style)
     @Autowired
     public mhpcontroller(ContentDao contentDao) {
         this.contentDao = contentDao;

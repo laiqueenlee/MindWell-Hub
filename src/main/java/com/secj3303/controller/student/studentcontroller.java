@@ -45,7 +45,7 @@ public class studentcontroller {
         model.addAttribute("overallProgress", progressVal);
 
         long completedCount = contentProgressDao.countCompletedContent(loggedInUser.getId());
-        long totalContentCount = contentDao.countByStatus("Approved");
+        long totalContentCount = contentDao.countByStatus("Published");
         String modulesString = completedCount + "/" + totalContentCount;
 
         model.addAttribute("learningModulesCompleted", modulesString);
