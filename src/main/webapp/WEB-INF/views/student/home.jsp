@@ -189,7 +189,7 @@
                         <div class="wellness-details">
                             <div>Engagement <span style="float:right;font-weight:700">85%</span></div>
                             <div>Consistency <span style="float:right;font-weight:700">72%</span></div>
-                            <div>Progress <span style="float:right;font-weight:700">80%</span></div>
+                            <div>Progress <span style="float:right;font-weight:700">${not empty overallProgress ? overallProgress : 0}%</span></div>
                         </div>
                     </div>
 
