@@ -144,8 +144,15 @@
                 <c:when test="${not empty module.videoSections}">
                     <div class="content-card">
                         <div class="video-wrapper">
-                            <iframe src="${module.videoSections[0].videoUrl}" 
-                                    title="YouTube video player" allowfullscreen></iframe>
+                           <iframe 
+       id="videoFrame"
+       src="${module.videoSections[0].videoUrl}" 
+       title="YouTube video player" 
+       frameborder="0" 
+       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+       referrerpolicy="strict-origin-when-cross-origin" 
+       allowfullscreen>
+    </iframe>
                         </div>
                         
                         <div class="video-info">
@@ -288,7 +295,24 @@
 
     window.onload = function() {
         updateProgressUI(dbPercent); // This triggers the bar to fill up correctly
+var iframe = document.getElementById('videoFrame');
+        if (iframe) {
+            var rawUrl = iframe.getAttribute('src');
+            
+            // Regex to find the Video ID from any YouTube format
+            var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            var match = rawUrl.match(regExp);
 
+            if (match && match[2].length === 11) {
+                var videoId = match[2];
+                var embedUrl = "https://www.youtube.com/embed/" + videoId;
+                
+                // Only reload if the URL is actually different
+                if (rawUrl !== embedUrl) {
+                    iframe.setAttribute('src', embedUrl);
+                }
+            }
+        }
         // --- ARTICLE LOGIC ---
         if(contentType === 'Article' && totalSections > 0) {
             if (dbPercent === 100) {

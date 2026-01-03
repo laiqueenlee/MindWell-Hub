@@ -18,14 +18,15 @@ import com.secj3303.dao.ForumPostDao;
 import com.secj3303.dao.ModerationItemDao;
 import com.secj3303.dao.StudentReportDao;
 import com.secj3303.dao.UserDao;
-import com.secj3303.model.Content.Content;
-import com.secj3303.model.User; // Import Content Model
+
+import com.secj3303.model.User;
+import com.secj3303.model.Content.Content; 
 
 @Controller
 @RequestMapping("/admin")
 public class ModerationController {
 
-    private final ContentDao contentDao; // Primary DAO for this controller
+    private final ContentDao contentDao; 
     private final UserDao userDao;
     private final ModerationItemDao moderationItemDao;
     private final ForumPostDao forumPostDao;
@@ -60,7 +61,7 @@ public class ModerationController {
         // RESTORED: Fetch from ContentDao like your old controller
         // Note: If you want to see FLAGGED items too, ensure this method returns them
         // or creates a custom list combining "published" and "Flagged"
-        model.addAttribute("moderationItems", contentDao.findByStatus("published"));
+        model.addAttribute("moderationItems", contentDao.findByStatus("Pending"));
         model.addAttribute("user", loggedInUser);
         
         return "/admin/moderation-queue"; 
@@ -191,9 +192,6 @@ public class ModerationController {
         Content content = contentDao.findById(contentId);
         if (content != null) {
             content.setStatus("Flagged");
-            // IMPORTANT: Your Content entity must have a setFlagReason method.
-            // If it doesn't, you need to add private String flagReason; to your Content.java model
-            // content.setFlagReason(reason); 
             content.setFlagReason(reason);
             contentDao.save(content);
             redirectAttributes.addFlashAttribute("message", "Content flagged successfully.");
@@ -207,7 +205,7 @@ public class ModerationController {
     public String approveContent(@PathVariable("id") int id, RedirectAttributes redirectAttributes) {
         Content content = contentDao.findById(id);
         if (content != null) {
-            content.setStatus("Approved");
+            content.setStatus("Published");
             contentDao.save(content);
             redirectAttributes.addFlashAttribute("message", "Content approved.");
         }
