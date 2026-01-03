@@ -22,13 +22,18 @@ public class ModerationItemDaoHibernate implements ModerationItemDao {
     }
 
     @Override
-    public List<ModerationItem> findPendingItems() {
-        // HQL query to find only items where status is 'PENDING'
-        Query<ModerationItem> query = sessionFactory.getCurrentSession()
-            .createQuery("from ModerationItem where status = :status", ModerationItem.class);
-        query.setParameter("status", "PENDING");
-        return query.getResultList();
-    }
+public List<ModerationItem> findPendingItems() {
+    // OLD QUERY: "from ModerationItem where status = :status"
+    
+    // NEW QUERY: Fetch both 'PENDING' and 'Flagged' items
+    Query<ModerationItem> query = sessionFactory.getCurrentSession()
+        .createQuery("from ModerationItem where status IN (:s1, :s2)", ModerationItem.class);
+    
+    query.setParameter("s1", "PENDING");
+    query.setParameter("s2", "Flagged"); // Keeps flagged items visible
+    
+    return query.getResultList();
+}
 
     @Override
     public ModerationItem findById(int id) {

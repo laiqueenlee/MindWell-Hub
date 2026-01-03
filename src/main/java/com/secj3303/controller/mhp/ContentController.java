@@ -106,6 +106,9 @@ public class ContentController {
 
             contentDao.save(existing);
         } else {
+
+            // 2. SET THE AUTHOR HERE
+            content.setAuthor(loggedInUser.getUsername());
             // --- CREATE NEW RECORD ---
             content.setType(type);
             if (content.getDate() == null || content.getDate().isEmpty()) {

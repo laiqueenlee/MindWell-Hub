@@ -1,10 +1,13 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${isEdit ? 'Edit Content - HealthHub MHP' : 'Create Content - HealthHub MHP'}">Create Content - HealthHub MHP</title>
+    <title>${isEdit ? 'Edit Content - HealthHub MHP' : 'Create Content - HealthHub MHP'}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
@@ -58,11 +61,45 @@
         .btn-icon-action { background: none; border: none; color: #e74c3c; cursor: pointer; font-size: 1rem; }
         .btn-add-option { background: none; border: 1px dashed #00d2d3; color: #00d2d3; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; margin-top: 5px; }
         .btn-add-option:hover { background: #e0fbfb; }
+        /* Add this inside your <style> tag */
+.flag-alert {
+    background-color: #fff5f5;
+    border: 1px solid #feb2b2;
+    border-left: 5px solid #e53e3e;
+    border-radius: 6px;
+    padding: 15px 20px;
+    margin-bottom: 25px;
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+}
+.flag-icon {
+    color: #e53e3e;
+    font-size: 1.2rem;
+    margin-top: 2px;
+}
+.flag-content h4 {
+    color: #c53030;
+    margin-bottom: 5px;
+    font-size: 1rem;
+}
+.flag-content p {
+    color: #2d3748;
+    font-size: 0.95rem;
+    margin-bottom: 5px;
+}
+.flag-content small {
+    color: #718096;
+    font-style: italic;
+}
+
+
+
     </style>
 </head>
 
 <body>
-    <div th:replace="includes/mhp-navbar :: navbar"></div>
+    <jsp:include page="/WEB-INF/views/includes/mhp-navbar.jsp" />
 
     <div class="main-layout">
         <div class="content-column">
@@ -75,43 +112,63 @@
             </div>
 
             <div class="tabs">
-                <button class="tab-btn" th:onclick="|window.location.href='@{/mhp/content}'|">My Content</button>
-                <button class="tab-btn active" th:text="${isEdit ? 'Edit Content' : 'Create New'}">Create New</button>
+                <button class="tab-btn" onclick="window.location.href='${pageContext.request.contextPath}/mhp/content'">My Content</button>
+                <button class="tab-btn active">${isEdit ? 'Edit Content' : 'Create New'}</button>
                 <button class="tab-btn">Analytics</button>
             </div>
 
             <div class="form-card">
-                <div class="form-title" th:text="${isEdit ? 'Edit Content' : 'Create New Content'}">Create New Content</div>
-                <span class="form-subtitle" th:text="${isEdit ? 'Update your existing content details below' : 'Share your expertise with students'}">Subtitle</span>
+                <div class="form-title">${isEdit ? 'Edit Content' : 'Create New Content'}</div>
+                <span class="form-subtitle">${isEdit ? 'Update your existing content details below' : 'Share your expertise with students'}</span>
 
-                <form th:action="@{/mhp/save-content}" method="post" id="createForm" th:object="${content}">
+                <c:if test="${content.status == 'Flagged'}">
+    <div class="flag-alert">
+        <div class="flag-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <div class="flag-content">
+            <h4><i class="fas fa-flag"></i> Content Flagged for Moderation</h4>
+            <p><strong>Moderator Note : </strong>${not empty content.flagReason ? fn:escapeXml(content.flagReason) : 'No specific reason provided.'}</p>
+            <small>Please edit the content to address these issues and click "Update & Publish" to resubmit for review.</small>
+        </div>
+    </div>
+</c:if>
 
-                    <input type="hidden" th:field="*{id}">
-                    <input type="hidden" name="status" id="statusInput" th:value="${content.status != null ? content.status : 'draft'}">
+
+
+                <form action="${pageContext.request.contextPath}/mhp/save-content" method="post" id="createForm">
+                    
+                    <input type="hidden" name="id" value="${content.id}">
+                    <input type="hidden" name="status" id="statusInput" value="${not empty content.status ? content.status : 'draft'}">
 
                     <div class="form-group">
                         <label>Title</label>
-                        <input type="text" th:field="*{title}" placeholder="Enter content title" required>
+                        <input type="text" name="title" value="${fn:escapeXml(content.title)}" placeholder="Enter content title" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Content Description</label>
+                        <textarea name="description" class="short" placeholder="Enter a brief overview of what students will learn..." required>${fn:escapeXml(content.description)}</textarea>
                     </div>
 
                     <div class="form-row">
                         <div class="col-half">
                             <label>Content Type</label>
                             <select name="contentType" id="contentTypeSelect" onchange="toggleContentType()" required>
-                                <option disabled th:selected="${content.type == null}" value="">Select type</option>
-                                <option value="Video" th:selected="${content.type == 'Video'}">Video</option>
-                                <option value="Article" th:selected="${content.type == 'Article'}">Article</option>
-                                <option value="Interactive" th:selected="${content.type == 'Interactive'}">Interactive Quiz</option>
+                                <option disabled ${empty content.type ? 'selected' : ''} value="">Select type</option>
+                                <option value="Video" ${content.type == 'Video' ? 'selected' : ''}>Video</option>
+                                <option value="Article" ${content.type == 'Article' ? 'selected' : ''}>Article</option>
+                                <option value="Interactive" ${content.type == 'Interactive' ? 'selected' : ''}>Interactive Quiz</option>
                             </select>
                         </div>
                         <div class="col-half">
                             <label>Category</label>
-                            <select th:field="*{category}" required>
-                                <option disabled value="" th:selected="${content.category == null}">Select category</option>
-                                <option value="Stress Management">Stress Management</option>
-                                <option value="Mental Health">Mental Health</option>
-                                <option value="Wellness">Wellness</option>
-                                <option value="Self-Care">Self-Care</option>
+                            <select name="category" required>
+                                <option disabled value="" ${empty content.category ? 'selected' : ''}>Select category</option>
+                                <option value="Stress Management" ${content.category == 'Stress Management' ? 'selected' : ''}>Stress Management</option>
+                                <option value="Mental Health" ${content.category == 'Mental Health' ? 'selected' : ''}>Mental Health</option>
+                                <option value="Wellness" ${content.category == 'Wellness' ? 'selected' : ''}>Wellness</option>
+                                <option value="Self-Care" ${content.category == 'Self-Care' ? 'selected' : ''}>Self-Care</option>
                             </select>
                         </div>
                     </div>
@@ -119,20 +176,20 @@
                     <div id="videoSection" class="dynamic-section">
                         <span class="section-label"><i class="fas fa-video"></i> Video Configuration</span>
                         
-                        <input type="hidden" id="videoIdInput" 
-                               th:value="${content.videoSections != null && !content.videoSections.isEmpty() ? content.videoSections[0].id : 0}">
+                        <c:set var="videoSec" value="${(not empty content.videoSections) ? content.videoSections[0] : null}" />
+                        
+                        <input type="hidden" id="videoIdInput" value="${not empty videoSec ? videoSec.id : 0}">
 
                         <div class="form-group">
                             <label>YouTube Embed URL</label>
                             <input type="text" id="videoUrlInput" placeholder="e.g., https://www.youtube.com/embed/VIDEO_ID" 
-                                   th:value="${content.videoSections != null && !content.videoSections.isEmpty() ? content.videoSections[0].videoUrl : ''}">
+                                   value="${not empty videoSec ? videoSec.videoUrl : ''}">
                             <small style="color: #95a5a6; margin-top: 5px; display: block;">Paste the full Embed URL from YouTube</small>
                         </div>
                         <div class="form-group">
                             <label>Video Description</label>
                             <textarea id="mainVideoDescription" name="mainVideoDescription" class="short" 
-                                      placeholder="Enter a brief description for this video..."
-                                      th:text="${content.videoSections != null && !content.videoSections.isEmpty() ? content.videoSections[0].description : ''}"></textarea>
+                                      placeholder="Enter a brief description for this video...">${not empty videoSec ? videoSec.description : ''}</textarea>
                         </div>
                     </div>
 
@@ -142,33 +199,34 @@
                         <div class="form-group">
                             <label>Section 1.0 Content</label>
                             
-                            <input type="hidden" id="articlePage1-id" 
-                                   th:value="${content.articleSections != null && content.articleSections.size() > 0 ? content.articleSections[0].id : 0}">
+                            <c:set var="firstArticle" value="${(not empty content.articleSections) ? content.articleSections[0] : null}" />
+
+                            <input type="hidden" id="articlePage1-id" value="${not empty firstArticle ? firstArticle.id : 0}">
 
                             <input type="text" id="articlePage1-subtitle" placeholder="Section 1.0 Subtitle" 
                                    style="margin-bottom: 10px;"
-                                   th:value="${content.articleSections != null && content.articleSections.size() > 0 ? content.articleSections[0].subtitle : ''}">
-                            <textarea id="articlePage1" class="medium" placeholder="<p>Enter section content here...</p>"
-                                      th:text="${content.articleSections != null && content.articleSections.size() > 0 ? content.articleSections[0].body : ''}"></textarea>
+                                   value="${not empty firstArticle ? firstArticle.subtitle : ''}">
+                            <textarea id="articlePage1" class="medium" placeholder="<p>Enter section content here...</p>">${not empty firstArticle ? firstArticle.body : ''}</textarea>
                         </div>
 
                         <div id="dynamicArticleContainer">
-                            <div th:each="section, stat : ${content.articleSections}" th:if="${stat.index > 0}" 
-                                 class="form-group article-dynamic-block">
-                                 
-                                <input type="hidden" class="article-id" th:value="${section.id}">
-                                 
-                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
-                                    <label th:text="'Section ' + (${stat.index + 1}) + '.0 Content'">Section Content</label>
-                                    <button type="button" class="btn-icon-action" onclick="this.closest('.form-group').remove(); reindexArticleSections()" title="Remove Section">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                                <input type="text" class="article-dynamic-subtitle" th:value="${section.subtitle}" 
-                                       style="margin-bottom: 10px;" 
-                                       th:placeholder="|Section ${stat.index + 1}.0 Subtitle|">
-                                <textarea class="medium article-dynamic-area" th:text="${section.body}"></textarea>
-                            </div>
+                            <c:forEach var="section" items="${content.articleSections}" varStatus="stat">
+                                <c:if test="${stat.index > 0}">
+                                    <div class="form-group article-dynamic-block">
+                                        <input type="hidden" class="article-id" value="${section.id}">
+                                        
+                                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                                            <label>Section ${stat.index + 1}.0 Content</label>
+                                            <button type="button" class="btn-icon-action" onclick="this.closest('.form-group').remove(); reindexArticleSections()" title="Remove Section">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="article-dynamic-subtitle" value="${section.subtitle}" 
+                                               style="margin-bottom: 10px;" placeholder="Section ${stat.index + 1}.0 Subtitle">
+                                        <textarea class="medium article-dynamic-area">${section.body}</textarea>
+                                    </div>
+                                </c:if>
+                            </c:forEach>
                         </div>
 
                         <button type="button" class="btn-add-option" onclick="addArticleSection()">+ Add Section</button>
@@ -176,79 +234,85 @@
 
                     <div id="interactiveSection" class="dynamic-section">
                         <span class="section-label"><i class="fas fa-mouse-pointer"></i> Quiz Configuration</span>
+                        
+                        <c:set var="firstQuestion" value="${(not empty content.quizQuestions) ? content.quizQuestions[0] : null}" />
 
                         <div class="form-group">
                             <label>Study Material / Introduction</label>
-                            <textarea id="interactiveContent" class="medium" placeholder="<h3>Introduction</h3><p>Enter the study material for this quiz...</p>"
-                                      th:text="${content.quizQuestions != null && !content.quizQuestions.isEmpty() ? content.quizQuestions[0].introduction : ''}"></textarea>
+                            <textarea id="interactiveContent" class="medium" placeholder="<h3>Introduction</h3><p>Enter the study material for this quiz...</p>">${not empty firstQuestion ? firstQuestion.introduction : ''}</textarea>
                         </div>
 
                         <div class="question-block" id="q1-block">
                             <label>Question 1</label>
                             
-                            <input type="hidden" id="q1-id" 
-                                   th:value="${content.quizQuestions != null && !content.quizQuestions.isEmpty() ? content.quizQuestions[0].id : 0}">
-                                   
+                            <input type="hidden" id="q1-id" value="${not empty firstQuestion ? firstQuestion.id : 0}">
+                            
                             <input type="text" id="q1-text" placeholder="Enter question text"
-                                   th:value="${content.quizQuestions != null && !content.quizQuestions.isEmpty() ? content.quizQuestions[0].questionText : ''}">
+                                   value="${not empty firstQuestion ? firstQuestion.questionText : ''}">
+                            
                             <div class="options-container" id="q1-options">
-                                <div th:each="option, optStat : ${content.quizQuestions != null && !content.quizQuestions.isEmpty() ? content.quizQuestions[0].options : null}" 
-                                     class="option-row">
-                                    <input type="hidden" class="option-id" th:value="${option.id}">
-                                    
-                                    <input type="radio" name="correct_q1" th:value="${optStat.index}" 
-                                           th:checked="${option.correct}" title="Mark as correct answer">
-                                    <input type="text" th:value="${option.optionText}" 
-                                           th:placeholder="|Option ${optStat.index + 1}|">
-                                    <button type="button" class="btn-icon-action" onclick="removeOption(this)">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                                
-                                <div th:unless="${content.quizQuestions != null && !content.quizQuestions.isEmpty() && content.quizQuestions[0].options != null && !content.quizQuestions[0].options.isEmpty()}" 
-                                     class="option-row">
-                                    <input type="radio" name="correct_q1" value="0" title="Mark as correct answer">
-                                    <input type="text" placeholder="Option 1">
-                                    <button type="button" class="btn-icon-action" onclick="removeOption(this)"><i class="fas fa-times"></i></button>
-                                </div>
-                                <div th:unless="${content.quizQuestions != null && !content.quizQuestions.isEmpty() && content.quizQuestions[0].options != null && content.quizQuestions[0].options.size() > 1}" 
-                                     class="option-row">
-                                    <input type="radio" name="correct_q1" value="1" title="Mark as correct answer">
-                                    <input type="text" placeholder="Option 2">
-                                    <button type="button" class="btn-icon-action" onclick="removeOption(this)"><i class="fas fa-times"></i></button>
-                                </div>
+                                <c:choose>
+                                    <c:when test="${not empty firstQuestion and not empty firstQuestion.options}">
+                                        <c:forEach var="option" items="${firstQuestion.options}" varStatus="optStat">
+                                            <div class="option-row">
+                                                <input type="hidden" class="option-id" value="${option.id}">
+                                                <input type="radio" name="correct_q1" value="${optStat.index}" 
+                                                       ${option.correct ? 'checked' : ''} title="Mark as correct answer">
+                                                <input type="text" value="${option.optionText}" placeholder="Option ${optStat.index + 1}">
+                                                <button type="button" class="btn-icon-action" onclick="removeOption(this)">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                        </c:forEach>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="option-row">
+                                            <input type="radio" name="correct_q1" value="0" title="Mark as correct answer">
+                                            <input type="text" placeholder="Option 1">
+                                            <button type="button" class="btn-icon-action" onclick="removeOption(this)"><i class="fas fa-times"></i></button>
+                                        </div>
+                                        <div class="option-row">
+                                            <input type="radio" name="correct_q1" value="1" title="Mark as correct answer">
+                                            <input type="text" placeholder="Option 2">
+                                            <button type="button" class="btn-icon-action" onclick="removeOption(this)"><i class="fas fa-times"></i></button>
+                                        </div>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                             <button type="button" class="btn-add-option" onclick="addOption('q1')">+ Add Answer Option</button>
                         </div>
 
                         <div id="dynamicQuizContainer">
-                            <div th:each="question, qStat : ${content.quizQuestions}" th:if="${qStat.index > 0}" 
-                                 class="question-block dynamic-question-block">
-                                 
-                                <input type="hidden" class="question-id" th:value="${question.id}">
-                                
-                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                                    <label style="margin:0;" th:text="'Question ' + (${qStat.index + 1})">Question</label>
-                                    <button type="button" class="btn-icon-action" onclick="this.closest('.question-block').remove(); reindexQuestions();" title="Remove Question">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                                <input type="text" th:value="${question.questionText}" th:id="|q${qStat.index + 1}-text|" placeholder="Enter question text">
-                                <div class="options-container" th:id="|q${qStat.index + 1}-options|">
-                                    <div th:each="option, optStat : ${question.options}" class="option-row">
-                                        <input type="hidden" class="option-id" th:value="${option.id}">
+                            <c:forEach var="question" items="${content.quizQuestions}" varStatus="qStat">
+                                <c:if test="${qStat.index > 0}">
+                                    <div class="question-block dynamic-question-block">
+                                        <input type="hidden" class="question-id" value="${question.id}">
                                         
-                                        <input type="radio" th:name="|correct_q${qStat.index + 1}|" 
-                                               th:value="${optStat.index}" th:checked="${option.correct}">
-                                        <input type="text" th:value="${option.optionText}" 
-                                               th:placeholder="|Option ${optStat.index + 1}|">
-                                        <button type="button" class="btn-icon-action" onclick="removeOption(this)">
-                                            <i class="fas fa-times"></i>
-                                        </button>
+                                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                                            <label style="margin:0;">Question ${qStat.index + 1}</label>
+                                            <button type="button" class="btn-icon-action" onclick="this.closest('.question-block').remove(); reindexQuestions();" title="Remove Question">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" value="${question.questionText}" id="q${qStat.index + 1}-text" placeholder="Enter question text">
+                                        
+                                        <div class="options-container" id="q${qStat.index + 1}-options">
+                                            <c:forEach var="option" items="${question.options}" varStatus="optStat">
+                                                <div class="option-row">
+                                                    <input type="hidden" class="option-id" value="${option.id}">
+                                                    <input type="radio" name="correct_q${qStat.index + 1}" 
+                                                           value="${optStat.index}" ${option.correct ? 'checked' : ''}>
+                                                    <input type="text" value="${option.optionText}" placeholder="Option ${optStat.index + 1}">
+                                                    <button type="button" class="btn-icon-action" onclick="removeOption(this)">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </div>
+                                            </c:forEach>
+                                        </div>
+                                        <button type="button" class="btn-add-option" onclick="addOption('q${qStat.index + 1}')">+ Add Answer Option</button>
                                     </div>
-                                </div>
-                                <button type="button" class="btn-add-option" th:onclick="|addOption('q${qStat.index + 1}')|">+ Add Answer Option</button>
-                            </div>
+                                </c:if>
+                            </c:forEach>
                         </div>
 
                         <button type="button" class="btn-add-option" onclick="addQuestion()">+ Add Question</button>
@@ -257,33 +321,31 @@
                     <div class="form-row">
                         <div class="col-third">
                             <label>Difficulty Level</label>
-                            <select th:field="*{difficulty}">
-                                <option disabled value="" th:selected="${content.difficulty == null}">Select level</option>
-                                <option value="Beginner">Beginner</option>
-                                <option value="Intermediate">Intermediate</option>
-                                <option value="Advanced">Advanced</option>
+                            <select name="difficulty">
+                                <option disabled value="" ${empty content.difficulty ? 'selected' : ''}>Select level</option>
+                                <option value="Beginner" ${content.difficulty == 'Beginner' ? 'selected' : ''}>Beginner</option>
+                                <option value="Intermediate" ${content.difficulty == 'Intermediate' ? 'selected' : ''}>Intermediate</option>
+                                <option value="Advanced" ${content.difficulty == 'Advanced' ? 'selected' : ''}>Advanced</option>
                             </select>
                         </div>
 
                         <div class="col-third" id="durationGroup">
                             <label>Duration (minutes)</label>
-                            <input type="number" th:field="*{duration}">
+                            <input type="number" name="duration" value="${content.duration}">
                         </div>
 
                         <div class="col-third">
                             <label>Points</label>
-                            <input type="number" th:field="*{points}">
+                            <input type="number" name="points" value="${content.points}">
                         </div>
                     </div>
 
                     <div class="form-actions">
-                        <button type="button" class="btn-submit btn-save-draft" onclick="submitContent('draft')"
-                                th:text="${isEdit ? 'Update as Draft' : 'Save as Draft'}">
-                            Save as Draft
+                        <button type="button" class="btn-submit btn-save-draft" onclick="submitContent('draft')">
+                            ${isEdit ? 'Update as Draft' : 'Save as Draft'}
                         </button>
-                        <button type="button" class="btn-submit btn-publish" onclick="submitContent('published')"
-                                th:text="${isEdit ? 'Update & Publish' : 'Publish'}">
-                            Publish
+                        <button type="button" class="btn-submit btn-publish" onclick="submitContent('published')">
+                            ${isEdit ? 'Update & Publish' : 'Publish'}
                         </button>
                     </div>
 
@@ -311,7 +373,7 @@
                 toggleContentType();
             } else {
                 for(var i=0; i<select.options.length; i++) {
-                    if(select.options[i].getAttribute("selected") !== null) {
+                    if(select.options[i].selected) { // Changed for JSP: standard DOM property
                         select.value = select.options[i].value;
                         toggleContentType();
                         break;
@@ -350,18 +412,18 @@
         // ==========================================
         function addArticleSection() {
             var container = document.getElementById('dynamicArticleContainer');
-            var dynamicCount = container.querySelectorAll('.article-dynamic-block').length;
-            var existingThymeleafSections = container.querySelectorAll('.article-dynamic-block[th\\:each]').length;
-            var nextSectionNum = dynamicCount + 1 + existingThymeleafSections;
+            // Simplified logic for JSP: just count the total blocks
+            var totalSections = container.querySelectorAll('.article-dynamic-block').length;
+            var nextSectionNum = totalSections + 2; // +1 for 0-index, +1 because static is Sec 1
 
             var div = document.createElement('div');
             div.className = 'form-group article-dynamic-block';
             div.innerHTML = `
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
-                    <label>Section ${nextSectionNum}.0 Content</label>
+                    <label>Section ` + nextSectionNum + `.0 Content</label>
                     <button type="button" class="btn-icon-action" onclick="this.closest('.form-group').remove(); reindexArticleSections()" title="Remove Section"><i class="fas fa-times"></i></button>
                 </div>
-                <input type="text" class="article-dynamic-subtitle" placeholder="Section ${nextSectionNum}.0 Subtitle" style="margin-bottom: 10px;">
+                <input type="text" class="article-dynamic-subtitle" placeholder="Section ` + nextSectionNum + `.0 Subtitle" style="margin-bottom: 10px;">
                 <textarea class="medium article-dynamic-area" placeholder="<p>Enter section content here...</p>"></textarea>
             `;
             container.appendChild(div);
@@ -369,14 +431,14 @@
 
         function reindexArticleSections() {
             var container = document.getElementById('dynamicArticleContainer');
-            var groups = container.querySelectorAll('.article-dynamic-block:not([th\\:each])');
+            var groups = container.querySelectorAll('.article-dynamic-block');
             groups.forEach((group, index) => {
                 var num = index + 2; 
                 var label = group.querySelector('label');
                 var subtitle = group.querySelector('.article-dynamic-subtitle');
 
-                if(label) label.innerText = `Section ${num}.0 Content`;
-                if(subtitle) subtitle.placeholder = `Section ${num}.0 Subtitle`;
+                if(label) label.innerText = `Section ` + num + `.0 Content`;
+                if(subtitle) subtitle.placeholder = `Section ` + num + `.0 Subtitle`;
             });
         }
 
@@ -385,9 +447,9 @@
         // ==========================================
         function addQuestion() {
             var container = document.getElementById('dynamicQuizContainer');
-            var currentDynamicCount = container.querySelectorAll('.dynamic-question-block:not([th\\:each])').length;
-            var existingThymeleafQuestions = container.querySelectorAll('.dynamic-question-block[th\\:each]').length;
-            var qNum = currentDynamicCount + existingThymeleafQuestions + 2;
+            // Simplified logic for JSP: count total blocks
+            var currentDynamicCount = container.querySelectorAll('.dynamic-question-block').length;
+            var qNum = currentDynamicCount + 2; // +1 for existing static q1, +1 for new one
             var uniqueId = 'dq_' + Date.now();
 
             var div = document.createElement('div');
@@ -395,33 +457,32 @@
             div.id = uniqueId + '-block';
             div.innerHTML = `
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                    <label style="margin:0;">Question ${qNum}</label>
+                    <label style="margin:0;">Question ` + qNum + `</label>
                     <button type="button" class="btn-icon-action" onclick="this.closest('.question-block').remove(); reindexQuestions();" title="Remove Question"><i class="fas fa-times"></i></button>
                 </div>
-                <input type="text" id="${uniqueId}-text" placeholder="Enter question text">
-                <div class="options-container" id="${uniqueId}-options">
+                <input type="text" id="` + uniqueId + `-text" placeholder="Enter question text">
+                <div class="options-container" id="` + uniqueId + `-options">
                     <div class="option-row">
-                        <input type="radio" name="correct_${uniqueId}" value="0">
+                        <input type="radio" name="correct_` + uniqueId + `" value="0">
                         <input type="text" placeholder="Option 1">
                         <button type="button" class="btn-icon-action" onclick="removeOption(this)"><i class="fas fa-times"></i></button>
                     </div>
                     <div class="option-row">
-                        <input type="radio" name="correct_${uniqueId}" value="1">
+                        <input type="radio" name="correct_` + uniqueId + `" value="1">
                         <input type="text" placeholder="Option 2">
                         <button type="button" class="btn-icon-action" onclick="removeOption(this)"><i class="fas fa-times"></i></button>
                     </div>
                 </div>
-                <button type="button" class="btn-add-option" onclick="addOption('${uniqueId}')">+ Add Answer Option</button>
+                <button type="button" class="btn-add-option" onclick="addOption('` + uniqueId + `')">+ Add Answer Option</button>
             `;
             container.appendChild(div);
         }
 
         function reindexQuestions() {
             var container = document.getElementById('dynamicQuizContainer');
-            var blocks = container.querySelectorAll('.dynamic-question-block:not([th\\:each])');
+            var blocks = container.querySelectorAll('.dynamic-question-block');
             blocks.forEach((block, index) => {
-                var existingThymeleafQuestions = container.querySelectorAll('.dynamic-question-block[th\\:each]').length;
-                var num = index + existingThymeleafQuestions + 2;
+                var num = index + 2;
                 var label = block.querySelector('label');
                 if(label) label.innerText = "Question " + num;
             });
@@ -434,8 +495,8 @@
             var div = document.createElement('div');
             div.className = 'option-row';
             div.innerHTML = `
-                <input type="radio" name="correct_${qId}" value="${count}">
-                <input type="text" placeholder="Option ${count + 1}">
+                <input type="radio" name="correct_` + qId + `" value="` + count + `">
+                <input type="text" placeholder="Option ` + (count + 1) + `">
                 <button type="button" class="btn-icon-action" onclick="removeOption(this)"><i class="fas fa-times"></i></button>
             `;
             container.appendChild(div);
@@ -475,7 +536,6 @@
             var type = document.getElementById('contentTypeSelect').value;
             var form = document.getElementById('createForm');
 
-            // Helper to create hidden inputs
             function createHiddenInput(name, value) {
                 var input = document.createElement('input');
                 input.type = 'hidden';
@@ -486,7 +546,7 @@
             }
 
             // Clean up old generated inputs
-            var oldInputs = document.querySelectorAll('.generated-input, .generated-article-input');
+            var oldInputs = document.querySelectorAll('.generated-input');
             oldInputs.forEach(el => el.remove());
 
             // --- ARTICLE LOGIC ---
@@ -556,7 +616,6 @@
                     var optionRows = container.querySelectorAll('.option-row');
                     
                     optionRows.forEach((row, oIndex) => {
-                        // Find option ID input if it exists
                         var optIdInput = row.querySelector('.option-id');
                         var optId = optIdInput ? optIdInput.value : 0;
 
@@ -581,7 +640,6 @@
                 dynamicBlocks.forEach(function(block) {
                     var idInput = block.querySelector('.question-id');
                     var qId = idInput ? idInput.value : 0;
-                    
                     processQuizBlock(block, null, qId);
                 });
             }
