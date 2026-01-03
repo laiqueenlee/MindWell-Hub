@@ -7,4 +7,8 @@ public interface ContentProgressDao {
     void saveOrUpdate(ContentProgress progress);
 
     public Double getAverageRating(int contentId);
+
+    Double getUserAverageProgress(int userId);
+
+    long countCompletedContent(int userId);
 }
