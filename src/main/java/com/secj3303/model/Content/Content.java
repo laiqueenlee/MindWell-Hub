@@ -17,6 +17,10 @@ public class Content {
     @Column(name = "title", nullable = false)
     private String title;
 
+    // --- NEW FIELD ADDED ---
+    @Column(name = "description", length = 500)
+    private String description;
+
     @Column(name = "category")
     private String category;
 
@@ -24,13 +28,11 @@ public class Content {
     private String date;
 
     @Column(name = "status")
-    private String status;      
+    private String status;
 
     @Column(name = "content_type")
     private String type; // Values: "Video", "Article", "Interactive"
 
-   
-  
     @OneToMany(mappedBy = "content", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<VideoSection> videoSections = new ArrayList<>();
 
@@ -39,6 +41,10 @@ public class Content {
 
     @OneToMany(mappedBy = "content", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<QuizQuestion> quizQuestions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "content", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<ContentProgress> contentProgress = new ArrayList<>();
+    // ---------------------------------
 
     @Column(name = "difficulty")
     private String difficulty;
@@ -49,65 +55,168 @@ public class Content {
     @Column(name = "points")
     private int points;
 
-    // --- Constructors ---
-    public Content() {}
+    // 1. ADD THIS FIELD
+    @Column(name = "author")
+    private String author;
 
-    
+    @Column(name = "flag_reason")
+    private String flagReason;
+
+    // --- Constructors ---
+    public Content() {
+    }
+
     public void addVideoSection(VideoSection video) {
         videoSections.add(video);
         video.setContent(this);
     }
-    
+
     public void removeVideoSection(VideoSection video) {
         videoSections.remove(video);
         video.setContent(null);
     }
-    
+
     public void addArticleSection(ArticleSection section) {
         articleSections.add(section);
         section.setContent(this);
     }
-    
+
     public void addQuizQuestion(QuizQuestion question) {
         quizQuestions.add(question);
         question.setContent(this);
     }
 
+    public void setFlagReason(String flagReason) {
+        this.flagReason = flagReason;
+    }
+
     // --- Getters and Setters ---
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getId() {
+        return id;
+    }
 
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public String getCategory() { return category; }
-    public void setCategory(String category) { this.category = category; }
+    public String getTitle() {
+        return title;
+    }
 
-    public String getDate() { return date; }
-    public void setDate(String date) { this.date = date; }
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    // --- NEW GETTER/SETTER ---
+    public String getDescription() {
+        return description;
+    }
 
-    public String getType() { return type; }
-    public void setType(String type) { this.type = type; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-    public List<VideoSection> getVideoSections() { return videoSections; }
-    public void setVideoSections(List<VideoSection> videoSections) { this.videoSections = videoSections; }
+    public String getCategory() {
+        return category;
+    }
 
-    public List<ArticleSection> getArticleSections() { return articleSections; }
-    public void setArticleSections(List<ArticleSection> articleSections) { this.articleSections = articleSections; }
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
-    public List<QuizQuestion> getQuizQuestions() { return quizQuestions; }
-    public void setQuizQuestions(List<QuizQuestion> quizQuestions) { this.quizQuestions = quizQuestions; }
+    public String getDate() {
+        return date;
+    }
 
-    public String getDifficulty() { return difficulty; }
-    public void setDifficulty(String difficulty) { this.difficulty = difficulty; }
+    public void setDate(String date) {
+        this.date = date;
+    }
 
-    public int getDuration() { return duration; }
-    public void setDuration(int duration) { this.duration = duration; }
+    public String getStatus() {
+        return status;
+    }
 
-    public int getPoints() { return points; }
-    public void setPoints(int points) { this.points = points; }
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public List<VideoSection> getVideoSections() {
+        return videoSections;
+    }
+
+    public void setVideoSections(List<VideoSection> videoSections) {
+        this.videoSections = videoSections;
+    }
+
+    public List<ArticleSection> getArticleSections() {
+        return articleSections;
+    }
+
+    public void setArticleSections(List<ArticleSection> articleSections) {
+        this.articleSections = articleSections;
+    }
+
+    public List<QuizQuestion> getQuizQuestions() {
+        return quizQuestions;
+    }
+
+    public void setQuizQuestions(List<QuizQuestion> quizQuestions) {
+        this.quizQuestions = quizQuestions;
+    }
+
+    // --- NEW GETTER/SETTER FOR FIX ---
+    public List<ContentProgress> getContentProgress() {
+        return contentProgress;
+    }
+
+    public void setContentProgress(List<ContentProgress> contentProgress) {
+        this.contentProgress = contentProgress;
+    }
+    // ---------------------------------
+
+    public String getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(String difficulty) {
+        this.difficulty = difficulty;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getFlagReason() {
+        return flagReason;
+    }
+
 }

@@ -1,5 +1,6 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,45 +40,82 @@
             margin-bottom: 10px;
             letter-spacing: 0.5px;
         }
+        .type-Article { background-color: #e0f2fe; color: #0284c7; }
+        .type-Video { background-color: #fce7f3; color: #db2777; }
+        .type-Interactive { background-color: #dcfce7; color: #16a34a; }
+        .type-default { background-color: #f3f4f6; color: #4b5563; }
 
-        .type-Article { background-color: #e0f2fe; color: #0284c7; } /* Blue */
-        .type-Video { background-color: #fce7f3; color: #db2777; } /* Pink */
-        .type-Interactive { background-color: #dcfce7; color: #16a34a; } /* Green */
-        .type-default { background-color: #f3f4f6; color: #4b5563; } /* Grey fallback */
-
+        /* Add these styles for the mini progress bar */
+        .progress-mini-wrapper { margin-bottom: 15px; }
+        .progress-header { display: flex; justify-content: space-between; font-size: 0.8rem; color: #95a5a6; margin-bottom: 5px; font-weight: 600; }
+        .progress-track-mini { width: 100%; height: 6px; background-color: #f1f2f6; border-radius: 3px; overflow: hidden; }
+        .progress-fill-mini { height: 100%; background-color: var(--teal); border-radius: 3px; transition: width 0.3s ease; }
     </style>
 </head>
 <body>
     <div class="container">
-        <a href="${pageContext.request.contextPath}/student/home" class="btn-ghost"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+        <a href="${pageContext.request.contextPath}/student/home" class="btn-ghost">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+        
         <div class="header">
             <h1>Learning Modules</h1>
             <p>Self-paced resources to support your mental well-being.</p>
         </div>
-        <div class="modules-grid">
-            <c:forEach var="module" items="${modules}">
-                <div class="module-card">
-                    <div class="card-top">
-                        <div class="icon-box"><i class="${module.iconClass}"></i></div>
+
+        <c:if test="${empty modules}">
+            <div style="text-align:center; padding: 20px; color:#777;">
+                <p>No learning modules are currently available.</p>
+            </div>
+        </c:if>
+
+        <c:if test="${not empty modules}">
+            <div class="modules-grid">
+                <c:forEach var="module" items="${modules}">
+                    <div class="module-card">
+                        <div class="card-top">
+                            <div class="icon-box">
+                                <c:choose>
+                                    <c:when test="${module.type == 'Article'}">
+                                        <i class="fas fa-book-open"></i>
+                                    </c:when>
+                                    <c:when test="${module.type == 'Video'}">
+                                        <i class="fas fa-video"></i>
+                                    </c:when>
+                                    <c:when test="${module.type == 'Interactive'}">
+                                        <i class="fas fa-hand-pointer"></i>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <i class="fas fa-shapes"></i>
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
+                            
+                            <div style="display: flex; gap: 8px; align-items: flex-start;">
+                                <span class="duration-badge" style="background-color: #dcfce7; color: #166534; border-color: #bbf7d0;">
+                                    <i class="fas fa-chart-line"></i> 
+                                    <span>${progressMap[module.id] != null ? progressMap[module.id] : 0}%</span>
+                                </span>
+
+                                <c:if test="${module.type != 'Article' && module.type != 'Interactive'}">
+                                    <span class="duration-badge">
+                                        <i class="far fa-clock"></i> <span>${module.duration} min</span>
+                                    </span>
+                                </c:if>
+                            </div>
+                        </div>
                         
-                        <!-- Logic: Hide duration if Article OR Interactive -->
-                        <c:if test="${module.type ne 'Article' && module.type ne 'Interactive'}">
-                            <span class="duration-badge"><i class="far fa-clock"></i> ${module.duration}</span>
-                        </c:if>
-                    </div>
-                    
-                    <div class="card-content">
-                        <!-- Type Badge -->
-                        <span class="type-badge type-${module.type}"><c:out value="${module.type}"/></span>
+                        <div class="card-content">
+                            <span class="type-badge type-${module.type}">${module.type}</span>
+                            <h3>${module.title}</h3>
+                            <p>${module.description}</p>
+                        </div>
                         
-                        <h3><c:out value="${module.title}"/></h3>
-                        <p><c:out value="${module.description}"/></p>
+                        <a href="${pageContext.request.contextPath}/content/view/${module.id}" class="start-btn">Start Module</a>
                     </div>
-                    
-                    <a href="${pageContext.request.contextPath}${module.link}" class="start-btn">Start Module</a>
-                </div>
-            </c:forEach>
-        </div>
+                </c:forEach>
+            </div>
+        </c:if>
     </div>
 </body>
 </html>
