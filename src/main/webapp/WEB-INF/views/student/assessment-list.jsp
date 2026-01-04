@@ -245,6 +245,11 @@
     <div class="header">
         <h1>Self-Assessment Tools</h1>
         <p>Choose an assessment to check in with your mental health and get personalized feedback</p>
+        <div style="margin-top: 20px;">
+            <a href="${pageContext.request.contextPath}/student/assessment/history" class="btn btn-primary">
+                <i class="fas fa-history"></i> View Assessment History
+            </a>
+        </div>
     </div>
 
     <div class="info-card">

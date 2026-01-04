@@ -2,6 +2,7 @@ package com.secj3303.controller.student;
 
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,13 +10,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.secj3303.dao.AssessmentDao;
+import com.secj3303.model.Assessment;
 import com.secj3303.model.AssessmentResult;
 import com.secj3303.model.AssessmentService;
 import com.secj3303.model.User;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/student/assessment")
 public class AssessmentController {
+
+    @Autowired
+    private AssessmentDao assessmentDao;
 
     // --- ASSESSMENT LISTING PAGE (GET) ---
     @GetMapping("/")
@@ -139,6 +147,20 @@ public class AssessmentController {
 
             AssessmentResult result = AssessmentService.calculateResult(assessmentType, answers);
 
+            // Create Assessment object and save to database
+            Assessment assessment = new Assessment(
+                loggedInUser.getUsername(),
+                assessmentType,
+                result.getOverallScore(),
+                result.getCategory(),
+                result.getFeedback()
+            );
+            assessment.setRecommendations(result.getRecommendedActions());
+            
+            // Save to database
+            assessmentDao.save(assessment);
+            System.out.println("[AssessmentController] Saved assessment to database: ID=" + assessment.getAssessmentId());
+
             // Add to model
             model.addAttribute("user", loggedInUser);
             model.addAttribute("assessmentType", assessmentType);
@@ -188,5 +210,35 @@ public class AssessmentController {
         model.addAttribute("metrics", result.getMetrics());
 
         return "student/assessment-result";
+    }
+    
+    // --- VIEW ASSESSMENT HISTORY (GET) ---
+    @GetMapping("/history")
+    public String viewAssessmentHistory(
+            @RequestParam(value = "type", required = false) String assessmentType,
+            Model model, 
+            HttpSession session) {
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        
+        if (loggedInUser == null) {
+            return "redirect:/auth/login";
+        }
+
+        List<Assessment> assessments;
+        
+        if (assessmentType != null && !assessmentType.isEmpty()) {
+            // Filter by type
+            assessments = assessmentDao.findByUsernameAndType(loggedInUser.getUsername(), assessmentType);
+            model.addAttribute("selectedType", assessmentType);
+        } else {
+            // All assessments
+            assessments = assessmentDao.findByUsername(loggedInUser.getUsername());
+            model.addAttribute("selectedType", "all");
+        }
+
+        model.addAttribute("user", loggedInUser);
+        model.addAttribute("assessments", assessments);
+        
+        return "student/assessment-history"; // => /WEB-INF/views/student/assessment-history.jsp
     }
 }
