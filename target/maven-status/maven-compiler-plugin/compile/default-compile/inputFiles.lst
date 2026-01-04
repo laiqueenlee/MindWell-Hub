@@ -1,23 +1,51 @@
-C:\Users\HP\Documents\UTM\syllabus\IP\Lab Proj P2\projectIP_v2_6_12\projectIP_v2\src\main\java\com\secj3303\model\ChatbotModel.java
-C:\Users\HP\Documents\UTM\syllabus\IP\Lab Proj P2\projectIP_v2_6_12\projectIP_v2\src\main\java\com\secj3303\controller\AuthController.java
-C:\Users\HP\Documents\UTM\syllabus\IP\Lab Proj P2\projectIP_v2_6_12\projectIP_v2\src\main\java\com\secj3303\controller\student\studentcontroller.java
-C:\Users\HP\Documents\UTM\syllabus\IP\Lab Proj P2\projectIP_v2_6_12\projectIP_v2\src\main\java\com\secj3303\controller\VirtualSesController.java
-C:\Users\HP\Documents\UTM\syllabus\IP\Lab Proj P2\projectIP_v2_6_12\projectIP_v2\src\main\java\com\secj3303\model\StudentDashboard.java
-C:\Users\HP\Documents\UTM\syllabus\IP\Lab Proj P2\projectIP_v2_6_12\projectIP_v2\src\main\java\com\secj3303\controller\EducationController.java
-C:\Users\HP\Documents\UTM\syllabus\IP\Lab Proj P2\projectIP_v2_6_12\projectIP_v2\src\main\java\com\secj3303\controller\HomeController.java
-C:\Users\HP\Documents\UTM\syllabus\IP\Lab Proj P2\projectIP_v2_6_12\projectIP_v2\src\main\java\com\secj3303\model\VirtualSession.java
-C:\Users\HP\Documents\UTM\syllabus\IP\Lab Proj P2\projectIP_v2_6_12\projectIP_v2\src\main\java\com\secj3303\model\ContentRepository.java
-C:\Users\HP\Documents\UTM\syllabus\IP\Lab Proj P2\projectIP_v2_6_12\projectIP_v2\src\main\java\com\secj3303\model\Assessment.java
-C:\Users\HP\Documents\UTM\syllabus\IP\Lab Proj P2\projectIP_v2_6_12\projectIP_v2\src\main\java\com\secj3303\controller\student\AssessmentController.java
-C:\Users\HP\Documents\UTM\syllabus\IP\Lab Proj P2\projectIP_v2_6_12\projectIP_v2\src\main\java\com\secj3303\model\AssessmentService.java
-C:\Users\HP\Documents\UTM\syllabus\IP\Lab Proj P2\projectIP_v2_6_12\projectIP_v2\src\main\java\com\secj3303\controller\ForumController.java
-C:\Users\HP\Documents\UTM\syllabus\IP\Lab Proj P2\projectIP_v2_6_12\projectIP_v2\src\main\java\com\secj3303\model\Content.java
-C:\Users\HP\Documents\UTM\syllabus\IP\Lab Proj P2\projectIP_v2_6_12\projectIP_v2\src\main\java\com\secj3303\model\UserRepository.java
-C:\Users\HP\Documents\UTM\syllabus\IP\Lab Proj P2\projectIP_v2_6_12\projectIP_v2\src\main\java\com\secj3303\controller\mhp\mhpcontroller.java
-C:\Users\HP\Documents\UTM\syllabus\IP\Lab Proj P2\projectIP_v2_6_12\projectIP_v2\src\main\java\com\secj3303\model\EducationalModule.java
-C:\Users\HP\Documents\UTM\syllabus\IP\Lab Proj P2\projectIP_v2_6_12\projectIP_v2\src\main\java\com\secj3303\model\Role.java
-C:\Users\HP\Documents\UTM\syllabus\IP\Lab Proj P2\projectIP_v2_6_12\projectIP_v2\src\main\java\com\secj3303\model\User.java
-C:\Users\HP\Documents\UTM\syllabus\IP\Lab Proj P2\projectIP_v2_6_12\projectIP_v2\src\main\java\com\secj3303\model\MhpSlotRepository.java
-C:\Users\HP\Documents\UTM\syllabus\IP\Lab Proj P2\projectIP_v2_6_12\projectIP_v2\src\main\java\com\secj3303\model\VirtualSessionRepository.java
-C:\Users\HP\Documents\UTM\syllabus\IP\Lab Proj P2\projectIP_v2_6_12\projectIP_v2\src\main\java\com\secj3303\controller\admin\adminController.java
-C:\Users\HP\Documents\UTM\syllabus\IP\Lab Proj P2\projectIP_v2_6_12\projectIP_v2\src\main\java\com\secj3303\model\AssessmentResult.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\model\ForumPost.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\controller\HomeController.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\model\User.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\dao\MhpAvailabilityDaoHibernate.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\controller\admin\ModerationController.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\dao\StudentReportDao.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\model\Content\ContentProgress.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\model\Content\QuizOption.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\model\ForumPostLike.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\controller\student\EducationController.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\model\StudentDashboard.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\dao\MhpAvailabilityDao.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\controller\VirtualSesController.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\dao\ContentDaoHibernate.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\model\Role.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\controller\mhp\ContentController.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\model\AssessmentService.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\model\MhpSlotRepository.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\controller\AuthController.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\dao\ModerationItemDaoHibernate.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\model\ForumReply.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\model\Content\VideoSection.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\model\Report\StudentReport.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\dao\ContentProgressDao.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\dao\VirtualSessionDaoHibernate.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\dao\ForumPostLikeDao.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\model\Assessment.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\model\Content\QuizQuestion.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\model\AssessmentResult.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\dao\UserDao.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\dao\ContentDao.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\dao\ContentProgressDaoHibernate.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\controller\student\studentcontroller.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\dao\ModerationItemDao.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\model\VirtualSession.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\controller\admin\admincontroller.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\model\UserRepository.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\model\Content\ArticleSection.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\model\Content\ModerationItem.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\dao\ForumPostDao.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\controller\student\AssessmentController.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\controller\mhp\mhpcontroller.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\model\Content\Content.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\dao\ForumReplyDao.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\dao\VirtualSessionDao.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\model\VirtualSessionRepository.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\dao\UserDaoHibernate.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\config\SecurityConfig.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\controller\student\StudentContentController.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\controller\ForumController.java
+C:\Users\HP\Documents\UTM\syllabus\IP\Project P3\projectIP_v2\src\main\java\com\secj3303\model\MhpAvailability.java

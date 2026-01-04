@@ -13,7 +13,7 @@
     .user-info{display:flex;align-items:center;gap:12px;padding:8px 16px;background:#f9fafb;border-radius:6px}
     .user-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#5eead4 0%,#22d3ee 100%);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600}
 </style>
-<nav class="navbar">
+<nav class="navbar"> 
     <div class="navbar-container">
         <a href="${pageContext.request.contextPath}/student/home" class="navbar-brand">MindWell</a>
         <ul class="navbar-menu">

@@ -29,7 +29,7 @@ public class AuthController {
     @GetMapping("/login")
     public String showLoginPage(Model model) {
         model.addAttribute("roles", Role.values());
-        return "/auth/login";    // => /WEB-INF/views/login.jsp
+        return "/auth/login";    // => /WEB-INF/views/login.jsp  
     }
 
     // --- LOGIN PROCESS (POST) ---
@@ -45,7 +45,7 @@ public class AuthController {
 
         if (user == null || !user.getPassword().equals(password)) {
             model.addAttribute("error", "Invalid username or password");
-            return "/auth/login";
+            return "/auth/login";                               
         }
 
         session.setAttribute("loggedInUser", user);

@@ -1,28 +1,31 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${isEdit ? 'Edit Content' : 'Create Content'} - HealthHub MHP</title>
+    <title>${isEdit ? 'Edit Content - HealthHub MHP' : 'Create Content - HealthHub MHP'}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
+
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #ffffff; color: #333; padding: 40px; }
-        .main-layout { display: flex; gap: 40px; max-width: 1400px; margin: 0 auto; }
+        body { background-color: #ffffff; color: #333; }
+        .main-layout { display: flex; gap: 40px; max-width: 1400px; margin: 0 auto; padding: 40px; }
         .content-column { flex: 3; }
         .sidebar-column { flex: 1; }
-        .page-header { margin-bottom: 25px; }
+
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .page-header h1 { font-size: 1.8rem; color: #2c3e50; margin-bottom: 5px; }
         .page-header p { color: #95a5a6; font-size: 0.9rem; }
-        .btn-header-action { background-color: #00d2d3; color: white; padding: 10px 20px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; float: right; font-size: 0.9rem; text-decoration: none; }
-        .tabs { display: flex; gap: 10px; margin-bottom: 30px; }
+
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
         .tab-btn { background: none; border: none; padding: 8px 15px; font-weight: 600; color: #95a5a6; cursor: pointer; border-radius: 20px; }
         .tab-btn.active { background-color: #f1f2f6; color: #2c3e50; }
         .tab-btn:hover { color: #2c3e50; background-color: #f8f9fa; }
+
         .form-card { border: 1px solid #eee; border-radius: 12px; padding: 30px; background-color: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
         .form-title { font-size: 1.4rem; color: #2c3e50; margin-bottom: 10px; font-weight: 600; }
         .form-subtitle { color: #95a5a6; font-size: 0.9rem; margin-bottom: 30px; display: block; }
@@ -47,12 +50,8 @@
         .ai-input-box { position: relative; width: 100%; }
         .ai-input-box input { width: 100%; padding: 12px 40px 12px 15px; border: 1px solid #ddd; border-radius: 20px; outline: none; font-size: 0.9rem; }
         .ai-input-box i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #95a5a6; cursor: pointer; }
-
-        /* --- NEW STYLES FOR DYNAMIC SECTIONS --- */
         .dynamic-section { display: none; background: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px dashed #ddd; margin-bottom: 20px; }
         .section-label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: #00d2d3; margin-bottom: 10px; display: block; font-weight: 700; }
-        
-        /* Quiz Specific Styles */
         .question-block { background: #fff; padding: 15px; border: 1px solid #eee; border-radius: 8px; margin-bottom: 15px; }
         .question-block h4 { margin-bottom: 10px; color: #2c3e50; font-size: 1rem; }
         .options-container { margin-top: 10px; padding-left: 10px; border-left: 2px solid #00d2d3; }
@@ -62,19 +61,54 @@
         .btn-icon-action { background: none; border: none; color: #e74c3c; cursor: pointer; font-size: 1rem; }
         .btn-add-option { background: none; border: 1px dashed #00d2d3; color: #00d2d3; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; margin-top: 5px; }
         .btn-add-option:hover { background: #e0fbfb; }
+        /* Add this inside your <style> tag */
+.flag-alert {
+    background-color: #fff5f5;
+    border: 1px solid #feb2b2;
+    border-left: 5px solid #e53e3e;
+    border-radius: 6px;
+    padding: 15px 20px;
+    margin-bottom: 25px;
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+}
+.flag-icon {
+    color: #e53e3e;
+    font-size: 1.2rem;
+    margin-top: 2px;
+}
+.flag-content h4 {
+    color: #c53030;
+    margin-bottom: 5px;
+    font-size: 1rem;
+}
+.flag-content p {
+    color: #2d3748;
+    font-size: 0.95rem;
+    margin-bottom: 5px;
+}
+.flag-content small {
+    color: #718096;
+    font-style: italic;
+}
+
+
+
     </style>
 </head>
+
 <body>
+    <jsp:include page="/WEB-INF/views/includes/mhp-navbar.jsp" />
 
     <div class="main-layout">
         <div class="content-column">
-            
+
             <div class="page-header">
-                <a href="${pageContext.request.contextPath}/mhp/content" class="btn-header-action">
-                     <i class="fas fa-arrow-left"></i> Back to Dashboard
-                </a>
-                <h1>Content Management</h1>
-                <p>Create and manage educational content</p>
+                <div>
+                    <h1>Content Management</h1>
+                    <p>Create and manage educational content</p>
+                </div>
             </div>
 
             <div class="tabs">
@@ -87,28 +121,41 @@
                 <div class="form-title">${isEdit ? 'Edit Content' : 'Create New Content'}</div>
                 <span class="form-subtitle">${isEdit ? 'Update your existing content details below' : 'Share your expertise with students'}</span>
 
-                <!-- FORM START -->
+                <c:if test="${content.status == 'Flagged'}">
+    <div class="flag-alert">
+        <div class="flag-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <div class="flag-content">
+            <h4><i class="fas fa-flag"></i> Content Flagged for Moderation</h4>
+            <p><strong>Moderator Note : </strong>${not empty content.flagReason ? fn:escapeXml(content.flagReason) : 'No specific reason provided.'}</p>
+            <small>Please edit the content to address these issues and click "Update & Publish" to resubmit for review.</small>
+        </div>
+    </div>
+</c:if>
+
+
+
                 <form action="${pageContext.request.contextPath}/mhp/save-content" method="post" id="createForm">
                     
-                    <!-- HIDDEN FIELDS -->
                     <input type="hidden" name="id" value="${content.id}">
-                    <input type="hidden" name="status" id="statusInput" value="${content.status != null ? content.status : 'draft'}">
-                    
-                    <!-- This hidden field will collect data from the dynamic fields before submit -->
-                    <textarea name="contentBody" id="realContentBody" style="display:none;">${content.contentBody}</textarea>
+                    <input type="hidden" name="status" id="statusInput" value="${not empty content.status ? content.status : 'draft'}">
 
-                    <!-- Title -->
                     <div class="form-group">
                         <label>Title</label>
-                        <input type="text" name="title" placeholder="Enter content title" required value="${content.title}">
+                        <input type="text" name="title" value="${fn:escapeXml(content.title)}" placeholder="Enter content title" required>
                     </div>
 
-                    <!-- Type & Category Row -->
+                    <div class="form-group">
+                        <label>Content Description</label>
+                        <textarea name="description" class="short" placeholder="Enter a brief overview of what students will learn..." required>${fn:escapeXml(content.description)}</textarea>
+                    </div>
+
                     <div class="form-row">
                         <div class="col-half">
                             <label>Content Type</label>
                             <select name="contentType" id="contentTypeSelect" onchange="toggleContentType()" required>
-                                <option disabled ${content.type == null ? 'selected' : ''} value="">Select type</option>
+                                <option disabled ${empty content.type ? 'selected' : ''} value="">Select type</option>
                                 <option value="Video" ${content.type == 'Video' ? 'selected' : ''}>Video</option>
                                 <option value="Article" ${content.type == 'Article' ? 'selected' : ''}>Article</option>
                                 <option value="Interactive" ${content.type == 'Interactive' ? 'selected' : ''}>Interactive Quiz</option>
@@ -117,7 +164,7 @@
                         <div class="col-half">
                             <label>Category</label>
                             <select name="category" required>
-                                <option disabled ${content.category == null ? 'selected' : ''} value="">Select category</option>
+                                <option disabled value="" ${empty content.category ? 'selected' : ''}>Select category</option>
                                 <option value="Stress Management" ${content.category == 'Stress Management' ? 'selected' : ''}>Stress Management</option>
                                 <option value="Mental Health" ${content.category == 'Mental Health' ? 'selected' : ''}>Mental Health</option>
                                 <option value="Wellness" ${content.category == 'Wellness' ? 'selected' : ''}>Wellness</option>
@@ -126,142 +173,179 @@
                         </div>
                     </div>
 
-                    <!-- Description -->
-                    <div class="form-group">
-                        <label>Description (Subtitle)</label>
-                        <textarea name="description" class="short" placeholder="Brief description of the content">${content.description}</textarea>
-                    </div>
-
-                    <!-- === DYNAMIC CONTENT SECTIONS === -->
-
-                    <!-- 1. VIDEO SECTION -->
                     <div id="videoSection" class="dynamic-section">
                         <span class="section-label"><i class="fas fa-video"></i> Video Configuration</span>
+                        
+                        <c:set var="videoSec" value="${(not empty content.videoSections) ? content.videoSections[0] : null}" />
+                        
+                        <input type="hidden" id="videoIdInput" value="${not empty videoSec ? videoSec.id : 0}">
+
                         <div class="form-group">
                             <label>YouTube Embed URL</label>
-                            <input type="text" id="videoUrlInput" placeholder="e.g., https://www.youtube.com/embed/VIDEO_ID" value="">
+                            <input type="text" id="videoUrlInput" placeholder="e.g., https://www.youtube.com/embed/VIDEO_ID" 
+                                   value="${not empty videoSec ? videoSec.videoUrl : ''}">
                             <small style="color: #95a5a6; margin-top: 5px; display: block;">Paste the full Embed URL from YouTube</small>
                         </div>
+                        <div class="form-group">
+                            <label>Video Description</label>
+                            <textarea id="mainVideoDescription" name="mainVideoDescription" class="short" 
+                                      placeholder="Enter a brief description for this video...">${not empty videoSec ? videoSec.description : ''}</textarea>
+                        </div>
                     </div>
 
-                    <!-- 2. ARTICLE SECTION (1.0, 2.0, 3.0) -->
                     <div id="articleSection" class="dynamic-section">
                         <span class="section-label"><i class="fas fa-book-open"></i> Text Content Sections</span>
+
                         <div class="form-group">
                             <label>Section 1.0 Content</label>
-                            <textarea id="articlePage1" class="medium" placeholder="<h3>1.1 Intro</h3><p>Text here...</p>"></textarea>
+                            
+                            <c:set var="firstArticle" value="${(not empty content.articleSections) ? content.articleSections[0] : null}" />
+
+                            <input type="hidden" id="articlePage1-id" value="${not empty firstArticle ? firstArticle.id : 0}">
+
+                            <input type="text" id="articlePage1-subtitle" placeholder="Section 1.0 Subtitle" 
+                                   style="margin-bottom: 10px;"
+                                   value="${not empty firstArticle ? firstArticle.subtitle : ''}">
+                            <textarea id="articlePage1" class="medium" placeholder="<p>Enter section content here...</p>">${not empty firstArticle ? firstArticle.body : ''}</textarea>
                         </div>
-                        <div class="form-group">
-                            <label>Section 2.0 Content</label>
-                            <textarea id="articlePage2" class="medium" placeholder="<h3>2.1 Details</h3><p>Text here...</p>"></textarea>
+
+                        <div id="dynamicArticleContainer">
+                            <c:forEach var="section" items="${content.articleSections}" varStatus="stat">
+                                <c:if test="${stat.index > 0}">
+                                    <div class="form-group article-dynamic-block">
+                                        <input type="hidden" class="article-id" value="${section.id}">
+                                        
+                                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                                            <label>Section ${stat.index + 1}.0 Content</label>
+                                            <button type="button" class="btn-icon-action" onclick="this.closest('.form-group').remove(); reindexArticleSections()" title="Remove Section">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="article-dynamic-subtitle" value="${section.subtitle}" 
+                                               style="margin-bottom: 10px;" placeholder="Section ${stat.index + 1}.0 Subtitle">
+                                        <textarea class="medium article-dynamic-area">${section.body}</textarea>
+                                    </div>
+                                </c:if>
+                            </c:forEach>
                         </div>
-                        <div class="form-group">
-                            <label>Section 3.0 (Conclusion)</label>
-                            <textarea id="articlePage3" class="short" placeholder="<h3>Conclusion</h3><p>Wrap up...</p>"></textarea>
-                        </div>
+
+                        <button type="button" class="btn-add-option" onclick="addArticleSection()">+ Add Section</button>
                     </div>
 
-                    <!-- 3. INTERACTIVE SECTION -->
                     <div id="interactiveSection" class="dynamic-section">
                         <span class="section-label"><i class="fas fa-mouse-pointer"></i> Quiz Configuration</span>
                         
-                        <!-- Single Content Area for Interactive Type -->
+                        <c:set var="firstQuestion" value="${(not empty content.quizQuestions) ? content.quizQuestions[0] : null}" />
+
                         <div class="form-group">
                             <label>Study Material / Introduction</label>
-                            <textarea id="interactiveContent" class="medium" placeholder="<h3>Introduction</h3><p>Enter the study material for this quiz...</p>"></textarea>
+                            <textarea id="interactiveContent" class="medium" placeholder="<h3>Introduction</h3><p>Enter the study material for this quiz...</p>">${not empty firstQuestion ? firstQuestion.introduction : ''}</textarea>
                         </div>
 
-                        <!-- Question 1 -->
                         <div class="question-block" id="q1-block">
                             <label>Question 1</label>
-                            <input type="text" id="q1-text" placeholder="Enter question text">
+                            
+                            <input type="hidden" id="q1-id" value="${not empty firstQuestion ? firstQuestion.id : 0}">
+                            
+                            <input type="text" id="q1-text" placeholder="Enter question text"
+                                   value="${not empty firstQuestion ? firstQuestion.questionText : ''}">
+                            
                             <div class="options-container" id="q1-options">
-                                <!-- Default Options -->
-                                <div class="option-row">
-                                    <input type="radio" name="correct_q1" value="0" title="Mark as correct answer">
-                                    <input type="text" placeholder="Option 1">
-                                    <button type="button" class="btn-icon-action" onclick="removeOption(this)"><i class="fas fa-times"></i></button>
-                                </div>
-                                <div class="option-row">
-                                    <input type="radio" name="correct_q1" value="1" title="Mark as correct answer">
-                                    <input type="text" placeholder="Option 2">
-                                    <button type="button" class="btn-icon-action" onclick="removeOption(this)"><i class="fas fa-times"></i></button>
-                                </div>
+                                <c:choose>
+                                    <c:when test="${not empty firstQuestion and not empty firstQuestion.options}">
+                                        <c:forEach var="option" items="${firstQuestion.options}" varStatus="optStat">
+                                            <div class="option-row">
+                                                <input type="hidden" class="option-id" value="${option.id}">
+                                                <input type="radio" name="correct_q1" value="${optStat.index}" 
+                                                       ${option.correct ? 'checked' : ''} title="Mark as correct answer">
+                                                <input type="text" value="${option.optionText}" placeholder="Option ${optStat.index + 1}">
+                                                <button type="button" class="btn-icon-action" onclick="removeOption(this)">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                        </c:forEach>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="option-row">
+                                            <input type="radio" name="correct_q1" value="0" title="Mark as correct answer">
+                                            <input type="text" placeholder="Option 1">
+                                            <button type="button" class="btn-icon-action" onclick="removeOption(this)"><i class="fas fa-times"></i></button>
+                                        </div>
+                                        <div class="option-row">
+                                            <input type="radio" name="correct_q1" value="1" title="Mark as correct answer">
+                                            <input type="text" placeholder="Option 2">
+                                            <button type="button" class="btn-icon-action" onclick="removeOption(this)"><i class="fas fa-times"></i></button>
+                                        </div>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                             <button type="button" class="btn-add-option" onclick="addOption('q1')">+ Add Answer Option</button>
                         </div>
 
-                        <!-- Question 2 -->
-                        <div class="question-block" id="q2-block">
-                            <label>Question 2</label>
-                            <input type="text" id="q2-text" placeholder="Enter question text">
-                            <div class="options-container" id="q2-options">
-                                <div class="option-row">
-                                    <input type="radio" name="correct_q2" value="0">
-                                    <input type="text" placeholder="Option 1">
-                                    <button type="button" class="btn-icon-action" onclick="removeOption(this)"><i class="fas fa-times"></i></button>
-                                </div>
-                                <div class="option-row">
-                                    <input type="radio" name="correct_q2" value="1">
-                                    <input type="text" placeholder="Option 2">
-                                    <button type="button" class="btn-icon-action" onclick="removeOption(this)"><i class="fas fa-times"></i></button>
-                                </div>
-                            </div>
-                            <button type="button" class="btn-add-option" onclick="addOption('q2')">+ Add Answer Option</button>
+                        <div id="dynamicQuizContainer">
+                            <c:forEach var="question" items="${content.quizQuestions}" varStatus="qStat">
+                                <c:if test="${qStat.index > 0}">
+                                    <div class="question-block dynamic-question-block">
+                                        <input type="hidden" class="question-id" value="${question.id}">
+                                        
+                                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                                            <label style="margin:0;">Question ${qStat.index + 1}</label>
+                                            <button type="button" class="btn-icon-action" onclick="this.closest('.question-block').remove(); reindexQuestions();" title="Remove Question">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" value="${question.questionText}" id="q${qStat.index + 1}-text" placeholder="Enter question text">
+                                        
+                                        <div class="options-container" id="q${qStat.index + 1}-options">
+                                            <c:forEach var="option" items="${question.options}" varStatus="optStat">
+                                                <div class="option-row">
+                                                    <input type="hidden" class="option-id" value="${option.id}">
+                                                    <input type="radio" name="correct_q${qStat.index + 1}" 
+                                                           value="${optStat.index}" ${option.correct ? 'checked' : ''}>
+                                                    <input type="text" value="${option.optionText}" placeholder="Option ${optStat.index + 1}">
+                                                    <button type="button" class="btn-icon-action" onclick="removeOption(this)">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </div>
+                                            </c:forEach>
+                                        </div>
+                                        <button type="button" class="btn-add-option" onclick="addOption('q${qStat.index + 1}')">+ Add Answer Option</button>
+                                    </div>
+                                </c:if>
+                            </c:forEach>
                         </div>
 
-                        <!-- Question 3 -->
-                        <div class="question-block" id="q3-block">
-                            <label>Question 3</label>
-                            <input type="text" id="q3-text" placeholder="Enter question text">
-                            <div class="options-container" id="q3-options">
-                                <div class="option-row">
-                                    <input type="radio" name="correct_q3" value="0">
-                                    <input type="text" placeholder="Option 1">
-                                    <button type="button" class="btn-icon-action" onclick="removeOption(this)"><i class="fas fa-times"></i></button>
-                                </div>
-                                <div class="option-row">
-                                    <input type="radio" name="correct_q3" value="1">
-                                    <input type="text" placeholder="Option 2">
-                                    <button type="button" class="btn-icon-action" onclick="removeOption(this)"><i class="fas fa-times"></i></button>
-                                </div>
-                            </div>
-                            <button type="button" class="btn-add-option" onclick="addOption('q3')">+ Add Answer Option</button>
-                        </div>
-
+                        <button type="button" class="btn-add-option" onclick="addQuestion()">+ Add Question</button>
                     </div>
 
-                    <!-- Bottom Row (Settings) -->
                     <div class="form-row">
                         <div class="col-third">
                             <label>Difficulty Level</label>
                             <select name="difficulty">
-                                <option disabled ${content.difficulty == null ? 'selected' : ''}>Select level</option>
+                                <option disabled value="" ${empty content.difficulty ? 'selected' : ''}>Select level</option>
                                 <option value="Beginner" ${content.difficulty == 'Beginner' ? 'selected' : ''}>Beginner</option>
                                 <option value="Intermediate" ${content.difficulty == 'Intermediate' ? 'selected' : ''}>Intermediate</option>
                                 <option value="Advanced" ${content.difficulty == 'Advanced' ? 'selected' : ''}>Advanced</option>
                             </select>
                         </div>
-                        
-                        <!-- Duration (Hidden if Article OR Interactive) -->
+
                         <div class="col-third" id="durationGroup">
                             <label>Duration (minutes)</label>
-                            <input type="number" name="duration" value="${content.duration != 0 ? content.duration : 15}">
+                            <input type="number" name="duration" value="${content.duration}">
                         </div>
-                        
+
                         <div class="col-third">
                             <label>Points</label>
-                            <input type="number" name="points" value="${content.points != 0 ? content.points : 10}">
+                            <input type="number" name="points" value="${content.points}">
                         </div>
                     </div>
 
-                    <!-- Actions -->
                     <div class="form-actions">
                         <button type="button" class="btn-submit btn-save-draft" onclick="submitContent('draft')">
                             ${isEdit ? 'Update as Draft' : 'Save as Draft'}
                         </button>
-                        <button type="button" class="btn-submit btn-publish" onclick="submitContent('published')">
-                            ${isEdit ? 'Update & Publish' : 'Publish'}
+                        <button type="button" class="btn-submit btn-publish" onclick="submitContent('Pending')">
+                            ${isEdit ? 'Update & Publish' : 'Update & Publish'}
                         </button>
                     </div>
 
@@ -284,7 +368,18 @@
 
     <script>
         window.onload = function() {
-            toggleContentType();
+            var select = document.getElementById('contentTypeSelect');
+            if (select.value) {
+                toggleContentType();
+            } else {
+                for(var i=0; i<select.options.length; i++) {
+                    if(select.options[i].selected) { // Changed for JSP: standard DOM property
+                        select.value = select.options[i].value;
+                        toggleContentType();
+                        break;
+                    }
+                }
+            }
         };
 
         function toggleContentType() {
@@ -297,44 +392,123 @@
             videoSec.style.display = 'none';
             articleSec.style.display = 'none';
             interactiveSec.style.display = 'none';
-            durationGroup.style.visibility = 'visible'; 
+            durationGroup.style.visibility = 'visible';
 
             if(type === 'Video') {
                 videoSec.style.display = 'block';
-            } 
+            }
             else if(type === 'Article') {
                 articleSec.style.display = 'block';
-                durationGroup.style.visibility = 'hidden'; 
-            } 
+                durationGroup.style.visibility = 'hidden';
+            }
             else if(type === 'Interactive') {
                 interactiveSec.style.display = 'block';
-                durationGroup.style.visibility = 'hidden'; 
+                durationGroup.style.visibility = 'hidden';
             }
         }
 
-        // --- NEW: Dynamic Option Logic ---
+        // ==========================================
+        // ARTICLE LOGIC
+        // ==========================================
+        function addArticleSection() {
+            var container = document.getElementById('dynamicArticleContainer');
+            // Simplified logic for JSP: just count the total blocks
+            var totalSections = container.querySelectorAll('.article-dynamic-block').length;
+            var nextSectionNum = totalSections + 2; // +1 for 0-index, +1 because static is Sec 1
+
+            var div = document.createElement('div');
+            div.className = 'form-group article-dynamic-block';
+            div.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                    <label>Section ` + nextSectionNum + `.0 Content</label>
+                    <button type="button" class="btn-icon-action" onclick="this.closest('.form-group').remove(); reindexArticleSections()" title="Remove Section"><i class="fas fa-times"></i></button>
+                </div>
+                <input type="text" class="article-dynamic-subtitle" placeholder="Section ` + nextSectionNum + `.0 Subtitle" style="margin-bottom: 10px;">
+                <textarea class="medium article-dynamic-area" placeholder="<p>Enter section content here...</p>"></textarea>
+            `;
+            container.appendChild(div);
+        }
+
+        function reindexArticleSections() {
+            var container = document.getElementById('dynamicArticleContainer');
+            var groups = container.querySelectorAll('.article-dynamic-block');
+            groups.forEach((group, index) => {
+                var num = index + 2; 
+                var label = group.querySelector('label');
+                var subtitle = group.querySelector('.article-dynamic-subtitle');
+
+                if(label) label.innerText = `Section ` + num + `.0 Content`;
+                if(subtitle) subtitle.placeholder = `Section ` + num + `.0 Subtitle`;
+            });
+        }
+
+        // ==========================================
+        // QUIZ LOGIC
+        // ==========================================
+        function addQuestion() {
+            var container = document.getElementById('dynamicQuizContainer');
+            // Simplified logic for JSP: count total blocks
+            var currentDynamicCount = container.querySelectorAll('.dynamic-question-block').length;
+            var qNum = currentDynamicCount + 2; // +1 for existing static q1, +1 for new one
+            var uniqueId = 'dq_' + Date.now();
+
+            var div = document.createElement('div');
+            div.className = 'question-block dynamic-question-block';
+            div.id = uniqueId + '-block';
+            div.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <label style="margin:0;">Question ` + qNum + `</label>
+                    <button type="button" class="btn-icon-action" onclick="this.closest('.question-block').remove(); reindexQuestions();" title="Remove Question"><i class="fas fa-times"></i></button>
+                </div>
+                <input type="text" id="` + uniqueId + `-text" placeholder="Enter question text">
+                <div class="options-container" id="` + uniqueId + `-options">
+                    <div class="option-row">
+                        <input type="radio" name="correct_` + uniqueId + `" value="0">
+                        <input type="text" placeholder="Option 1">
+                        <button type="button" class="btn-icon-action" onclick="removeOption(this)"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="option-row">
+                        <input type="radio" name="correct_` + uniqueId + `" value="1">
+                        <input type="text" placeholder="Option 2">
+                        <button type="button" class="btn-icon-action" onclick="removeOption(this)"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+                <button type="button" class="btn-add-option" onclick="addOption('` + uniqueId + `')">+ Add Answer Option</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function reindexQuestions() {
+            var container = document.getElementById('dynamicQuizContainer');
+            var blocks = container.querySelectorAll('.dynamic-question-block');
+            blocks.forEach((block, index) => {
+                var num = index + 2;
+                var label = block.querySelector('label');
+                if(label) label.innerText = "Question " + num;
+            });
+        }
+
         function addOption(qId) {
             var container = document.getElementById(qId + '-options');
             var count = container.querySelectorAll('.option-row').length;
-            
+
             var div = document.createElement('div');
             div.className = 'option-row';
             div.innerHTML = `
-                <input type="radio" name="correct_${qId}" value="${count}">
-                <input type="text" placeholder="Option ${count + 1}">
+                <input type="radio" name="correct_` + qId + `" value="` + count + `">
+                <input type="text" placeholder="Option ` + (count + 1) + `">
                 <button type="button" class="btn-icon-action" onclick="removeOption(this)"><i class="fas fa-times"></i></button>
             `;
             container.appendChild(div);
-            
-            // Re-index radio values to ensure they match array index
+
             reindexOptions(qId);
         }
 
         function removeOption(btn) {
             var row = btn.parentNode;
             var container = row.parentNode;
-            var qId = container.id.split('-')[0]; // Extract 'q1' from 'q1-options'
-            
+            var qId = container.id.split('-')[0];
+
             container.removeChild(row);
             reindexOptions(qId);
         }
@@ -352,72 +526,147 @@
 
         function submitContent(status) {
             document.getElementById('statusInput').value = status;
-            
+
             var title = document.querySelector('input[name="title"]').value;
             if(!title.trim()) {
                 alert("Please enter a title.");
                 return;
             }
 
-            // === DATA PREPARATION BEFORE SUBMIT ===
             var type = document.getElementById('contentTypeSelect').value;
-            var finalBody = "";
+            var form = document.getElementById('createForm');
 
-            if(type === 'Video') {
-                finalBody = document.getElementById('videoUrlInput').value;
-            } 
-            else if(type === 'Article') {
-                var p1 = document.getElementById('articlePage1').value;
-                var p2 = document.getElementById('articlePage2').value;
-                var p3 = document.getElementById('articlePage3').value;
-                finalBody = "<!--PAGE_1-->" + p1 + "<!--PAGE_2-->" + p2 + "<!--PAGE_3-->" + p3;
-            } 
-            else if(type === 'Interactive') {
-                // Collect Single Content Page
-                var content = document.getElementById('interactiveContent').value;
-                
-                // Collect Dynamic Quiz Data
-                var quizData = [];
-                
-                // Loop through Questions 1, 2, 3
-                ['q1', 'q2', 'q3'].forEach((qId, index) => {
-                    var qText = document.getElementById(qId + '-text').value;
-                    if(qText.trim()) {
-                        var container = document.getElementById(qId + '-options');
-                        var optionRows = container.querySelectorAll('.option-row');
-                        var optionsArr = [];
-                        var correctIdx = -1;
-
-                        optionRows.forEach((row, i) => {
-                            var textVal = row.querySelector('input[type="text"]').value;
-                            var isChecked = row.querySelector('input[type="radio"]').checked;
-                            
-                            if(textVal.trim()) {
-                                optionsArr.push(textVal);
-                                if(isChecked) correctIdx = i;
-                            }
-                        });
-
-                        quizData.push({
-                            id: index + 1,
-                            question: qText,
-                            options: optionsArr,
-                            correctIndex: correctIdx
-                        });
-                    }
-                });
-                
-                var quizJson = JSON.stringify(quizData);
-                
-                // Combine Text + Quiz Data
-                finalBody = "<!--PAGE_1-->" + content + "<!--QUIZ_DATA-->" + quizJson;
-            } else {
-                finalBody = document.getElementById('realContentBody').value; 
+            function createHiddenInput(name, value) {
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = name;
+                input.value = value;
+                input.className = 'generated-input';
+                form.appendChild(input);
             }
 
-            document.getElementById('realContentBody').value = finalBody;
-            document.getElementById('createForm').submit();
+            // Clean up old generated inputs
+            var oldInputs = document.querySelectorAll('.generated-input');
+            oldInputs.forEach(el => el.remove());
+
+            // --- ARTICLE LOGIC ---
+            if(type === 'Article') {
+                var sectionIndex = 0;
+
+                // Process Section 1 (Static)
+                var id1 = document.getElementById('articlePage1-id').value;
+                var sub1 = document.getElementById('articlePage1-subtitle').value;
+                var body1 = document.getElementById('articlePage1').value;
+
+                createHiddenInput('articleSections[' + sectionIndex + '].id', id1);
+                createHiddenInput('articleSections[' + sectionIndex + '].subtitle', sub1);
+                createHiddenInput('articleSections[' + sectionIndex + '].body', body1);
+                sectionIndex++;
+
+                // Process Dynamic Sections
+                var dynamicBlocks = document.querySelectorAll('.article-dynamic-block');
+                dynamicBlocks.forEach(function(block) {
+                    var idInput = block.querySelector('.article-id');
+                    var idVal = idInput ? idInput.value : 0;
+
+                    var sub = block.querySelector('.article-dynamic-subtitle').value;
+                    var body = block.querySelector('.article-dynamic-area').value;
+
+                    createHiddenInput('articleSections[' + sectionIndex + '].id', idVal);
+                    createHiddenInput('articleSections[' + sectionIndex + '].subtitle', sub);
+                    createHiddenInput('articleSections[' + sectionIndex + '].body', body);
+                    sectionIndex++;
+                });
+            }
+
+            // --- VIDEO LOGIC ---
+            else if(type === 'Video') {
+                var vidId = document.getElementById('videoIdInput').value;
+                var videoUrl = document.getElementById('videoUrlInput').value;
+                var videoDesc = document.getElementById('mainVideoDescription').value;
+                
+                if (!videoUrl.trim()) {
+                    alert("Please enter a video URL.");
+                    return;
+                }
+
+                var formattedUrl = convertToEmbedUrl(videoUrl);
+                
+                createHiddenInput('videoSections[0].id', vidId);
+                createHiddenInput('videoSections[0].videoUrl', videoUrl);
+                createHiddenInput('videoSections[0].description', videoDesc);
+            }
+
+            // --- INTERACTIVE QUIZ LOGIC ---
+            else if(type === 'Interactive') {
+                var introContent = document.getElementById('interactiveContent').value;
+                var qIndex = 0;
+                
+                function processQuizBlock(block, qTextElementId, qId) {
+                    var qText = qTextElementId ? 
+                                document.getElementById(qTextElementId).value : 
+                                block.querySelector('input[type="text"]').value;
+
+                    createHiddenInput('quizQuestions[' + qIndex + '].id', qId);
+                    createHiddenInput('quizQuestions[' + qIndex + '].questionText', qText);
+
+                    if (qIndex === 0) {
+                        createHiddenInput('quizQuestions[' + qIndex + '].introduction', introContent);
+                    }
+
+                    var container = block.querySelector('.options-container');
+                    var optionRows = container.querySelectorAll('.option-row');
+                    
+                    optionRows.forEach((row, oIndex) => {
+                        var optIdInput = row.querySelector('.option-id');
+                        var optId = optIdInput ? optIdInput.value : 0;
+
+                        var optText = row.querySelector('input[type="text"]').value;
+                        var isRadioChecked = row.querySelector('input[type="radio"]').checked;
+
+                        createHiddenInput('quizQuestions[' + qIndex + '].options[' + oIndex + '].id', optId);
+                        createHiddenInput('quizQuestions[' + qIndex + '].options[' + oIndex + '].optionText', optText);
+                        createHiddenInput('quizQuestions[' + qIndex + '].options[' + oIndex + '].correct', isRadioChecked);
+                    });
+
+                    qIndex++;
+                }
+
+                // Process first question (Static)
+                var q1Block = document.getElementById('q1-block');
+                var q1Id = document.getElementById('q1-id').value;
+                if(q1Block) processQuizBlock(q1Block, 'q1-text', q1Id);
+
+                // Process dynamic questions
+                var dynamicBlocks = document.querySelectorAll('.dynamic-question-block');
+                dynamicBlocks.forEach(function(block) {
+                    var idInput = block.querySelector('.question-id');
+                    var qId = idInput ? idInput.value : 0;
+                    processQuizBlock(block, null, qId);
+                });
+            }
+
+            form.submit();
         }
+
+        // Add this helper function to convert any YouTube link to an Embed link
+function convertToEmbedUrl(url) {
+    if (!url) return "";
+    
+    // Regular expression to find the Video ID from various YouTube URL formats
+    // Handles: youtube.com/watch?v=ID, youtu.be/ID, youtube.com/embed/ID
+    var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    var match = url.match(regExp);
+
+    if (match && match[2].length === 11) {
+        // Return the correct embed format
+        return "https://www.youtube.com/embed/" + match[2];
+    } else {
+        // If regex fails, return the original URL (or handle error)
+        return url;
+    }
+}
     </script>
+    
 </body>
 </html>

@@ -1,35 +1,34 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Admin Dashboard</title>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+<div>
     <style>
+        /* 1. Global Page Styles (Copied from JSP) */
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f9fafb;
             margin: 0;
-            padding: 20px 40px;
+            padding: 20px 40px; /* Matches JSP padding */
             color: #111827;
+            position: relative;
         }
 
         h1 {
             font-size: 28px;
             margin-bottom: 5px;
-        }
-
-        h2 {
-            font-size: 18px;
-            margin-bottom: 5px;
+            margin-top: 0;
         }
 
         small {
             color: #6b7280;
         }
+
+        /* 2. Logout Button - UPDATED TO MATCH JSP */
         .right-logout {
             position: absolute;
-            top: 20px;   /* adjust based on your page padding */
-            right: 40px; /* matches your body padding */
+            top: 20px;   /* Changed from 0 to 20px to match body padding */
+            right: 40px; /* Changed from 0 to 40px to match body padding */
         }
 
         .logout-btn {
@@ -47,20 +46,7 @@
             color: black;
         }
 
-        .btn-ghost{
-            padding:10px 14px;
-            border-radius:8px;
-            border:none;
-            cursor:pointer;
-            transition:var(--transition);
-            font-weight:600;
-            font-size:13px;
-            background:#fff;
-            border:1px solid rgba(18,24,33,0.06);
-            color:#27433f;
-        }
-
-        /* Top Summary Cards */
+        /* 3. Summary Cards (with Emojis) */
         .summary-cards {
             display: flex;
             gap: 20px;
@@ -78,6 +64,7 @@
             justify-content: space-between;
             align-items: center;
             color: #111827;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
         }
 
         .summary-card .info {
@@ -91,12 +78,12 @@
         }
 
         .summary-card .info .percent {
-            color: #10b981; /* green for positive growth */
+            color: #10b981; 
             font-weight: 500;
         }
 
         .summary-card .icon {
-            font-size: 28px;
+            font-size: 28px; 
             background-color: #e0f7f6;
             border-radius: 8px;
             padding: 8px;
@@ -104,26 +91,24 @@
             align-items: center;
             justify-content: center;
             color: #14b8a6;
+            height: 40px; 
+            width: 40px;
         }
 
+        /* 4. Tabs */
         .tabs {
             display: flex;
             gap: 8px;
             margin-bottom: 20px;
-            background-color: #f3f5f7;  /* light grey/blue background bar */
+            background-color: #f3f5f7;
             padding: 6px;
             border-radius: 12px;
             align-items: center;
             width: fit-content;
         }
 
-        /* Reset default button styles */
-        .tabs form {
-            margin: 0;
-        }
-
-        .tabs button {
-            all: unset;
+        .tab-link {
+            all: unset; 
             cursor: pointer;
             display: inline-block;
             font-weight: 500;
@@ -132,121 +117,21 @@
             padding: 8px 16px;
             border-radius: 8px;
             transition: background-color 0.15s ease, color 0.15s ease;
+            color: #6b7280; 
+            text-decoration: none;
         }
 
-        /* Inactive tab: greyish text, transparent/none background initially */
-        .tab {
-            background-color: transparent;
-            color: #6b7280;  /* grey text for inactive */
-        }
-
-        /* When a tab is active (selected) */
-        .tab.active {
-            background-color: #ffffff;  /* white pill */
-            color: #111827;             /* dark text */
-        }
-
-        /* Hover effect on inactive tabs */
-        .tab:not(.active):hover {
-            background-color: #e5e8eb;  /* slightly lighter grey background on hover */
-            color: #374151;             /* slightly darker grey text on hover */
-        }
-        /* Dashboard Content */
-        .dashboard-content {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .card {
+        .tab-link.active {
             background-color: #ffffff;
-            border-radius: 12px;
-            padding: 20px;
-            flex: 1;
-            min-width: 300px;
+            color: #111827;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
 
-        /* User Entry */
-        .user-entry {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 15px;
-            padding: 12px 15px;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-        }
-
-        .user-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .user-info span {
-            font-size: 12px;
-            color: #6b7280;
-            margin-top: 3px;
-        }
-
-        .badge {
-            padding: 4px 12px;
-            border-radius: 9999px;
-            font-size: 12px;
-            font-weight: 500;
-            color: #ffffff;
-            text-transform: capitalize;
-        }
-
-        .badge.active {
-            background-color: #14b8a6;
-        }
-
-        .badge.inactive {
-            background-color: #d1d5db;
-            color: #6b7280;
-        }
-
-        /* User Distribution */
-        .distribution-item {
-            margin-top: 15px;
-        }
-
-        .distribution-item .label {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 5px;
-            font-size: 14px;
-        }
-
-        .progress-bar-container {
-            background-color: #e5e7eb;
-            border-radius: 8px;
-            height: 10px;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            height: 100%;
-            border-radius: 8px;
-        }
-
-        .progress-student {
-            width: 87%;
-            background-color: #14b8a6;
-        }
-
-        .progress-mhp {
-            width: 11%;
-            background-color: #3b82f6;
-        }
-
-        .progress-admin {
-            width: 2%;
-            background-color: #ec4899;
+        .tab-link:not(.active):hover {
+            background-color: #e5e8eb;
+            color: #374151;
         }
     </style>
-</head>
-<body>
 
     <div class="top-bar">
         <div class="left-tabs">
@@ -254,83 +139,76 @@
             <small>Monitor platform health and user activity</small>
         </div>
 
-    <div class="right-logout">
-        <form action="${pageContext.request.contextPath}/auth/logout" method="get">
-            <button type="submit" class="tab logout-btn">Logout</button>
-        </form>
+        <div class="right-logout">
+            <form action="${pageContext.request.contextPath}/auth/logout" method="get">
+                <button type="submit" class="logout-btn">Logout</button>
+            </form>
+        </div>
     </div>
+
+    <div class="summary-cards">
+        <div class="summary-card">
+            <div class="info">
+                <div>Total Users</div>
+                <div class="number">${not empty totalUsers ? totalUsers : '0'}</div>
+                <div class="percent">+12%</div>
+            </div>
+            <div class="icon">👤</div> 
+        </div>
+
+        <div class="summary-card">
+            <div class="info">
+                <div>Active Content</div>
+                <div class="number">${not empty activeContentCount ? activeContentCount : 0}</div>
+                <div class="percent">+8%</div>
+            </div>
+            <div class="icon">📄</div>
+        </div>
+
+        <div class="summary-card">
+            <div class="info">
+                <div>Forum Posts</div>
+                <div class="number">892</div>
+                <div class="percent">+23%</div>
+            </div>
+            <div class="icon">💬</div>
+        </div>
+
+        <div class="summary-card">
+            <div class="info">
+                <div>Daily Active</div>
+                <div class="number">432</div>
+                <div class="percent">+5%</div>
+            </div>
+            <div class="icon">📈</div>
+        </div>
+    </div>
+
+    <div class="tabs">
+          <a href="${pageContext.request.contextPath}/admin/user-management" 
+              class="tab-link ${fn:contains(pageContext.request.requestURI, '/admin/user-management') ? 'active' : ''}">
+           User Management
+        </a>
+
+          <a href="${pageContext.request.contextPath}/admin/content-quality" 
+              class="tab-link ${fn:contains(pageContext.request.requestURI, '/admin/content-quality') ? 'active' : ''}">
+           Content Quality
+        </a>
+
+          <a href="${pageContext.request.contextPath}/admin/moderation-queue" 
+              class="tab-link ${fn:contains(pageContext.request.requestURI, '/admin/moderation-queue') ? 'active' : ''}">
+              Content Moderation Queue
+        </a>
+
+          <a href="${pageContext.request.contextPath}/admin/forum-moderation-queue" 
+              class="tab-link ${fn:contains(pageContext.request.requestURI, '/admin/forum-moderation-queue') ? 'active' : ''}">
+              Forum Moderation Queue
+        </a>
+
+          <a href="${pageContext.request.contextPath}/admin/platform-analytics" 
+              class="tab-link ${fn:contains(pageContext.request.requestURI, '/admin/platform-analytics') ? 'active' : ''}">
+           Platform Analytics
+        </a>
+    </div>
+    
 </div>
-
-
-<!-- Top Summary Cards -->
-<div class="summary-cards">
-    <div class="summary-card">
-        <div class="info">
-            <div>Total Users</div>
-            <div class="number">1,247</div>
-            <div class="percent">+12%</div>
-        </div>
-        <div class="icon">👤</div>
-    </div>
-
-    <div class="summary-card">
-        <div class="info">
-            <div>Active Content</div>
-            <div class="number">156</div>
-            <div class="percent">+8%</div>
-        </div>
-        <div class="icon">📄</div>
-    </div>
-
-    <div class="summary-card">
-        <div class="info">
-            <div>Forum Posts</div>
-            <div class="number">892</div>
-            <div class="percent">+23%</div>
-        </div>
-        <div class="icon">💬</div>
-    </div>
-
-    <div class="summary-card">
-        <div class="info">
-            <div>Daily Active</div>
-            <div class="number">432</div>
-            <div class="percent">+5%</div>
-        </div>
-        <div class="icon">📈</div>
-    </div>
-</div>
-
-<!-- Continuous Tabs Bar -->
-<div class="tabs">
-
-    <form action="#" method="get">
-        <button class="tab <%= request.getRequestURI().contains("user-management") ? "active" : "" %>">
-            User Management
-        </button>
-    </form>
-
-    <form action="${pageContext.request.contextPath}/admin/content-quality" method="get">
-        <button class="tab <%= request.getRequestURI().contains("content-quality") ? "active" : "" %>">
-            Content Quality
-        </button>
-    </form>
-
-    <form action="${pageContext.request.contextPath}/admin/moderation-queue" method="get">
-        <button class="tab <%= request.getRequestURI().contains("moderation-queue") ? "active" : "" %>">
-            Moderation Queue
-        </button>
-    </form>
-
-    <form action="${pageContext.request.contextPath}/admin/platform-analytics" method="get">
-        <button class="tab <%= request.getRequestURI().contains("platform-analytics") ? "active" : "" %>">
-            Platform Analytics
-        </button>
-    </form>
-
-</div>
-
-<!-- (rest of page: dashboard content, cards, etc.) -->
-
-</body>
-</html>

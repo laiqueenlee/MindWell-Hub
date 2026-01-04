@@ -6,26 +6,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-@Transactional // Automatically handles opening/closing database transactions
-public class VirtualSessionDaoHibernate {
+@Transactional 
+public class VirtualSessionDaoHibernate implements VirtualSessionDao {
 
     @Autowired
     private SessionFactory sessionFactory;
 
-    // Save or Update session in MySQL
+    @Override
     public void save(VirtualSession session) {
         sessionFactory.getCurrentSession().saveOrUpdate(session);
     }
 
-    // Find a session by its Integer ID (changed from String to match your Model)
+    @Override
     public VirtualSession findById(Integer id) {
         return sessionFactory.getCurrentSession().get(VirtualSession.class, id);
     }
 
-    // Find sessions for a student using HQL (Hibernate Query Language)
+    @Override
     public List<VirtualSession> findByStudentUsername(String username) {
         String hql = "FROM VirtualSession vs WHERE vs.student.username = :uname";
         return sessionFactory.getCurrentSession()
@@ -34,7 +35,7 @@ public class VirtualSessionDaoHibernate {
                 .getResultList();
     }
 
-    // Find sessions for an MHP
+    @Override
     public List<VirtualSession> findByMhpUsername(String username) {
         String hql = "FROM VirtualSession vs WHERE vs.mhp.username = :uname";
         return sessionFactory.getCurrentSession()
@@ -43,7 +44,7 @@ public class VirtualSessionDaoHibernate {
                 .getResultList();
     }
 
-    // Find pending sessions for an MHP
+    @Override
     public List<VirtualSession> findPendingByMhpUsername(String username) {
         String hql = "FROM VirtualSession vs WHERE vs.mhp.username = :uname AND vs.confirmed = false";
         return sessionFactory.getCurrentSession()
@@ -52,10 +53,29 @@ public class VirtualSessionDaoHibernate {
                 .getResultList();
     }
 
-    // Get all sessions from the database
-    public List<VirtualSession> getAllSessions() {
+    // Renamed from getAllSessions to findAll to match the Interface
+    @Override
+    public List<VirtualSession> findAll() {
         return sessionFactory.getCurrentSession()
                 .createQuery("FROM VirtualSession", VirtualSession.class)
                 .getResultList();
     }
+
+    @Override
+    public List<VirtualSession> findByMhpAndDate(Integer mhpId, LocalDate date) {
+        String hql = "FROM VirtualSession vs WHERE vs.mhp.id = :mId AND vs.sessionDate = :sDate";
+        return sessionFactory.getCurrentSession()
+                .createQuery(hql, VirtualSession.class)
+                .setParameter("mId", mhpId)
+                .setParameter("sDate", date)
+                .getResultList();
+    }
+
+    @Override
+    public List<VirtualSession> findByStudentId(Integer studentId) {
+    return sessionFactory.getCurrentSession()
+        .createQuery("FROM VirtualSession WHERE student.id = :sid ORDER BY sessionDate ASC", VirtualSession.class)
+        .setParameter("sid", studentId)
+        .list();
+}
 }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.secj3303.model.Role;
 import com.secj3303.model.User;
 
 @Repository
@@ -60,4 +61,14 @@ public class UserDaoHibernate implements UserDao {
         Query<Long> query = sessionFactory.getCurrentSession().createQuery("select count(u) from User u", Long.class);
         return query.uniqueResult();
     }
+
+
+    //added this for mhp-virtual ses part
+    @Override
+    public List<User> findByRole(Role role) {
+    return sessionFactory.getCurrentSession()
+            .createQuery("FROM User u WHERE u.role = :role", User.class)
+            .setParameter("role", role)
+            .getResultList();
+}
 }

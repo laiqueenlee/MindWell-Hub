@@ -1,184 +1,197 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Session Detail</title>
+    <title>Session Detail - MindWell</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
-        body {
-            font-family: system-ui, sans-serif;
-            background-color: #ffffff;
-            color: #111827;
-            margin: 40px;
+        /* Shared Variables from Home Page */
+        :root { 
+            --teal: #6fd7cc; 
+            --teal-dark: #3fb9a8; 
+            --teal-light: #e8f9f7; 
+            --muted: #7b8794; 
+            --card-bg: #ffffff; 
+            --page-bg: #f6fbfa; 
+            --radius: 12px; 
+            --shadow: 0 10px 30px rgba(18,24,33,0.06); 
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+
+        body { 
+            font-family: Inter, "Segoe UI", Roboto, sans-serif; 
+            background-color: var(--page-bg); 
+            color: #123; 
+            margin: 0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container { 
+            width: 90%; 
+            max-width: 600px; 
+            background: var(--card-bg);
+            padding: 32px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        h1 { font-size: 24px; font-weight: 700; color: #123; margin: 0 0 8px 0; }
+        .subtitle { color: var(--muted); font-size: 14px; margin-bottom: 30px; }
+
+        .detail-group { margin-bottom: 20px; }
+        .detail-title { font-weight: 700; font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+        
+        /* Matching the "inner-box" to the "stat" or "badge" feel */
+        .inner-box { 
+            background: #fbfffe; 
+            border: 1px solid rgba(18,24,33,0.05); 
+            border-radius: 10px; 
+            padding: 14px; 
+            font-size: 15px; 
+            color: #123; 
             display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .inner-box i { color: var(--teal-dark); width: 20px; text-align: center; }
+
+        /* Buttons matching Home Page style */
+        .btn { 
+            padding: 12px 24px; 
+            border-radius: 8px; 
+            border: none; 
+            cursor: pointer; 
+            font-size: 14px; 
+            font-weight: 600; 
+            transition: var(--transition); 
+            text-decoration: none; 
+            display: inline-flex; 
+            align-items: center; 
             justify-content: center;
+            gap: 8px;
         }
 
-        .container {
-            width: 70%;
-            max-width: 900px;
+        .btn-primary { 
+            background: linear-gradient(180deg, var(--teal), var(--teal-dark)); 
+            color: #fff; 
+            box-shadow: 0 4px 12px rgba(63,185,168,0.3); 
         }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(63,185,168,0.4); }
 
-        h1 {
-            font-size: 30px;
-            font-weight: 600;
-            margin-bottom: 6px;
+        .btn-ghost { 
+            background: #fff; 
+            border: 1px solid rgba(18,24,33,0.06); 
+            color: #27433f; 
         }
+        .btn-ghost:hover { background: var(--teal-light); border-color: var(--teal); }
 
-        p {
-            color: #6b7280;
-            font-size: 15px;
-            margin-bottom: 22px;
+        .status-pill {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
         }
+        .status-confirmed { background: var(--teal-light); color: var(--teal-dark); }
+        .status-pending { background: #fff3cd; color: #856404; }
 
-        .outer-block {
-            border: 1px solid #e5e7eb;
-            border-radius: 14px;
-            padding: 26px;
-            margin-top: 10px;
-        }
-
-        .detail-title {
-            font-weight: 600;
-            font-size: 15px;
-            margin-bottom: 6px;
-        }
-
-        .inner-box {
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            padding: 12px 14px;
-            background-color: #fafafa;
-            font-size: 15px;
-            color: #374151;
-            margin-bottom: 20px;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border-radius: 9999px;  /* pill shape */
-            border: none;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.2s ease-in-out;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        }
-
-        .btn-approve {
-            background-color: #34d399;
-            color: white;
-        }
-        .btn-approve:hover {
-            background-color: #2ebf8f;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-
-        .btn-reject {
-            background-color: #f87171;
-            color: white;
-        }
-        .btn-reject:hover {
-            background-color: #f65a5a;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-
-        .btn-back {
-            background-color: #d1d5db;
-            color: #111827;
-        }
-        .btn-back:hover {
-            background-color: #b8bbbf;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-<c:if test="${role == 'STUDENT'}">
-    <jsp:include page="/WEB-INF/views/includes/navbar.jsp" />
-</c:if>
-
 <div class="container">
-
     <h1>Session Details</h1>
-    <p>Details of the scheduled session</p>
+    <div class="subtitle">Information for your upcoming wellness appointment</div>
 
-    <div class="outer-block">
-
-        <div>
-            <div class="detail-title">Student Name</div>
-            <div class="inner-box">John Smith</div>
+    <div class="detail-group">
+        <div class="detail-title">Student</div>
+        <div class="inner-box">
+            <i class="fas fa-user-graduate"></i>
+            <span>${not empty sessionObj.student.fullName ? sessionObj.student.fullName : sessionObj.student.username}</span>
         </div>
+    </div>
 
-        <div>
-            <div class="detail-title">Mental Health Professional</div>
-            <div class="inner-box">Dr. Alice Wong</div>
+    <div class="detail-group">
+        <div class="detail-title">Counselor</div>
+        <div class="inner-box">
+            <i class="fas fa-user-md"></i>
+            <span>${sessionObj.mhp.fullName}</span>
         </div>
+    </div>
 
-        <div>
-            <div class="detail-title">Session Type</div>
-            <div class="inner-box">Initial Consultation</div>
+    <div class="detail-group">
+        <div class="detail-title">Date & Time</div>
+        <div class="inner-box">
+            <i class="fas fa-calendar-check"></i>
+            <span>${sessionObj.sessionDate} at ${sessionObj.time}</span>
         </div>
+    </div>
 
-        <div>
-            <div class="detail-title">Date & Time</div>
-            <div class="inner-box">12 Dec 2025, 10:00 AM</div>
+    <div class="detail-group">
+        <div class="detail-title">Status</div>
+        <div class="inner-box">
+            <c:choose>
+                <c:when test="${sessionObj.confirmed}">
+                    <span class="status-pill status-confirmed"><i class="fas fa-check-circle"></i> Confirmed</span>
+                </c:when>
+                <c:otherwise>
+                    <span class="status-pill status-pending"><i class="fas fa-hourglass-half"></i> Pending Review</span>
+                </c:otherwise>
+            </c:choose>
         </div>
+    </div>
 
-        <div>
-            <div class="detail-title">Duration</div>
-            <div class="inner-box">60 minutes</div>
-        </div>
-
-        <div>
-            <div class="detail-title">Status</div>
-            <div class="inner-box">Pending</div>
-        </div>
-
-        <div>
-            <div class="detail-title">Notes</div>
+    <c:if test="${userRole == 'MENTAL_HEALTH_PROFESSIONAL'}">
+        <hr style="border: 0; border-top: 1px solid rgba(18,24,33,0.06); margin: 25px 0;">
+        
+        <div class="detail-group">
+            <div class="detail-title">Preliminary Focus</div>
             <div class="inner-box">
-                Student has reported anxiety issues. Plan to cover coping strategies and initial assessment.
+                <i class="fas fa-bullseye"></i>
+                <span>${not empty sessionObj.preFocus ? sessionObj.preFocus : 'Not specified'}</span>
             </div>
         </div>
 
-        <div style="display:flex; justify-content:space-between; margin-top:10px;">
-
-            <!-- <c:if test="${roles == 'COUNSELOR'}"> -->
-                <div>
-                    <a href="${pageContext.request.contextPath}/sessions/confirm" class="btn btn-back">
-                        <i class="fas fa-arrow-left"></i> Back to Sessions
-                    </a>
-                </div>
-                <div>
-                    <button class="btn btn-approve"><i class="fas fa-check"></i> Approve</button>
-                    <button class="btn btn-reject"><i class="fas fa-times"></i> Reject</button>
-                </div>
-
-            <!-- </c:if> -->
-
-            <!-- <c:if test="${roles == 'STUDENT'}">
-                <div>
-                    <a href="${pageContext.request.contextPath}/student/home">
-                        <button class="btn btn-back">
-                            <i class="fas fa-arrow-left"></i> Back to Home
-                        </button>
-                    </a>
-                </div>
-            </c:if> -->
-
+        <div class="detail-group">
+            <div class="detail-title">Notes to Counselor</div>
+            <div class="inner-box">
+                <i class="fas fa-comment-medical"></i>
+                <span>${not empty sessionObj.notes ? sessionObj.notes : 'No additional notes provided.'}</span>
+            </div>
         </div>
+    </c:if>
 
+    <div style="margin-top: 32px; display: flex; gap: 12px; justify-content: flex-end;">
+        
+        <c:choose>
+            <c:when test="${userRole == 'MENTAL_HEALTH_PROFESSIONAL'}">
+                <a href="${pageContext.request.contextPath}/sessions/confirm" class="btn btn-ghost">Back</a>
+                <c:if test="${!sessionObj.confirmed}">
+                    <form action="${pageContext.request.contextPath}/sessions/confirm" method="POST" style="margin:0;">
+                        <input type="hidden" name="sessionId" value="${sessionObj.id}">
+                        <button type="submit" class="btn btn-primary">Approve Session</button>
+                    </form>
+                </c:if>
+            </c:when>
+
+            <c:otherwise>
+                <a href="${pageContext.request.contextPath}/student/home" class="btn btn-ghost">Back to Home</a>
+                <c:if test="${sessionObj.confirmed}">
+                    <a href="${pageContext.request.contextPath}/sessions/meeting?sessionId=${sessionObj.id}" class="btn btn-primary">
+                        <i class="fas fa-video"></i> Join Now
+                    </a>
+                </c:if>
+            </c:otherwise>
+        </c:choose>
     </div>
-
 </div>
 
 </body>
