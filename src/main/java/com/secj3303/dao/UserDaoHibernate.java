@@ -70,5 +70,22 @@ public class UserDaoHibernate implements UserDao {
             .createQuery("FROM User u WHERE u.role = :role", User.class)
             .setParameter("role", role)
             .getResultList();
-}
+    }
+
+    @Override
+    public long countByRole(Role role) {
+        String hql = "SELECT count(u) FROM User u WHERE u.role = :role";
+        return sessionFactory.getCurrentSession()
+                    .createQuery(hql, Long.class)
+                    .setParameter("role", role)
+                    .uniqueResult();
+    }
+
+    @Override
+    public List<User> findRecentUsers(int limit) {
+    return sessionFactory.getCurrentSession()
+            .createQuery("from User order by id desc", User.class) // "id desc" puts newest at top
+            .setMaxResults(limit)
+            .list();
+    }
 }

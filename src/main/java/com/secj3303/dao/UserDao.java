@@ -17,4 +17,10 @@ public interface UserDao {
 
     //added this for mhp-virtual ses part
     List<User> findByRole(Role role);
+
+    //admin analytics
+    long countByRole(Role role);
+
+    // For findRecentUsers, you might need a custom query or a Pageable request:
+    List<User> findRecentUsers(int limit);
 }

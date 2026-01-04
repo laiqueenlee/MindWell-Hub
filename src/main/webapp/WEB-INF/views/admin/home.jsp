@@ -5,143 +5,65 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Dashboard</title>
-    
+    <title>Admin Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* 1. PAGE SETUP (Matches JSP padding and font) */
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f9fafb;
             margin: 0;
+            padding: 40px;
         }
 
-        /* 2. GRID LAYOUT (Restored from JSP) */
         .dashboard-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr; /* Two equal columns */
+            grid-template-columns: 1fr 1fr;
             gap: 25px;
+            margin-top: 20px;
         }
 
-        /* 3. CARD STYLING (Restored from JSP) */
         .card {
             background: white;
-            border-radius: 14px;
-            padding: 25px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #e5e7eb;
         }
 
-        h2 {
-            font-size: 20px;
-            font-weight: 600;
+        /* Recent Users Table */
+        .u-table { width: 100%; border-collapse: collapse; }
+        .u-table td { padding: 14px 0; border-bottom: 1px solid #f3f4f6; }
+        
+        .user-name {
+            display: block;
+            font-size: 16px;
+            font-weight: 700; /* Extra bold */
+            color: #111827;
             margin-bottom: 2px;
-            margin-top: 0;
         }
 
-        small {
-            font-size: 14px;
+        .user-id-badge {
+            font-size: 12px;
             color: #6b7280;
-        }
-
-        /* 4. RECENT REGISTRATIONS (Restored "Boxed" Row Style) */
-        .user-list {
-            margin-top: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .user-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 14px;
-            border: 1px solid #e5e7eb; /* The border around each user */
-            border-radius: 12px;
-            background: white;
-        }
-
-        .user-left {
-            display: flex;
-            flex-direction: column;
-            gap: 8px; /* Spacing between Name, Role, Time */
-        }
-
-        .role-badge {
-            font-size: 12px;
-            color: #374151; 
-            padding: 3px 10px;
-            border-radius: 9999px;      
-            border: 1px solid #d1d5db;  
-            background-color: transparent; 
-            display: inline-block;
-            width: fit-content;
-        }
-
-        .time {
-            font-size: 13px;
-            color: #9ca3af;
-        }
-
-        /* 5. STATUS BADGES (Restored Cyan Color) */
-        .status-badge {
-            padding: 5px 14px;
-            border-radius: 9999px;
-            font-size: 12px;
             font-weight: 500;
-            text-transform: lowercase;
         }
 
-        .status-active {
-            background: #06b6d4; /* Cyan */
-            color: white;
+        .role-tag { 
+            font-size: 11px; 
+            background: #f3f4f6; 
+            padding: 4px 10px; 
+            border-radius: 6px; 
+            text-transform: uppercase; 
+            font-weight: 600;
+            color: #374151;
+            letter-spacing: 0.025em;
         }
 
-        .status-inactive {
-            background: #e5e7eb;
-            color: #6b7280;
-        }
-
-        /* 6. USER DISTRIBUTION (Restored Colors & Shapes) */
-        .distribution-section {
-            margin-top: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .dist-item .label-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 14px;
-            margin-bottom: 6px;
-        }
-
-        .progress-container {
-            width: 100%;
-            height: 10px;
-            background: #e5e7eb;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        .bar {
-            height: 100%;
-        }
-
-        .bar-student {
-            width: 87%;
-            background: #06b6d4; /* Cyan */
-        }
-
-        .bar-mhp {
-            width: 11%;
-            background: #3b82f6; /* Blue */
-        }
-
-        .bar-admin {
-            width: 2%;
-            background: #ec4899; /* Pink */
-        }
+        /* Distribution Bars */
+        .bar-container { margin-bottom: 20px; }
+        .bar-label { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; }
+        .bar-bg { height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; }
+        .bar-fill { height: 100%; transition: 1s ease; }
     </style>
 </head>
 <body>
@@ -149,88 +71,40 @@
     <jsp:include page="/WEB-INF/views/includes/admin-header.jsp" />
 
     <div class="dashboard-grid">
-
+        
         <div class="card">
-            <h2>Recent Registrations</h2>
-            <small>New users in the last 7 days</small>
-
-            <div class="user-list">
-
-                <div class="user-row">
-                    <div class="user-left">
-                        <strong>Sarah Johnson</strong>
-                        <div class="role-badge">student</div>
-                        <span class="time">2 hours ago</span>
-                    </div>
-                    <span class="status-badge status-active">active</span>
-                </div>
-
-                <div class="user-row">
-                    <div class="user-left">
-                        <strong>Dr. Mike Chen</strong>
-                        <div class="role-badge">mhp</div>
-                        <span class="time">5 hours ago</span>
-                    </div>
-                    <span class="status-badge status-active">active</span>
-                </div>
-
-                <div class="user-row">
-                    <div class="user-left">
-                        <strong>Alex Thompson</strong>
-                        <div class="role-badge">student</div>
-                        <span class="time">1 day ago</span>
-                    </div>
-                    <span class="status-badge status-active">active</span>
-                </div>
-
-                <div class="user-row">
-                    <div class="user-left">
-                        <strong>Emma Wilson</strong>
-                        <div class="role-badge">student</div>
-                        <span class="time">2 days ago</span>
-                    </div>
-                    <span class="status-badge status-inactive">inactive</span>
-                </div>
-
-            </div>
+            <h3 style="margin-top:0; color: #111827;">Recent Members</h3>
+            <table class="u-table">
+                <c:forEach items="${recentUsers}" var="u">
+                    <tr>
+                        <td>
+                            <span class="user-name">${u.fullName}</span>
+                            <span class="user-id-badge">User ID: #${u.id}</span>
+                        </td>
+                        <td style="text-align: right;">
+                            <span class="role-tag">${u.role}</span>
+                        </td>
+                    </tr>
+                </c:forEach>
+                <c:if test="${empty recentUsers}">
+                    <tr><td colspan="2" style="text-align:center; color:#9ca3af; padding: 40px;">No new members to show.</td></tr>
+                </c:if>
+            </table>
         </div>
 
         <div class="card">
-            <h2>User Distribution</h2>
-            <small>By role and activity</small>
-
-            <div class="distribution-section">
-
-                <div class="dist-item">
-                    <div class="label-row">
-                        <span>Students</span>
-                        <span>1,089 (87%)</span>
-                    </div>
-                    <div class="progress-container">
-                        <div class="bar bar-student"></div>
-                    </div>
-                </div>
-
-                <div class="dist-item">
-                    <div class="label-row">
-                        <span>MHPs</span>
-                        <span>142 (11%)</span>
-                    </div>
-                    <div class="progress-container">
-                        <div class="bar bar-mhp"></div>
-                    </div>
-                </div>
-
-                <div class="dist-item">
-                    <div class="label-row">
-                        <span>Admins</span>
-                        <span>16 (2%)</span>
-                    </div>
-                    <div class="progress-container">
-                        <div class="bar bar-admin"></div>
-                    </div>
-                </div>
-
+            <h3 style="margin-top:0; color: #111827;">User Breakdown</h3>
+            <div class="bar-container">
+                <div class="bar-label"><span>Students</span><strong>${studentPercent}%</strong></div>
+                <div class="bar-bg"><div class="bar-fill" style="width: ${studentPercent}%; background: #06b6d4;"></div></div>
+            </div>
+            <div class="bar-container">
+                <div class="bar-label"><span>MHPs</span><strong>${mhpPercent}%</strong></div>
+                <div class="bar-bg"><div class="bar-fill" style="width: ${mhpPercent}%; background: #3b82f6;"></div></div>
+            </div>
+            <div class="bar-container">
+                <div class="bar-label"><span>Admins</span><strong>${adminPercent}%</strong></div>
+                <div class="bar-bg"><div class="bar-fill" style="width: ${adminPercent}%; background: #ec4899;"></div></div>
             </div>
         </div>
 
