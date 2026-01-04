@@ -249,6 +249,7 @@
     <form id="ratingForm" action="${pageContext.request.contextPath}/student/module/submit-rating" method="post" style="display:none;">
         <input type="hidden" name="contentId" value="${module.id}">
         <input type="hidden" id="form-rating" name="rating" value="0">
+        <input type="hidden" id="rating-pageIndex" name="pageIndex" value="0">
     </form>
 
     <div id="saveModal" class="modal-overlay">
@@ -351,6 +352,7 @@ var iframe = document.getElementById('videoFrame');
             return;
         }
         document.getElementById('form-rating').value = rating;
+        document.getElementById('rating-pageIndex').value = currentSectionIndex;
         document.getElementById('ratingForm').submit();
     }
 

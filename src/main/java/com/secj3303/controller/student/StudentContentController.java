@@ -93,7 +93,8 @@ public class StudentContentController {
     @PostMapping("/submit-rating")
     public String submitRating(@RequestParam("contentId") int contentId,
             @RequestParam("rating") int rating,
-            HttpSession session) {
+        @RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
+        HttpSession session) {
         User user = (User) session.getAttribute("loggedInUser");
         if (user == null)
             return "redirect:/auth/login";
@@ -101,6 +102,8 @@ public class StudentContentController {
         ContentProgress cp = getOrCreateProgress(user, contentId);
         cp.setRating(rating);
         cp.setProgressPercent(100);
+
+        cp.setLastVisitedPage(pageIndex);
         progressDao.saveOrUpdate(cp);
 
         return "redirect:/content/browse";

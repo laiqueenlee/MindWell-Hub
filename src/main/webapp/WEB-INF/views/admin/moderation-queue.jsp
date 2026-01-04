@@ -104,7 +104,7 @@
 
                         <div class="mq-tags-row">
                             <span class="mq-tag-type">${item.category}</span>
-                            <span class="mq-badge priority-medium">Published</span>
+                            <span class="mq-badge priority-medium">Pending</span>
                         </div>
 
                         <span class="mq-content-title">${item.title}</span>
