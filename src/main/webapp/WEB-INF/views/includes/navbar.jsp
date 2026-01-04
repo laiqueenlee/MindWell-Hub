@@ -1,6 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<!-- Fragment include: no DOCTYPE/html/body wrappers -->
 <style>
     .navbar{background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.1);position:sticky;top:0;z-index:1000;border-bottom:1px solid #e5e7eb}
     .navbar-container{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:64px}
