@@ -89,7 +89,6 @@
             <div class="tabs">
                 <button class="tab-btn active">My Content</button>
                 <button class="tab-btn" onclick="window.location.href='${pageContext.request.contextPath}/mhp/create-content'">Create New</button>
-                <button class="tab-btn">Analytics</button>
             </div>
 
             <c:if test="${empty contentList}">
