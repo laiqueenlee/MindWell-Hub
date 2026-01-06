@@ -277,7 +277,7 @@
             <div class="assistant-icon">✨</div>
             <div class="assistant-info">
                 <h2>Virtual Mental Health Coach</h2>
-                <p>AI-powered support for stress management and mental literacy[cite: 28, 33].</p>
+                <p>AI-powered support for stress management and mental literacy.</p>
             </div>
         </div>
         
@@ -292,7 +292,7 @@
                     Stress management 
                 </div>
                 <div class="suggestion" onclick="fillPrompt('Tell me about available telehealth options')">
-                    Professional support [cite: 18, 28]
+                    Professional support
                 </div>
             </div>
 
@@ -370,11 +370,11 @@
 
             // Provide expressive clickable links to hub pages (use controller routes under the app)
             if (message.includes("stress")) {
-                return 'Our Hub provides interactive modules on stress management techniques. <a href="' + basePath + '/student/education">Open stress modules</a>.';
+                return 'Our Hub provides interactive modules on stress management techniques. <a href="' + basePath + '/student/content/study-stress">Open stress modules</a>.';
             } else if (message.includes("symptom") || message.includes("recognize")) {
                 return 'Mental health literacy starts with recognizing signs of anxiety or depression. <a href="' + basePath + '/student/assessment/">Take a self-assessment</a>.';
             } else if (message.includes("telehealth") || message.includes("professional") || message.includes("help")) {
-                return 'The Hub offers access to certified coaches and scheduling. <a href="' + basePath + '/virtualSes/book-session-page">Book a telehealth session</a>.';
+                return 'The Hub offers access to certified coaches and scheduling. <a href="' + basePath + '/sessions/book">Book a telehealth session</a>.';
             } else if (message.includes("peer") || message.includes("community")|| message.includes("forum")) {
                 return 'Join our anonymous peer support forums. <a href="' + basePath + '/student/forum">Visit peer forums</a>.';
             } else {
