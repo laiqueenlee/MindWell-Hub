@@ -7,7 +7,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Clinical Research Assistant</title>
+    <title>MHP Resource Hub | Digital Mental Health Literacy Hub</title>
     <style>
         * {
             margin: 0;
@@ -69,8 +69,8 @@
         }
 
         .btn-back:hover {
-            border-color: #4a90e2; /* Changed to Blue for Professional/Medical feel */
-            color: #4a90e2;
+            border-color: #5dd5c3; 
+            color: #5dd5c3;
             transform: translateY(-1px);
         }
 
@@ -101,7 +101,7 @@
 
         .assistant-icon {
             font-size: 24px;
-            background: #e6f0ff; /* Light Blue background */
+            background: #e0f7f4;
             width: 40px;
             height: 40px;
             display: flex;
@@ -160,11 +160,12 @@
             transition: all 0.2s;
             display: inline-block;
             box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            margin-bottom: 8px;
         }
 
         .suggestion:hover {
-            border-color: #4a90e2;
-            color: #4a90e2;
+            border-color: #5dd5c3;
+            color: #5dd5c3;
         }
 
         /* Messages */
@@ -186,11 +187,11 @@
         }
 
         .user-message {
-            background-color: #4a90e2; /* Professional Blue */
+            background-color: #5dd5c3; 
             color: white;
             align-self: flex-end;
             border-bottom-right-radius: 2px;
-            box-shadow: 0 1px 2px rgba(74, 144, 226, 0.3);
+            box-shadow: 0 1px 2px rgba(93, 213, 195, 0.3);
         }
 
         /* Input Area */
@@ -222,13 +223,13 @@
         }
 
         .input-box:focus {
-            border-color: #4a90e2;
+            border-color: #5dd5c3;
             background-color: white;
-            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+            box-shadow: 0 0 0 3px rgba(93, 213, 195, 0.1);
         }
 
         .send-button {
-            background-color: #4a90e2;
+            background-color: #5dd5c3;
             color: white;
             border: none;
             border-radius: 50%;
@@ -239,11 +240,11 @@
             align-items: center;
             justify-content: center;
             transition: background-color 0.2s;
-            box-shadow: 0 2px 4px rgba(74, 144, 226, 0.3);
+            box-shadow: 0 2px 4px rgba(93, 213, 195, 0.3);
         }
 
         .send-button:hover {
-            background-color: #357abd;
+            background-color: #4cc4b3;
             transform: translateY(-1px);
         }
 
@@ -258,43 +259,39 @@
 </head>
 <body>
     <jsp:include page="/WEB-INF/views/includes/mhp-navbar.jsp" />
-    <!-- <c:choose>
-        <c:when test="${not empty loggedInUser.fullName}">
-            <c:set var="displayName" value="${loggedInUser.fullName}"/>
-        </c:when>
-        <c:otherwise>
-            <c:set var="displayName" value="${loggedInUser.username}"/>
-        </c:otherwise>
-    </c:choose> -->
 
     <div class="page-header-strip">
         <div class="header-inner-container">
             <div class="header-title">
-                <h1>Welcome, Dr. <c:out value="${displayName}" default="User"/></h1>
-                <p>MHP Workspace</p>
+                <h1>Welcome, Dr. <c:out value="${displayName}" default="Professional"/></h1>
+                <p>MHP Clinical Decision Support</p>
             </div>
             
             <a href="#" class="btn-back" onclick="if(history.length>1){ history.back(); } else { window.location.href='${pageContext.request.contextPath}/dashboard-mhp'; } return false;">
-                ← Back to Dashboard
+                ← Exit Workspace
             </a>
         </div>
     </div>
 
     <div class="chat-container">
         <div class="assistant-header">
-            <div class="assistant-icon">📚</div>
+            <div class="assistant-icon">⚕️</div>
             <div class="assistant-info">
-                <h2>AI Clinical Research Assistant</h2>
-                <p>Generate educational content, summarize articles, and find clinical resources.</p>
+                <h2>AI MHP Case Assistant</h2>
+                <p>Support tools for case management, session scheduling, and resource curation[cite: 51].</p>
             </div>
         </div>
         
         <div class="chat-box" id="chatBox">
             <div class="empty-state" id="emptyState">
-                <div class="empty-icon">📝</div>
-                <p class="empty-text">What topic are you researching today?</p>
-                <div class="suggestion" onclick="fillPrompt('Draft an article about Social Anxiety for teenagers')">
-                    Draft an article about Social Anxiety for teenagers
+                <div class="empty-icon">📂</div>
+                <p class="empty-text">Select a professional task to begin</p>
+                <div class="suggestion" onclick="fillPrompt('Identify resources for a student struggling with academic anxiety')">
+                    Identify student resources
+                </div>
+                <br>
+                <div class="suggestion" onclick="fillPrompt('Show AI-driven care suggestions for high-risk pattern students')">
+                    View AI care suggestions
                 </div>
             </div>
 
@@ -305,7 +302,7 @@
 
     <div class="input-container">
         <div class="input-wrapper">
-            <input type="text" class="input-box" id="userMessage" placeholder="Ask for articles, summaries, or content drafts...">
+            <input type="text" class="input-box" id="userMessage" placeholder="Search resources, summarize case notes, or manage sessions...">
             <button class="send-button" id="sendButton" onclick="sendMessage()">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="22" y1="2" x2="11" y2="13"></line>
@@ -334,7 +331,6 @@
                 messagesArea.classList.add("active");
             }
 
-            // User Message
             var userDiv = document.createElement("div");
             userDiv.classList.add("chat-message", "user-message");
             userDiv.textContent = userMessage;
@@ -343,17 +339,15 @@
             chatBox.scrollTop = chatBox.scrollHeight;
             document.getElementById("userMessage").value = "";
 
-            // Typing Indicator
             var typingDiv = document.createElement("div");
             typingDiv.classList.add("chat-message", "bot-message");
             typingDiv.id = "typingIndicator";
             typingDiv.style.fontStyle = "italic";
             typingDiv.style.color = "#999";
-            typingDiv.textContent = "Searching database...";
+            typingDiv.textContent = "Processing professional request...";
             messagesArea.appendChild(typingDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
 
-            // Bot Response Simulation
             setTimeout(function() {
                 var indicator = document.getElementById("typingIndicator");
                 if (indicator) indicator.remove();
@@ -361,7 +355,6 @@
                 var botResponse = getBotResponse(userMessage);
                 var botDiv = document.createElement("div");
                 botDiv.classList.add("chat-message", "bot-message");
-                // Allow simple HTML formatting for the research bot (line breaks)
                 botDiv.innerHTML = botResponse.replace(/\n/g, "<br>"); 
                 messagesArea.appendChild(botDiv);
 
@@ -369,45 +362,61 @@
             }, 1500);
         }
 
-        // SIMULATED AI RESPONSE FOR MHP / RESEARCH CONTEXT
+        // UPDATED MHP RESPONSES based on project requirements [cite: 51, 54, 56]
         function getBotResponse(message) {
             message = message.toLowerCase();
             
-            if (message.includes("anxiety") || message.includes("social")) {
-                if (message.includes("article") || message.includes("draft") || message.includes("post")) {
-                    return "<strong>Draft Content: Understanding Social Anxiety</strong>\n\n" +
-                           "Social anxiety is more than just shyness. It's a persistent fear of being watched and judged by others.\n\n" +
-                           "<strong>Key points for your readers:</strong>\n" +
-                           "1. It affects daily activities.\n" +
-                           "2. Physical symptoms include rapid heart rate and sweating.\n" +
-                           "3. CBT is a highly effective treatment.\n\n" +
-                           "Would you like me to expand on the treatment section?";
-                }
-                return "I found several clinical resources on Anxiety:\n" +
-                       "1. <em>Journal of Anxiety Disorders (2024):</em> Efficacy of exposure therapy.\n" +
-                       "2. <em>APA Guidelines:</em> Update on GAD diagnostic criteria.\n" +
-                       "Would you like a summary of the first article?";
-            } 
-            else if (message.includes("cbt") || message.includes("therapy")) {
-                return "<strong>Cognitive Behavioral Therapy (CBT) Resource:</strong>\n\n" +
-                       "CBT is the gold standard for many disorders. I can generate a worksheet for your patients regarding 'Cognitive Distortions' or find the latest meta-analysis on CBT efficacy.";
-            } 
-            else if (message.includes("depression") || message.includes("mood")) {
-                return "For depression, current literature emphasizes a combination of pharmacotherapy and psychotherapy. I have access to 5 new articles regarding Behavioral Activation techniques. Shall I list them?";
-            } 
-            else if (message.includes("stress") || message.includes("burnout")) {
-                return "<strong>Drafting content on Burnout:</strong>\n\n" +
-                       "\"Are you feeling emotionally exhausted? Burnout is a state of emotional, physical, and mental exhaustion caused by excessive and prolonged stress.\"\n\n" +
-                       "I can outline 5 actionable tips for your patients to recover from burnout.";
-            } 
-            else {
-                return "I am ready to assist with your research. You can ask me to:\n" +
-                       "- Find articles on specific disorders.\n" +
-                       "- Draft educational social media posts.\n" +
-                       "- Summarize clinical guidelines.\n" +
-                       "- Create patient worksheets.";
-            }
-        }
+    
+if (message.includes("article") || message.includes("research") || message.includes("read")) {
+        return "<strong>MHP Clinical Article Database:</strong>\n\n" +
+               "I found the following clinical resources for your review:\n\n" +
+               "1. <strong>Strengthening Mental Health Response</strong>\n" +
+               "   <em>Citation:</em> World Health Organization (WHO), 2022. [cite: 13]\n" +
+               "   <em>Origin:</em> <a href='https://www.who.int/news-room/fact-sheets/detail/mental-health-strengthening-our-response' target='_blank'>who.int</a>\n" +
+               "   <em>Description:</em> A comprehensive overview of global mental health strategies, focusing on literacy as a tool to reduce the treatment gap and improve pathways to intervention. [cite: 13, 16]\n\n" +
+               "2. <strong>Anxiety Disorders in Higher Education</strong>\n" +
+               "   <em>Citation:</em> National Institute of Mental Health (NIMH), 2023. [cite: 11]\n" +
+               "   <em>Origin:</em> <a href='https://www.nimh.nih.gov/health/topics/anxiety-disorders' target='_blank'>nimh.nih.gov</a>\n" +
+               "   <em>Description:</em> Research highlighting how academic pressures and social adjustments contribute to stress and anxiety among university students, emphasizing the need for targeted literacy programs. [cite: 11, 13]\n\n" +
+               "Would you like to securely share these digital resources with your students? [cite: 51]";
+    }
+
+    // INTERACTIVE QUIZ WITH MULTIPLE QUESTIONS AND ANSWERS
+    else if (message.includes("quiz") || message.includes("test") || message.includes("knowledge")) {
+        return "<strong>Interactive Literacy Quiz Preview:</strong>\n\n" +
+               "These modules ensure students grasp foundational concepts to reduce stigma[cite: 24, 26]:\n\n" +
+               "<strong>Q1:</strong> Which feature allows students to share coping experiences anonymously? [cite: 19, 30]\n" +
+               "   <em>Answer:</em> <strong>Peer Support Forums.</strong> [cite: 30, 49]\n\n" +
+               "<strong>Q2:</strong> What is the primary purpose of self-assessment tools in the Hub? [cite: 15]\n" +
+               "   <em>Answer:</em> <strong>To help students recognize early symptoms of stress or anxiety.</strong> [cite: 12, 15]\n\n" +
+               "<strong>Q3:</strong> How does the AI recommendation engine personalize the student experience? [cite: 33]\n" +
+               "   <em>Answer:</em> <strong>By suggesting content and tools based on individual needs and interactions.</strong> [cite: 33, 54]\n\n" +
+               "Shall I assign these knowledge checks to your current student groups? [cite: 23, 27]";
+    }
+
+    // VIDEO CONTENT WITH LINKS AND DESCRIPTIONS
+    else if (message.includes("video") || message.includes("watch") || message.includes("simulation")) {
+        return "<strong>Mental Health Educational Videos:</strong>\n\n" +
+               "The following modules are designed for high engagement through simulations and infographics[cite: 25]:\n\n" +
+               "1. <strong>Recognizing Mental Health Symptoms</strong> [cite: 24]\n" +
+               "   <em>Link:</em> <a href='https://www.youtube.com/watch?v=DxIDKZHW3-E' target='_blank'>Watch Simulation</a>\n" +
+               "   <em>Focus:</em> Identifying distress signals and early signs of depression. [cite: 24, 59]\n\n" +
+               "2. <strong>Stress Management & Coping Strategies</strong> [cite: 17]\n" +
+               "   <em>Link:</em> <a href='https://www.youtube.com/watch?v=rkZl2gxZooM' target='_blank'>Watch Module</a>\n" +
+               "   <em>Focus:</em> Practical techniques for handling academic and financial pressures. [cite: 11, 18]\n\n" +
+               "These videos support a mobile-responsive design for accessible, on-demand learning[cite: 31].";
+    }
+
+    // DEFAULT MHP ASSISTANCE
+    else {
+        return "Welcome to the MHP Resource Workspace[cite: 22, 46]. I am here to assist with:\n" +
+               "- <strong>Articles:</strong> Finding clinical literacy content with proper citations. [cite: 51]\n" +
+               "- <strong>Quizzes:</strong> Previewing interactive modules and knowledge checks. [cite: 23, 26]\n" +
+               "- <strong>Videos:</strong> Curating simulation-based content for student engagement. [cite: 25]\n\n" +
+               "How would you like to assist your students today? [cite: 47, 50]";
+    }
+}
+        
 
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById("userMessage").addEventListener("keypress", function(event) {

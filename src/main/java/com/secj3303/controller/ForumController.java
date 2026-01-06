@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,20 +37,20 @@ import com.secj3303.model.User;
 @RequestMapping("/student/forum")
 public class ForumController {
     private static final Logger log = LoggerFactory.getLogger(ForumController.class);
+    @Autowired
+    private ForumPostDao postDao;
 
-    private final ForumPostDao postDao;
-    private final ForumReplyDao replyDao;
-    private final com.secj3303.dao.ForumPostLikeDao likeDao;
-    private final StudentReportDao studentReportDao;
-    private final ModerationItemDao moderationItemDao;
-    public ForumController(ForumPostDao postDao, ForumReplyDao replyDao, com.secj3303.dao.ForumPostLikeDao likeDao,
-                           StudentReportDao studentReportDao, ModerationItemDao moderationItemDao) {
-        this.postDao = postDao;
-        this.replyDao = replyDao;
-        this.likeDao = likeDao;
-        this.studentReportDao = studentReportDao;
-        this.moderationItemDao = moderationItemDao;
-    }
+    @Autowired
+    private ForumReplyDao replyDao;
+
+    @Autowired
+    private com.secj3303.dao.ForumPostLikeDao likeDao;
+
+    @Autowired
+    private StudentReportDao studentReportDao;
+
+    @Autowired
+    private ModerationItemDao moderationItemDao;
 
     // --- PAGE ROUTES ---
 

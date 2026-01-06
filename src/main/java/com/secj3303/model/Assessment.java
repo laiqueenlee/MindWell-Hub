@@ -1,40 +1,61 @@
 package com.secj3303.model;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "assessments")
 public class Assessment {
-    private String assessmentId;
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "assessment_id")
+    private Long assessmentId;
+    
+    @Column(name = "username", nullable = false)
     private String username;
+    
+    @Column(name = "assessment_type", nullable = false)
     private String assessmentType; // "mood", "stress", "anxiety", "wellbeing"
+    
+    @Column(name = "score")
     private int score;
+    
+    @Column(name = "category")
     private String category; // e.g., "Good", "Fair", "Poor"
+    
+    @Column(name = "feedback", columnDefinition = "TEXT")
     private String feedback;
+    
+    @Column(name = "completed_at")
     private LocalDateTime completedAt;
-    private String[] recommendations;
+    
+    @Column(name = "recommendations", columnDefinition = "TEXT")
+    private String recommendationsText; // Store as comma-separated values
 
     public Assessment() {}
 
     public Assessment(String assessmentType) {
         this.assessmentType = assessmentType;
+        this.completedAt = LocalDateTime.now();
     }
 
-    public Assessment(String assessmentId, String username, String assessmentType, 
-                      int score, String category, String feedback, LocalDateTime completedAt) {
-        this.assessmentId = assessmentId;
+    public Assessment(String username, String assessmentType, 
+                      int score, String category, String feedback) {
         this.username = username;
         this.assessmentType = assessmentType;
         this.score = score;
         this.category = category;
         this.feedback = feedback;
-        this.completedAt = completedAt;
+        this.completedAt = LocalDateTime.now();
     }
 
     // Getters & Setters
-    public String getAssessmentId() {
+    public Long getAssessmentId() {
         return assessmentId;
     }
 
-    public void setAssessmentId(String assessmentId) {
+    public void setAssessmentId(Long assessmentId) {
         this.assessmentId = assessmentId;
     }
 
@@ -87,10 +108,25 @@ public class Assessment {
     }
 
     public String[] getRecommendations() {
-        return recommendations;
+        if (recommendationsText == null || recommendationsText.isEmpty()) {
+            return new String[0];
+        }
+        return recommendationsText.split("\\|\\|");
     }
 
     public void setRecommendations(String[] recommendations) {
-        this.recommendations = recommendations;
+        if (recommendations == null || recommendations.length == 0) {
+            this.recommendationsText = "";
+        } else {
+            this.recommendationsText = String.join("||", recommendations);
+        }
+    }
+    
+    public String getRecommendationsText() {
+        return recommendationsText;
+    }
+    
+    public void setRecommendationsText(String recommendationsText) {
+        this.recommendationsText = recommendationsText;
     }
 }
