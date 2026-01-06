@@ -666,7 +666,7 @@
                 </div>
             </c:if>
             
-            <c:forEach var="r" items="${replies}">
+            <c:forEach var="r" items="${replies}" varStatus="status">
                 <div class="reply">
                     <div class="reply-header">
                         <div class="reply-avatar"><c:out value="${r.avatar}"/></div>
@@ -694,6 +694,27 @@
 
     <script>
         const contextPath = '${pageContext.request.contextPath}/';
+        
+        // Sort replies with latest first on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const repliesSection = document.querySelector('.replies-section');
+            if (!repliesSection) return;
+            
+            const replies = Array.from(repliesSection.querySelectorAll('.reply'));
+            if (replies.length === 0) return;
+            
+            // Sort replies by date in descending order (latest first)
+            replies.sort((a, b) => {
+                const aTime = a.querySelector('.reply-time') ? new Date(a.querySelector('.reply-time').textContent.trim()) : new Date(0);
+                const bTime = b.querySelector('.reply-time') ? new Date(b.querySelector('.reply-time').textContent.trim()) : new Date(0);
+                return bTime - aTime; // descending order (latest first)
+            });
+            
+            // Re-append replies in sorted order
+            replies.forEach(reply => {
+                repliesSection.appendChild(reply);
+            });
+        });
         
         async function toggleLikePost(event, btn) {
             event && event.stopPropagation && event.stopPropagation();
