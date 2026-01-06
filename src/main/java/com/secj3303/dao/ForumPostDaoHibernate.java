@@ -66,4 +66,12 @@ public class ForumPostDaoHibernate implements ForumPostDao {
             .setParameter("since", since)
             .getResultList();
     }
+
+        // added for admin analytics
+    @Transactional(readOnly = true)
+    public long countAllPosts() {
+        return (long) sessionFactory.getCurrentSession()
+                .createQuery("select count(fp) from ForumPost fp")
+                .uniqueResult();
+    }
 }
