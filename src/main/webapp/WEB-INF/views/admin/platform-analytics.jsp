@@ -1,3 +1,5 @@
+<!-- remove from final demo and menu -->
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">

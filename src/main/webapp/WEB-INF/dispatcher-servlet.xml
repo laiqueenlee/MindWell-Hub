@@ -37,7 +37,7 @@
   <property name="url" value="jdbc:mysql://localhost:3307/mindwell?useSSL=false&amp;serverTimezone=UTC" />
   <property name="username" value="root" /> 
   <property name="password" value="" />
-  </bean>
+  </bean> 
 
 
     <bean id="sessionFactory"
@@ -59,9 +59,8 @@
     <property name="sessionFactory" ref="sessionFactory" />
   </bean>
 
-  <tx:annotation-driven transaction-manager="transactionManager" />
-
-
+  <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" /> 
+  
   <mvc:resources mapping="/resources/**" location="/resources/" />
 
 

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.secj3303.model.Role;
 import com.secj3303.model.User;
 
 @Repository
@@ -59,5 +60,32 @@ public class UserDaoHibernate implements UserDao {
     public long countAllUsers() {
         Query<Long> query = sessionFactory.getCurrentSession().createQuery("select count(u) from User u", Long.class);
         return query.uniqueResult();
+    }
+
+
+    //added this for mhp-virtual ses part
+    @Override
+    public List<User> findByRole(Role role) {
+    return sessionFactory.getCurrentSession()
+            .createQuery("FROM User u WHERE u.role = :role", User.class)
+            .setParameter("role", role)
+            .getResultList();
+    }
+
+    @Override
+    public long countByRole(Role role) {
+        String hql = "SELECT count(u) FROM User u WHERE u.role = :role";
+        return sessionFactory.getCurrentSession()
+                    .createQuery(hql, Long.class)
+                    .setParameter("role", role)
+                    .uniqueResult();
+    }
+
+    @Override
+    public List<User> findRecentUsers(int limit) {
+    return sessionFactory.getCurrentSession()
+            .createQuery("from User order by id desc", User.class) // "id desc" puts newest at top
+            .setMaxResults(limit)
+            .list();
     }
 }

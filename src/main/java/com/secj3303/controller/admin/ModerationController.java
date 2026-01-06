@@ -44,13 +44,13 @@ public class ModerationController {
     }
 
     // --- Header Stats ---
-    @ModelAttribute
-    public void addGlobalAttributes(Model model) {
-        model.addAttribute("totalUsers", userDao.countAllUsers());
-        model.addAttribute("activeContentCount", contentDao.countActiveContent());
-        model.addAttribute("forumPostsCount", 892); 
-        model.addAttribute("dailyActiveCount", 432); 
-    }
+    // @ModelAttribute
+    // public void addGlobalAttributes(Model model) {
+    //     model.addAttribute("totalUsers", userDao.countAllUsers());
+    //     model.addAttribute("activeContentCount", contentDao.countActiveContent());
+    //     model.addAttribute("forumPostsCount", 892); 
+    //     model.addAttribute("dailyActiveCount", 432); 
+    // }
 
     // 1. Show Queue (Fixed to fetch Content)
     @GetMapping("/moderation-queue") 

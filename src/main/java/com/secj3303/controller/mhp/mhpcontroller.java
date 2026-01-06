@@ -7,12 +7,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.secj3303.dao.ContentDao;
+import com.secj3303.dao.MhpAvailabilityDao;
 import com.secj3303.model.Role;
 import com.secj3303.model.User;
 import com.secj3303.model.Content.Content;
+import com.secj3303.model.MhpAvailability;
 
 @Controller
 @RequestMapping("/mhp")
@@ -20,6 +24,9 @@ public class mhpcontroller {
 
     private final ContentDao contentDao;
 
+    @Autowired
+    private MhpAvailabilityDao mhpAvailabilityDao; // Added
+    
     @Autowired
     public mhpcontroller(ContentDao contentDao) {
         this.contentDao = contentDao;
@@ -57,6 +64,49 @@ public class mhpcontroller {
         // 3. Return the JSP view
         // This assumes your file is located at: /WEB-INF/views/mhp/chatbot.jsp
         return "mhp/chatbot"; 
+    }
+
+    @GetMapping("/availability")
+    public String showManageAvailability(Model model, HttpSession session) {
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        if (loggedInUser == null || loggedInUser.getRole() != Role.MENTAL_HEALTH_PROFESSIONAL) {
+            return "redirect:/auth/login";
+        }
+
+        List<MhpAvailability> slots = mhpAvailabilityDao.findByMhpId(loggedInUser.getId());
+        model.addAttribute("user", loggedInUser);
+        model.addAttribute("slots", slots);
+
+        return "mhp/manage_availability";
+    }
+
+    @PostMapping("/availability/add")
+    public String addSlot(
+            @RequestParam String day, 
+            @RequestParam String startTime, 
+            @RequestParam String endTime, 
+            HttpSession session) {
+            
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        
+        if (loggedInUser != null && loggedInUser.getRole() == Role.MENTAL_HEALTH_PROFESSIONAL) {
+            // Validation: Ensure start is before end (Optional but recommended)
+            if (startTime.compareTo(endTime) < 0) {
+                String combinedTime = startTime + " - " + endTime; // e.g. "09:00 - 10:00"
+                MhpAvailability newSlot = new MhpAvailability(loggedInUser, day, combinedTime);
+                mhpAvailabilityDao.save(newSlot);
+            }
+        }
+        return "redirect:/mhp/availability";
+    }
+
+    @PostMapping("/availability/delete")
+    public String deleteSlot(@RequestParam Integer slotId, HttpSession session) {
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        if (loggedInUser != null && loggedInUser.getRole() == Role.MENTAL_HEALTH_PROFESSIONAL) {
+            mhpAvailabilityDao.delete(slotId);
+        }
+        return "redirect:/mhp/availability";
     }
 
     @GetMapping("/logout")
