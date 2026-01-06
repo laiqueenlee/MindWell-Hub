@@ -1,5 +1,6 @@
 package com.secj3303.controller.mhp;
 
+import java.time.LocalDate;
 import java.util.List;
 import javax.servlet.http.HttpSession;
 
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.secj3303.dao.ContentDao;
 import com.secj3303.dao.MhpAvailabilityDao;
+import com.secj3303.dao.VirtualSessionDao;
 import com.secj3303.model.Role;
 import com.secj3303.model.User;
 import com.secj3303.model.Content.Content;
@@ -22,15 +24,15 @@ import com.secj3303.model.MhpAvailability;
 @RequestMapping("/mhp")
 public class mhpcontroller {
 
-    private final ContentDao contentDao;
+    @Autowired
+    private ContentDao contentDao;
 
     @Autowired
     private MhpAvailabilityDao mhpAvailabilityDao; // Added
-    
+
     @Autowired
-    public mhpcontroller(ContentDao contentDao) {
-        this.contentDao = contentDao;
-    }
+    private VirtualSessionDao virtualSessionDao;
+    
 
     // --- MHP DASHBOARD ---
     @GetMapping({"/home", "/content"})
@@ -39,6 +41,19 @@ public class mhpcontroller {
         if (loggedInUser == null || loggedInUser.getRole() != Role.MENTAL_HEALTH_PROFESSIONAL) {
             return "redirect:/auth/login";
         }
+
+        LocalDate today = LocalDate.now();
+        LocalDate startOfWeek = today.with(java.time.DayOfWeek.MONDAY);
+        LocalDate endOfWeek = today.with(java.time.DayOfWeek.SUNDAY);
+
+        Long todaysSessions = virtualSessionDao.countSessionsByDate(today);
+        Long weeksSessions = virtualSessionDao.countSessionsThisWeek(startOfWeek, endOfWeek);
+        Long totalStudents = virtualSessionDao.countTotalStudents();
+
+        model.addAttribute("todaysSessions", todaysSessions);
+        model.addAttribute("weeksSessions", weeksSessions);
+        model.addAttribute("totalStudents", totalStudents);
+
 
         // FETCH REAL DATA FROM REPOSITORY
         List<Content> contentList = contentDao.findAll();

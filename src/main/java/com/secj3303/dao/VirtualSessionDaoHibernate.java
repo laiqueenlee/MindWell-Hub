@@ -77,5 +77,32 @@ public class VirtualSessionDaoHibernate implements VirtualSessionDao {
         .createQuery("FROM VirtualSession WHERE student.id = :sid ORDER BY sessionDate ASC", VirtualSession.class)
         .setParameter("sid", studentId)
         .list();
-}
+    }
+
+    @Override
+    public Long countSessionsByDate(LocalDate date) {
+        String hql = "SELECT COUNT(vs) FROM VirtualSession vs WHERE vs.sessionDate = :sDate";
+        return sessionFactory.getCurrentSession()
+                .createQuery(hql, Long.class)
+                .setParameter("sDate", date)
+                .uniqueResult();
+    }
+
+    @Override
+    public Long countSessionsThisWeek(LocalDate startOfWeek, LocalDate endOfWeek) {
+        String hql = "SELECT COUNT(vs) FROM VirtualSession vs WHERE vs.sessionDate BETWEEN :start AND :end";
+        return sessionFactory.getCurrentSession()
+                .createQuery(hql, Long.class)
+                .setParameter("start", startOfWeek)
+                .setParameter("end", endOfWeek)
+                .uniqueResult();
+    }
+
+    @Override
+    public Long countTotalStudents() {
+        String hql = "SELECT COUNT(DISTINCT vs.student.id) FROM VirtualSession vs";
+        return sessionFactory.getCurrentSession()
+                .createQuery(hql, Long.class)
+                .uniqueResult();
+    }
 }

@@ -13,4 +13,7 @@ public interface VirtualSessionDao {
     List<VirtualSession> findAll();
     List<VirtualSession> findByMhpAndDate(Integer mhpId, LocalDate date);
     List<VirtualSession> findByStudentId(Integer studentId);
+    Long countSessionsByDate(LocalDate date);
+    Long countSessionsThisWeek(LocalDate startOfWeek, LocalDate endOfWeek);
+    Long countTotalStudents();
 }
