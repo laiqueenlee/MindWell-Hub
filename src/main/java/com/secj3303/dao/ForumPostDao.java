@@ -1,5 +1,6 @@
 package com.secj3303.dao;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -18,11 +19,11 @@ public interface ForumPostDao {
 
     void save(ForumPost post);
 
-    @Transactional
-    public void delete(Long id) {
-        ForumPost p = findById(id);
-        if (p != null) sessionFactory.getCurrentSession().delete(p);
-    }
+    void delete(Long id);
+
+    long countByAuthorId(Long authorId);
+
+    List<ForumPost> findRecentByAuthorId(Long authorId, LocalDateTime since);
 
     // added for admin analytics
     @Transactional(readOnly = true)
@@ -31,4 +32,5 @@ public interface ForumPostDao {
                 .createQuery("select count(fp) from ForumPost fp")
                 .uniqueResult();
     }
+
 }

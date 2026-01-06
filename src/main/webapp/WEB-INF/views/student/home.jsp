@@ -1,5 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="java.time.LocalDateTime" %>
+<%@ page import="java.time.temporal.ChronoUnit" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -115,10 +117,6 @@
                             <h3>${forumPostsVal}</h3>
                             <p>Forum Posts</p>
                         </div>
-                        <div class="stat" tabindex="0" role="button" aria-label="View badges earned">
-                            <h3>${badgesEarnedVal}</h3>
-                            <p>Badges Earned</p>
-                        </div>
                     </div>
 
                     <div class="card">
@@ -170,12 +168,40 @@
 
                     <div class="card recent-activity">
                         <h4>Recent Activity</h4>
-                        <ul>
-                            <li>Completed Stress Assessment <span class="time-ago">2 hours ago</span></li>
-                            <li>Earned 'Mindful Learner' Badge <span class="time-ago">1 day ago</span></li>
-                            <li>Viewed 'Coping with Anxiety' Module <span class="time-ago">2 days ago</span></li>
-                            <li>Posted in Support Forum <span class="time-ago">3 days ago</span></li>
-                        </ul>
+                        <c:choose>
+                            <c:when test="${not empty recentActivities}">
+                                <ul>
+                                    <c:forEach var="activity" items="${recentActivities}">
+                                        <li>
+                                            ${activity.description}
+                                            <span class="time-ago">
+                                                <%
+                                                    com.secj3303.model.RecentActivity act = (com.secj3303.model.RecentActivity) pageContext.getAttribute("activity");
+                                                    LocalDateTime actTime = act.getTimestamp();
+                                                    LocalDateTime now = LocalDateTime.now();
+                                                    long minutes = ChronoUnit.MINUTES.between(actTime, now);
+                                                    long hours = ChronoUnit.HOURS.between(actTime, now);
+                                                    long days = ChronoUnit.DAYS.between(actTime, now);
+                                                    
+                                                    String timeAgo;
+                                                    if (minutes < 60) {
+                                                        timeAgo = minutes + " minute" + (minutes != 1 ? "s" : "") + " ago";
+                                                    } else if (hours < 24) {
+                                                        timeAgo = hours + " hour" + (hours != 1 ? "s" : "") + " ago";
+                                                    } else {
+                                                        timeAgo = days + " day" + (days != 1 ? "s" : "") + " ago";
+                                                    }
+                                                    out.print(timeAgo);
+                                                %>
+                                            </span>
+                                        </li>
+                                    </c:forEach>
+                                </ul>
+                            </c:when>
+                            <c:otherwise>
+                                <p style="color:var(--muted);font-size:13px;text-align:center;padding:20px;">No recent activity in the past week</p>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                 </div>
 
@@ -193,15 +219,7 @@
                         </div>
                     </div>
 
-                    <div class="card achievements" style="margin-top:14px">
-                        <h4>🏆 Latest Achievements</h4>
-                        <div class="badge" tabindex="0">Mindful Learner — Completed 5 modules</div>
-                        <div class="badge" tabindex="0">Consistent Tracker — 7 day streak</div>
-                        <div class="badge" tabindex="0">Community Helper — 10+ helpful posts</div>
-                    </div>
-                    
 
-                    <!-- Modified this part for virtual session-->
                     <div class="card" style="margin-top:14px">
                         <h4>📅 Upcoming Sessions</h4>
                         

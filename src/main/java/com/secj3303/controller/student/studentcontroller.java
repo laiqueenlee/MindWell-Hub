@@ -1,5 +1,11 @@
 package com.secj3303.controller.student;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,13 +13,20 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.secj3303.dao.ContentProgressDao;
-import com.secj3303.dao.ContentDao;
 
+
+import com.secj3303.dao.AssessmentDao;
 import com.secj3303.dao.ContentDao;
 import com.secj3303.dao.ContentProgressDao;
+import com.secj3303.dao.ForumPostDao;
+import com.secj3303.dao.ForumReplyDao;
+import com.secj3303.model.Assessment;
+import com.secj3303.model.ForumPost;
+import com.secj3303.model.ForumReply;
+import com.secj3303.model.RecentActivity;
+
 import com.secj3303.dao.VirtualSessionDao;
+
 import com.secj3303.model.User;
 
 @Controller
@@ -24,7 +37,14 @@ public class studentcontroller {
     @Autowired
     private ContentDao contentDao;
     @Autowired
+    private ForumPostDao forumPostDao;
+    @Autowired
+    private ForumReplyDao forumReplyDao;
+    @Autowired
+    private AssessmentDao assessmentDao;
+
     private com.secj3303.dao.VirtualSessionDao virtualSessionDao;
+
 
     // --- STUDENT HOME PAGE (GET) ---
     @GetMapping("/home")
@@ -54,8 +74,55 @@ public class studentcontroller {
 
         model.addAttribute("learningModulesCompleted", modulesString);
 
+        // Fetch forum posts count for the logged-in user
+        long userForumPostsCount = forumPostDao.countByAuthorId(Long.valueOf(loggedInUser.getId()));
+        model.addAttribute("forumPosts", userForumPostsCount);
+
+        // Fetch recent activities within the last week
+        LocalDateTime oneWeekAgo = LocalDateTime.now().minus(7, ChronoUnit.DAYS);
+        List<RecentActivity> recentActivities = new ArrayList<>();
+
+        // Get recent assessments
+        List<Assessment> recentAssessments = assessmentDao.findRecentByUsername(loggedInUser.getUsername(), oneWeekAgo);
+        for (Assessment assessment : recentAssessments) {
+            String desc = "Completed " + capitalizeFirst(assessment.getAssessmentType()) + " Assessment";
+            recentActivities.add(new RecentActivity(desc, assessment.getCompletedAt(), "assessment"));
+        }
+
+        // Get recent forum posts
+        List<ForumPost> recentPosts = forumPostDao.findRecentByAuthorId(Long.valueOf(loggedInUser.getId()), oneWeekAgo);
+        for (ForumPost post : recentPosts) {
+            String desc = "Posted in Support Forum: \"" + truncate(post.getTitle(), 30) + "\"";
+            recentActivities.add(new RecentActivity(desc, post.getCreatedAt(), "post"));
+        }
+
+        // Get recent forum replies
+        List<ForumReply> recentReplies = forumReplyDao.findRecentByAuthorId(Long.valueOf(loggedInUser.getId()), oneWeekAgo);
+        for (ForumReply reply : recentReplies) {
+            String desc = "Replied in Forum Discussion";
+            recentActivities.add(new RecentActivity(desc, reply.getCreatedAt(), "reply"));
+        }
+
+        // Sort by timestamp descending and limit to 5 most recent
+        recentActivities.sort(Comparator.comparing(RecentActivity::getTimestamp).reversed());
+        if (recentActivities.size() > 5) {
+            recentActivities = recentActivities.subList(0, 5);
+        }
+
+        model.addAttribute("recentActivities", recentActivities);
+
         // Render the student homepage
         return "/student/home";  // => /WEB-INF/views/student/home.jsp
+    }
+
+    private String capitalizeFirst(String str) {
+        if (str == null || str.isEmpty()) return str;
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
+    }
+
+    private String truncate(String str, int length) {
+        if (str == null) return "";
+        return str.length() > length ? str.substring(0, length) + "..." : str;
     }
 
     // --- STUDENT PROFILE PAGE (GET) ---

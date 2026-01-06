@@ -1,7 +1,9 @@
 package com.secj3303.dao;
 
-import com.secj3303.model.Assessment;
+import java.time.LocalDateTime;
 import java.util.List;
+
+import com.secj3303.model.Assessment;
 
 public interface AssessmentDao {
     // Create
@@ -24,4 +26,7 @@ public interface AssessmentDao {
     
     // Reporting - Get assessment history (last N assessments)
     List<Assessment> findRecentByUsername(String username, int limit);
+
+    // Get assessments within a time range
+    List<Assessment> findRecentByUsername(String username, LocalDateTime since);
 }
