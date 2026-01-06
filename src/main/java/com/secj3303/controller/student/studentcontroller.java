@@ -122,44 +122,6 @@ public class studentcontroller {
         return str.length() > length ? str.substring(0, length) + "..." : str;
     }
 
-    // --- STUDENT PROFILE PAGE (GET) ---
-    @GetMapping("/profile")
-    public String showStudentProfilePage(Model model, HttpSession session) {
-
-        // Retrieve the logged-in user from the session
-        User loggedInUser = (User) session.getAttribute("loggedInUser");
-
-        if (loggedInUser == null) {
-            // If no user is logged in, redirect to the login page
-            return "redirect:/auth/login";
-        }
-
-        // Add the logged-in user details to the model
-        model.addAttribute("user", loggedInUser);
-
-        // Render the student profile page
-        return "/student/profile";  // => /WEB-INF/views/student/profile.jsp
-    }
-
-    // --- STUDENT DASHBOARD PAGE (GET) ---
-    @GetMapping("/dashboard")
-    public String showStudentDashboardPage(Model model, HttpSession session) {
-
-        // Retrieve the logged-in user from the session
-        User loggedInUser = (User) session.getAttribute("loggedInUser");
-
-        if (loggedInUser == null) {
-            // If no user is logged in, redirect to the login page
-            return "redirect:/auth/login";
-        }
-
-        // Add the logged-in user and other necessary data to the model
-        model.addAttribute("user", loggedInUser);
-
-        // Render the student dashboard page
-        return "/student/dashboard"; // => /WEB-INF/views/student/dashboard.jsp
-    }
-
     // --- STUDENT LOGOUT (GET) ---
     @GetMapping("/logout")
     public String studentLogout(HttpSession session) {
