@@ -44,12 +44,14 @@
         .btn-save-draft { background-color: #00d2d3; color: white; opacity: 0.9; }
         .btn-publish { background-color: #00d2d3; color: white; }
         .btn-publish:hover, .btn-save-draft:hover { opacity: 1; filter: brightness(1.05); }
-        .ai-card { border: 1px solid #eee; border-radius: 12px; padding: 20px; background-color: #fff; height: fit-content; }
-        .ai-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
-        .ai-header h3 { font-size: 1.2rem; color: #2c3e50; }
-        .ai-input-box { position: relative; width: 100%; }
-        .ai-input-box input { width: 100%; padding: 12px 40px 12px 15px; border: 1px solid #ddd; border-radius: 20px; outline: none; font-size: 0.9rem; }
-        .ai-input-box i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #95a5a6; cursor: pointer; }
+        .ai-link-wrapper { text-decoration: none; display: block; }
+        .ai-card { border: 1px solid #eee; border-radius: 12px; padding: 24px; background-color: #fff; transition: all 0.3s ease; cursor: pointer; position: relative; overflow: hidden; display: flex; justify-content: space-between; align-items: center; }
+        .ai-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0, 210, 211, 0.15); border-color: #00d2d3; }
+        .ai-content { display: flex; flex-direction: column; gap: 8px; }
+        .ai-title { font-size: 1.3rem; color: #2c3e50; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .ai-subtitle { font-size: 0.95rem; color: #95a5a6; }
+        .ai-action-icon { font-size: 1.2rem; color: #e0e0e0; transition: 0.3s; }
+        .ai-card:hover .ai-action-icon { color: #00d2d3; transform: translateX(5px); }
         .dynamic-section { display: none; background: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px dashed #ddd; margin-bottom: 20px; }
         .section-label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: #00d2d3; margin-bottom: 10px; display: block; font-weight: 700; }
         .question-block { background: #fff; padding: 15px; border: 1px solid #eee; border-radius: 8px; margin-bottom: 15px; }
@@ -353,15 +355,21 @@
         </div>
 
         <div class="sidebar-column">
-            <div class="ai-card">
-                <div class="ai-header">
-                    <h3>Ask AI <i class="fas fa-robot" style="color:#00d2d3;"></i></h3>
+            <a href="${pageContext.request.contextPath}/mhp/chatbot" class="ai-link-wrapper">
+                <div class="ai-card">
+                    <div class="ai-content">
+                        <div class="ai-title">
+                            Ask AI <i class="fas fa-robot" style="color:#00d2d3;"></i>
+                        </div>
+                        <div class="ai-subtitle">
+                            Ask me anything!
+                        </div>
+                    </div>
+                    <div class="ai-action-icon">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
                 </div>
-                <div class="ai-input-box">
-                    <input type="text" placeholder="Generate quiz questions...">
-                    <i class="fas fa-paper-plane"></i>
-                </div>
-            </div>
+            </a>
         </div>
     </div>
 
