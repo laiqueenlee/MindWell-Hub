@@ -75,6 +75,24 @@ public class studentcontroller {
         long userForumPostsCount = forumPostDao.countByAuthorId(Long.valueOf(loggedInUser.getId()));
         model.addAttribute("forumPosts", userForumPostsCount);
 
+        // Fetch completed assessments count
+        List<Assessment> allAssessments = assessmentDao.findByUsername(loggedInUser.getUsername());
+        int completedAssessmentsCount = allAssessments.size();
+        model.addAttribute("completedAssessments", completedAssessmentsCount);
+
+        // Calculate wellness score (average of all assessment scores converted to percentage)
+        // Assessment scores are out of 25, so we convert to out of 100
+        int wellnessScore = 0; // Default
+        if (!allAssessments.isEmpty()) {
+            int totalScore = 0;
+            for (Assessment assessment : allAssessments) {
+                totalScore += assessment.getScore();
+            }
+            double averageScore = (double) totalScore / allAssessments.size();
+            wellnessScore = (int) Math.round((averageScore / 25.0) * 100);
+        }
+        model.addAttribute("wellnessScore", wellnessScore);
+
         // Fetch recent activities within the last week
         LocalDateTime oneWeekAgo = LocalDateTime.now().minus(7, ChronoUnit.DAYS);
         List<RecentActivity> recentActivities = new ArrayList<>();
