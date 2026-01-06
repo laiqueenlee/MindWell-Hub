@@ -246,7 +246,7 @@
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 17a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm6-8h-1V7a5 5 0 0 0-10 0v2H6c-1.1 0-2 .9-2 2v7c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-7c0-1.1-.9-2-2-2zM9 7a3 3 0 0 1 6 0v2H9V7z"/></svg>
                         <input id="password" type="password" name="password" placeholder="Enter your password" required/>
                     </div>
-                    <a class="right-link" href="${pageContext.request.contextPath}/auth/forgot">Forgot password?</a>
+                    
                 </div>
 
                 <div class="field" style="margin-top:8px;">

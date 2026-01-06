@@ -278,7 +278,7 @@
             <div class="assistant-icon">⚕️</div>
             <div class="assistant-info">
                 <h2>AI MHP Case Assistant</h2>
-                <p>Support tools for case management, session scheduling, and resource curation[cite: 51].</p>
+                <p>Support tools for case management, session scheduling, and resource curation.</p>
             </div>
         </div>
         
@@ -371,49 +371,49 @@ if (message.includes("article") || message.includes("research") || message.inclu
         return "<strong>MHP Clinical Article Database:</strong>\n\n" +
                "I found the following clinical resources for your review:\n\n" +
                "1. <strong>Strengthening Mental Health Response</strong>\n" +
-               "   <em>Citation:</em> World Health Organization (WHO), 2022. [cite: 13]\n" +
+               "   <em>Citation:</em> World Health Organization (WHO), 2022. \n" +
                "   <em>Origin:</em> <a href='https://www.who.int/news-room/fact-sheets/detail/mental-health-strengthening-our-response' target='_blank'>who.int</a>\n" +
-               "   <em>Description:</em> A comprehensive overview of global mental health strategies, focusing on literacy as a tool to reduce the treatment gap and improve pathways to intervention. [cite: 13, 16]\n\n" +
+               "   <em>Description:</em> A comprehensive overview of global mental health strategies, focusing on literacy as a tool to reduce the treatment gap and improve pathways to intervention. \n\n" +
                "2. <strong>Anxiety Disorders in Higher Education</strong>\n" +
-               "   <em>Citation:</em> National Institute of Mental Health (NIMH), 2023. [cite: 11]\n" +
+               "   <em>Citation:</em> National Institute of Mental Health (NIMH), 2023. \n" +
                "   <em>Origin:</em> <a href='https://www.nimh.nih.gov/health/topics/anxiety-disorders' target='_blank'>nimh.nih.gov</a>\n" +
-               "   <em>Description:</em> Research highlighting how academic pressures and social adjustments contribute to stress and anxiety among university students, emphasizing the need for targeted literacy programs. [cite: 11, 13]\n\n" +
-               "Would you like to securely share these digital resources with your students? [cite: 51]";
+               "   <em>Description:</em> Research highlighting how academic pressures and social adjustments contribute to stress and anxiety among university students, emphasizing the need for targeted literacy programs. \n\n" +
+               "Would you like to securely share these digital resources with your students? ";
     }
 
     // INTERACTIVE QUIZ WITH MULTIPLE QUESTIONS AND ANSWERS
     else if (message.includes("quiz") || message.includes("test") || message.includes("knowledge")) {
         return "<strong>Interactive Literacy Quiz Preview:</strong>\n\n" +
-               "These modules ensure students grasp foundational concepts to reduce stigma[cite: 24, 26]:\n\n" +
-               "<strong>Q1:</strong> Which feature allows students to share coping experiences anonymously? [cite: 19, 30]\n" +
-               "   <em>Answer:</em> <strong>Peer Support Forums.</strong> [cite: 30, 49]\n\n" +
-               "<strong>Q2:</strong> What is the primary purpose of self-assessment tools in the Hub? [cite: 15]\n" +
-               "   <em>Answer:</em> <strong>To help students recognize early symptoms of stress or anxiety.</strong> [cite: 12, 15]\n\n" +
-               "<strong>Q3:</strong> How does the AI recommendation engine personalize the student experience? [cite: 33]\n" +
-               "   <em>Answer:</em> <strong>By suggesting content and tools based on individual needs and interactions.</strong> [cite: 33, 54]\n\n" +
-               "Shall I assign these knowledge checks to your current student groups? [cite: 23, 27]";
+               "These modules ensure students grasp foundational concepts to reduce stigma:\n\n" +
+               "<strong>Q1:</strong> Which feature allows students to share coping experiences anonymously? \n" +
+               "   <em>Answer:</em> <strong>Peer Support Forums.</strong> \n\n" +
+               "<strong>Q2:</strong> What is the primary purpose of self-assessment tools in the Hub? \n" +
+               "   <em>Answer:</em> <strong>To help students recognize early symptoms of stress or anxiety.</strong> \n\n" +
+               "<strong>Q3:</strong> How does the AI recommendation engine personalize the student experience? \n" +
+               "   <em>Answer:</em> <strong>By suggesting content and tools based on individual needs and interactions.</strong> \n\n" +
+               "Shall I assign these knowledge checks to your current student groups? ";
     }
 
     // VIDEO CONTENT WITH LINKS AND DESCRIPTIONS
     else if (message.includes("video") || message.includes("watch") || message.includes("simulation")) {
         return "<strong>Mental Health Educational Videos:</strong>\n\n" +
-               "The following modules are designed for high engagement through simulations and infographics[cite: 25]:\n\n" +
-               "1. <strong>Recognizing Mental Health Symptoms</strong> [cite: 24]\n" +
+               "The following modules are designed for high engagement through simulations and infographics:\n\n" +
+               "1. <strong>Recognizing Mental Health Symptoms</strong> \n" +
                "   <em>Link:</em> <a href='https://www.youtube.com/watch?v=DxIDKZHW3-E' target='_blank'>Watch Simulation</a>\n" +
-               "   <em>Focus:</em> Identifying distress signals and early signs of depression. [cite: 24, 59]\n\n" +
-               "2. <strong>Stress Management & Coping Strategies</strong> [cite: 17]\n" +
+               "   <em>Focus:</em> Identifying distress signals and early signs of depression. \n\n" +
+               "2. <strong>Stress Management & Coping Strategies</strong> \n" +
                "   <em>Link:</em> <a href='https://www.youtube.com/watch?v=rkZl2gxZooM' target='_blank'>Watch Module</a>\n" +
-               "   <em>Focus:</em> Practical techniques for handling academic and financial pressures. [cite: 11, 18]\n\n" +
-               "These videos support a mobile-responsive design for accessible, on-demand learning[cite: 31].";
+               "   <em>Focus:</em> Practical techniques for handling academic and financial pressures. \n\n" +
+               "These videos support a mobile-responsive design for accessible, on-demand learning.";
     }
 
     // DEFAULT MHP ASSISTANCE
     else {
-        return "Welcome to the MHP Resource Workspace[cite: 22, 46]. I am here to assist with:\n" +
-               "- <strong>Articles:</strong> Finding clinical literacy content with proper citations. [cite: 51]\n" +
-               "- <strong>Quizzes:</strong> Previewing interactive modules and knowledge checks. [cite: 23, 26]\n" +
-               "- <strong>Videos:</strong> Curating simulation-based content for student engagement. [cite: 25]\n\n" +
-               "How would you like to assist your students today? [cite: 47, 50]";
+        return "Welcome to the MHP Resource Workspace. I am here to assist with:\n" +
+               "- <strong>Articles:</strong> Finding clinical literacy content with proper citations. \n" +
+               "- <strong>Quizzes:</strong> Previewing interactive modules and knowledge checks. \n" +
+               "- <strong>Videos:</strong> Curating simulation-based content for student engagement. \n\n" +
+               "How would you like to assist your students today? ";
     }
 }
         

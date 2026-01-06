@@ -89,7 +89,6 @@
             <div class="tabs">
                 <button class="tab-btn active">My Content</button>
                 <button class="tab-btn" onclick="window.location.href='${pageContext.request.contextPath}/mhp/create-content'">Create New</button>
-                <button class="tab-btn">Analytics</button>
             </div>
 
             <c:if test="${empty contentList}">
@@ -151,9 +150,21 @@
                     </button>
                 </div>
                 <div class="stats-grid">
-                    <div class="stat-card"><small>Today's Sessions</small><strong>4</strong></div>
-                    <div class="stat-card"><small>This Week</small><strong>12</strong></div>
-                    <div class="stat-card"><small>Total Students</small><strong>34</strong></div>
+                    <div class="stat-card">
+                        <small>Today's Sessions</small>
+                        <strong>${todaysSessions}</strong>
+                    </div>
+
+                    <div class="stat-card">
+                        <small>This Week</small>
+                        <strong>${weeksSessions}</strong>
+                    </div>
+
+                    <div class="stat-card">
+                        <small>Total Students</small>
+                        <strong>${totalStudents}</strong>
+                    </div>
+
                 </div>
             </div>
         </div>

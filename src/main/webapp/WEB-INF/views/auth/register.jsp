@@ -338,7 +338,7 @@
 >>>>>>> fb844a2af79b55394aa02ce33b43c2031182c9b8
             </c:if>
 
-            <form action="${pageContext.request.contextPath}/auth/register" method="post" novalidate>
+            <form action="${pageContext.request.contextPath}/auth/register" method="post" novalidate id="registerForm">
                 <div class="field">
                     <label for="fullName">Full Name:</label>
                     <div class="input-icon">
@@ -427,6 +427,9 @@
                         <input id="confirm" type="password" name="confirmPassword" placeholder="Confirm your password" required/>
                     </div>
                 </div>
+
+                <div id="passwordError" class="error" style="display:none; margin-bottom:12px;"></div>
+                <div id="validationError" class="error" style="display:none; margin-bottom:12px;"></div>
 
                 <div class="field" style="margin-top:8px;">
                     <button type="submit" class="btn btn-primary">Create Account</button>
@@ -576,6 +579,126 @@
     });
     options.forEach(o => o.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.click(); } }));
 })();
+
+// Password validation
+document.addEventListener('DOMContentLoaded', function() {
+    const registerForm = document.getElementById('registerForm');
+    const fullNameInput = document.getElementById('fullName');
+    const emailInput = document.getElementById('email');
+    const usernameInput = document.getElementById('username');
+    const roleSelect = document.getElementById('role');
+    const passwordInput = document.getElementById('password');
+    const confirmInput = document.getElementById('confirm');
+    const passwordErrorDiv = document.getElementById('passwordError');
+    const validationErrorDiv = document.getElementById('validationError');
+
+    function validateEmail(email) {
+        // Email must contain @ and end with .com (or other valid domain)
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    function validateAllFields() {
+        const fullName = fullNameInput.value.trim();
+        const email = emailInput.value.trim();
+        const username = usernameInput.value.trim();
+        const role = roleSelect.value.trim();
+        const password = passwordInput.value.trim();
+        const confirm = confirmInput.value.trim();
+
+        // Check if any field is empty
+        if (!fullName) {
+            validationErrorDiv.textContent = 'Full Name cannot be empty';
+            validationErrorDiv.style.display = 'block';
+            return false;
+        }
+
+        if (!email) {
+            validationErrorDiv.textContent = 'Email cannot be empty';
+            validationErrorDiv.style.display = 'block';
+            return false;
+        }
+
+        // Validate email format
+        if (!validateEmail(email)) {
+            validationErrorDiv.textContent = 'Email must be in format: example@domain.com';
+            validationErrorDiv.style.display = 'block';
+            return false;
+        }
+
+        if (!username) {
+            validationErrorDiv.textContent = 'Username cannot be empty';
+            validationErrorDiv.style.display = 'block';
+            return false;
+        }
+
+        if (!role) {
+            validationErrorDiv.textContent = 'Please select your role';
+            validationErrorDiv.style.display = 'block';
+            return false;
+        }
+
+        if (!password) {
+            validationErrorDiv.textContent = 'Password cannot be empty';
+            validationErrorDiv.style.display = 'block';
+            return false;
+        }
+
+        if (!confirm) {
+            validationErrorDiv.textContent = 'Confirm Password cannot be empty';
+            validationErrorDiv.style.display = 'block';
+            return false;
+        }
+
+        // Check if passwords match
+        if (password !== confirm) {
+            passwordErrorDiv.textContent = 'Passwords do not match';
+            passwordErrorDiv.style.display = 'block';
+            validationErrorDiv.style.display = 'none';
+            return false;
+        }
+
+        validationErrorDiv.style.display = 'none';
+        passwordErrorDiv.style.display = 'none';
+        return true;
+    }
+
+    function validatePasswordsMatch() {
+        const password = passwordInput.value.trim();
+        const confirm = confirmInput.value.trim();
+        
+        if (password && confirm && password !== confirm) {
+            passwordErrorDiv.textContent = 'Passwords do not match';
+            passwordErrorDiv.style.display = 'block';
+            return false;
+        } else {
+            passwordErrorDiv.style.display = 'none';
+            return true;
+        }
+    }
+
+    // Real-time validation for password match
+    confirmInput.addEventListener('input', validatePasswordsMatch);
+    passwordInput.addEventListener('input', validatePasswordsMatch);
+
+    // Real-time validation for email format
+    emailInput.addEventListener('input', function() {
+        const email = emailInput.value.trim();
+        if (email && !validateEmail(email)) {
+            validationErrorDiv.textContent = 'Email must be in format: example@domain.com';
+            validationErrorDiv.style.display = 'block';
+        } else {
+            validationErrorDiv.style.display = 'none';
+        }
+    });
+
+    // Form submission validation
+    registerForm.addEventListener('submit', function(e) {
+        if (!validateAllFields()) {
+            e.preventDefault();
+        }
+    });
+});
 </script>
 </body>
 </html>

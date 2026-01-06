@@ -114,7 +114,6 @@
             <div class="tabs">
                 <button class="tab-btn" onclick="window.location.href='${pageContext.request.contextPath}/mhp/content'">My Content</button>
                 <button class="tab-btn active">${isEdit ? 'Edit Content' : 'Create New'}</button>
-                <button class="tab-btn">Analytics</button>
             </div>
 
             <div class="form-card">
