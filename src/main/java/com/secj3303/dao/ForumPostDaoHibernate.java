@@ -1,5 +1,6 @@
 package com.secj3303.dao;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -41,5 +42,28 @@ public class ForumPostDaoHibernate implements ForumPostDao {
     public void delete(Long id) {
         ForumPost p = findById(id);
         if (p != null) sessionFactory.getCurrentSession().delete(p);
+    }
+
+    @Transactional(readOnly = true)
+    public long countByAuthorId(Long authorId) {
+        if (authorId == null) return 0;
+        Session session = sessionFactory.getCurrentSession();
+        return session.createQuery(
+                "select count(*) from ForumPost fp where fp.authorId = :authorId",
+                Long.class)
+            .setParameter("authorId", authorId)
+            .getSingleResult();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ForumPost> findRecentByAuthorId(Long authorId, LocalDateTime since) {
+        if (authorId == null || since == null) return List.of();
+        Session session = sessionFactory.getCurrentSession();
+        return session.createQuery(
+                "from ForumPost fp where fp.authorId = :authorId and fp.createdAt >= :since order by fp.createdAt desc",
+                ForumPost.class)
+            .setParameter("authorId", authorId)
+            .setParameter("since", since)
+            .getResultList();
     }
 }

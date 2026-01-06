@@ -1,5 +1,6 @@
 package com.secj3303.dao;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -42,5 +43,17 @@ public class ForumReplyDaoHibernate implements ForumReplyDao {
     @Transactional
     public void save(ForumReply reply) {
         sessionFactory.getCurrentSession().saveOrUpdate(reply);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ForumReply> findRecentByAuthorId(Long authorId, LocalDateTime since) {
+        if (authorId == null || since == null) return List.of();
+        Session session = sessionFactory.getCurrentSession();
+        return session.createQuery(
+                "from ForumReply r where r.authorId = :authorId and r.createdAt >= :since order by r.createdAt desc",
+                ForumReply.class)
+            .setParameter("authorId", authorId)
+            .setParameter("since", since)
+            .getResultList();
     }
 }
