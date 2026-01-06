@@ -981,9 +981,20 @@
             window.location.href = '${pageContext.request.contextPath}/student/forum/post/' + postId;
         }
 
-        // store original order for 'recent' sorting
         document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.post').forEach((p, i) => p.dataset.origOrder = i);
+            const input = document.getElementById('searchInput');
+            const clearBtn = document.getElementById('searchClear');
+            if (!input || !clearBtn) return;
+            
+            clearBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                input.value = '';
+                searchPosts();
+                input.focus();
+            });
+            
+            input.addEventListener('input', () => searchPosts());
+            searchPosts();
         });
 
     </script>
@@ -1005,7 +1016,7 @@
     </script>
 
     <script>
-        // sort posts for 'popular' or restore 'recent'
+        // sort posts for 'popular' or sort by recent for 'recent'
         function switchTab(tab, evt) {
             // update active button
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
@@ -1026,8 +1037,15 @@
                     return bReplies - aReplies;
                 });
             } else {
-                // recent: restore original server-provided order
-                posts.sort((a, b) => (parseInt(a.dataset.origOrder) || 0) - (parseInt(b.dataset.origOrder) || 0));
+                // recent: sort by creation time (most recent first)
+                posts.sort((a, b) => {
+                    // Extract creation time from post-info (last span element)
+                    const aTimeEl = a.querySelector('.post-info span:last-child');
+                    const bTimeEl = b.querySelector('.post-info span:last-child');
+                    const aTime = aTimeEl ? new Date(aTimeEl.textContent.trim()) : new Date(0);
+                    const bTime = bTimeEl ? new Date(bTimeEl.textContent.trim()) : new Date(0);
+                    return bTime - aTime; // descending order (most recent first)
+                });
             }
 
             // re-append in new order
