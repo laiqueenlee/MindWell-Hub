@@ -123,7 +123,7 @@
             <div class="info">
                 <div style="font-size: 14px; color: #6b7280;">Total Users</div>
                 <div class="number">${not empty totalUsers ? totalUsers : '0'}</div>
-                <div class="percent">+12%</div>
+
             </div>
             <div class="icon">👤</div> 
         </div>
@@ -132,7 +132,7 @@
             <div class="info">
                 <div style="font-size: 14px; color: #6b7280;">Active Content</div>
                 <div class="number">${not empty activeContentCount ? activeContentCount : 0}</div>
-                <div class="percent">+8%</div>
+
             </div>
             <div class="icon">📄</div>
         </div>
@@ -141,7 +141,6 @@
             <div class="info">
                 <div style="font-size: 14px; color: #6b7280;">Forum Posts</div>
                 <div class="number">${not empty totalForumPosts ? totalForumPosts : '0'}</div>
-                <div class="percent" style="color: #10b981;">Live</div>
             </div>
             <div class="icon">💬</div>
         </div>
@@ -150,7 +149,6 @@
             <div class="info">
                 <div style="font-size: 14px; color: #6b7280;">Daily Active</div>
                 <div class="number">432</div>
-                <div class="percent">+5%</div>
             </div>
             <div class="icon">📈</div>
         </div>
@@ -169,7 +167,7 @@
         <a href="${pageContext.request.contextPath}/admin/forum-moderation-queue" 
            class="tab-link ${fn:contains(pageContext.request.requestURI, '/admin/forum-moderation-queue') ? 'active' : ''}">Forum Moderation Queue</a>
 
-        <a href="${pageContext.request.contextPath}/admin/platform-analytics" 
-           class="tab-link ${fn:contains(pageContext.request.requestURI, '/admin/platform-analytics') ? 'active' : ''}">Platform Analytics</a>
+        <!-- <a href="${pageContext.request.contextPath}/admin/platform-analytics" 
+           class="tab-link ${fn:contains(pageContext.request.requestURI, '/admin/platform-analytics') ? 'active' : ''}">Platform Analytics</a> -->
     </div>
 </div>
