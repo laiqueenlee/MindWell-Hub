@@ -151,9 +151,21 @@
                     </button>
                 </div>
                 <div class="stats-grid">
-                    <div class="stat-card"><small>Today's Sessions</small><strong>4</strong></div>
-                    <div class="stat-card"><small>This Week</small><strong>12</strong></div>
-                    <div class="stat-card"><small>Total Students</small><strong>34</strong></div>
+                    <div class="stat-card">
+                        <small>Today's Sessions</small>
+                        <strong>${todaysSessions}</strong>
+                    </div>
+
+                    <div class="stat-card">
+                        <small>This Week</small>
+                        <strong>${weeksSessions}</strong>
+                    </div>
+
+                    <div class="stat-card">
+                        <small>Total Students</small>
+                        <strong>${totalStudents}</strong>
+                    </div>
+
                 </div>
             </div>
         </div>
