@@ -199,18 +199,62 @@
                         <div class="badge" tabindex="0">Consistent Tracker — 7 day streak</div>
                         <div class="badge" tabindex="0">Community Helper — 10+ helpful posts</div>
                     </div>
+                    
 
+                    <!-- Modified this part for virtual session-->
                     <div class="card" style="margin-top:14px">
-                        <h4>📅 Upcoming</h4>
-                        <div style="font-size:13px;color:var(--muted)"><b>Counseling Session with Dr Mitchell</b></div>
-                        <br>
-                        <div style="margin-top:8px">
-                            <a href="${pageContext.request.contextPath}/sessions/detail" class="btn btn-primary-grey">View Details</a>
-                        </div>
-                        &nbsp;
-                        <div style="margin-top:8px">
-                            <a href="${pageContext.request.contextPath}/sessions/meeting" class="btn btn-primary">Start Session</a>
-                        </div>
+                        <h4>📅 Upcoming Sessions</h4>
+                        
+                        <c:choose>
+                            <c:when test="${not empty sessions}">
+                                <c:forEach var="session" items="${sessions}">
+                                    <div style="padding: 12px 0; border-bottom: 1px solid #f2f6f5; margin-bottom:10px;">
+                                        <div style="font-size:13px; color:var(--muted); margin-bottom: 4px;">
+                                            <b>Counseling with ${session.mhp.fullName}</b>
+                                        </div>
+                                        
+                                        <div style="font-size:12px; color:var(--muted);">
+                                            <i class="fas fa-calendar-day"></i> ${session.sessionDate} &nbsp;
+                                            <i class="fas fa-clock"></i> ${session.time}
+                                        </div>
+
+                                        <div style="margin-top:6px;">
+                                            <c:choose>
+                                                <c:when test="${session.confirmed}">
+                                                    <span style="font-size:10px; padding:2px 8px; background:#e8f9f7; color:var(--teal-dark); border-radius:12px; font-weight:700;">
+                                                        CONFIRMED
+                                                    </span>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <span style="font-size:10px; padding:2px 8px; background:#fff3cd; color:#856404; border-radius:12px; font-weight:700;">
+                                                        PENDING APPROVAL
+                                                    </span>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </div>
+
+                                        <div style="margin-top:12px; display:flex; flex-direction:column; gap:8px;">
+                                            <a href="${pageContext.request.contextPath}/sessions/detail?id=${session.id}" class="btn btn-primary-grey" style="text-align:center; padding: 6px;">
+                                                View Details
+                                            </a>
+                                            
+                                            <c:if test="${session.confirmed}">
+                                                <a href="${pageContext.request.contextPath}/sessions/meeting?sessionId=${session.id}" 
+                                                class="btn btn-primary" 
+                                                style="text-align:center; padding: 6px;">
+                                                    Start Session
+                                                </a>
+                                            </c:if>
+                                        </div>
+                                    </div>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <div style="font-size:13px; color:var(--muted); text-align:center; padding:15px;">
+                                    No sessions booked yet.
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
 
                     <a href="${pageContext.request.contextPath}/student/chatbot" class="ai-link-wrapper">

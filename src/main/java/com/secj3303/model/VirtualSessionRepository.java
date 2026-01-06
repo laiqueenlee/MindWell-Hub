@@ -7,13 +7,13 @@ import java.util.stream.Collectors;
 public class VirtualSessionRepository {
 
     private static List<VirtualSession> sessions = new ArrayList<>();
-    private static Long nextId = 1L;
+    private static Integer nextId = 1;
 
     // Save a new session or update existing one
     public static void save(VirtualSession session) {
         if (session.getId() == null) {
             // Assign a simple string ID
-            session.setId("VS" + nextId++);
+            session.setId(nextId++);
             sessions.add(session);
         } else {
             // Update existing session

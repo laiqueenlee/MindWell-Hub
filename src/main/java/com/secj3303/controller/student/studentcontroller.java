@@ -2,6 +2,7 @@ package com.secj3303.controller.student;
 
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.secj3303.dao.ContentProgressDao;
 import com.secj3303.dao.ContentDao;
 
+import com.secj3303.dao.ContentDao;
+import com.secj3303.dao.ContentProgressDao;
+import com.secj3303.dao.VirtualSessionDao;
 import com.secj3303.model.User;
 
 @Controller
@@ -19,6 +23,8 @@ public class studentcontroller {
     private ContentProgressDao contentProgressDao;
     @Autowired
     private ContentDao contentDao;
+    @Autowired
+    private com.secj3303.dao.VirtualSessionDao virtualSessionDao;
 
     // --- STUDENT HOME PAGE (GET) ---
     @GetMapping("/home")
@@ -32,6 +38,7 @@ public class studentcontroller {
 
         // Add the logged-in user to the model
         model.addAttribute("user", loggedInUser);
+        model.addAttribute("sessions", virtualSessionDao.findByStudentId(loggedInUser.getId()));
 
         // In StudentController.java inside showStudentHomePage()
 
