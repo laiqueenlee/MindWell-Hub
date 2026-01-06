@@ -127,11 +127,19 @@
             </li>
 
             <li class="navbar-item">
+                <a href="${pageContext.request.contextPath}/mhp/availability" 
+                   class="navbar-link ${fn:contains(pageContext.request.requestURI, '/availability') ? 'active' : ''}">
+                    Manage Availability
+                </a>
+            </li>
+
+            <li class="navbar-item">
                 <a href="${pageContext.request.contextPath}/mhp/chatbot" 
                    class="navbar-link ${fn:contains(pageContext.request.requestURI, '/chatbot') ? 'active' : ''}">
                     Chatbot
                 </a>
             </li>
+            
 
             <c:if test="${not empty user}">
                 <li class="navbar-item">

@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+
 import com.secj3303.dao.AssessmentDao;
 import com.secj3303.dao.ContentDao;
 import com.secj3303.dao.ContentProgressDao;
@@ -23,6 +24,9 @@ import com.secj3303.model.Assessment;
 import com.secj3303.model.ForumPost;
 import com.secj3303.model.ForumReply;
 import com.secj3303.model.RecentActivity;
+
+import com.secj3303.dao.VirtualSessionDao;
+
 import com.secj3303.model.User;
 
 @Controller
@@ -39,6 +43,9 @@ public class studentcontroller {
     @Autowired
     private AssessmentDao assessmentDao;
 
+    private com.secj3303.dao.VirtualSessionDao virtualSessionDao;
+
+
     // --- STUDENT HOME PAGE (GET) ---
     @GetMapping("/home")
     public String showStudentHomePage(Model model, HttpSession session) {
@@ -51,6 +58,7 @@ public class studentcontroller {
 
         // Add the logged-in user to the model
         model.addAttribute("user", loggedInUser);
+        model.addAttribute("sessions", virtualSessionDao.findByStudentId(loggedInUser.getId()));
 
         // In StudentController.java inside showStudentHomePage()
 
