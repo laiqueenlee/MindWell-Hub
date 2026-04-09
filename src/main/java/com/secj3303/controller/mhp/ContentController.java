@@ -2,12 +2,13 @@ package com.secj3303.controller.mhp;
 
 import java.time.LocalDate;
 import java.util.List;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,12 +16,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.secj3303.dao.ContentDao;
-import com.secj3303.model.User;
 import com.secj3303.model.Content.ArticleSection;
 import com.secj3303.model.Content.Content;
 import com.secj3303.model.Content.QuizOption;
 import com.secj3303.model.Content.QuizQuestion;
 import com.secj3303.model.Content.VideoSection;
+import com.secj3303.model.User;
 
 @Controller
 @RequestMapping("/mhp")
@@ -33,7 +34,6 @@ public class ContentController {
         this.contentDao = contentDao;
     }
 
-    // --- CREATE CONTENT PAGE (GET) ---
     @GetMapping("/create-content")
     public String showCreateContentPage(Model model, HttpSession session) {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
@@ -46,7 +46,6 @@ public class ContentController {
         return "mhp/create_content"; 
     }
 
-    // --- EDIT CONTENT PAGE (GET) ---
     @GetMapping("/edit-content")
     @Transactional(readOnly = true)
     public String showEditContentPage(@RequestParam("id") int id, Model model, HttpSession session) {
@@ -65,7 +64,6 @@ public class ContentController {
         return "mhp/create_content";
     }
 
-    // --- SAVE CONTENT PROCESS (POST) ---
     @PostMapping("/save-content")
     public String processSaveContent(
             @ModelAttribute Content content, 
@@ -76,7 +74,6 @@ public class ContentController {
         if (loggedInUser == null) { return "redirect:/auth/login"; }
 
         if (content.getId() > 0) {
-            // --- UPDATE EXISTING RECORD (Smart Merge) ---
             Content existing = contentDao.findByIdWithAssociations(content.getId());
             if (existing == null) return "redirect:/mhp/home";
 
@@ -107,9 +104,7 @@ public class ContentController {
             contentDao.save(existing);
         } else {
 
-            // 2. SET THE AUTHOR HERE
             content.setAuthor(loggedInUser.getUsername());
-            // --- CREATE NEW RECORD ---
             content.setType(type);
             if (content.getDate() == null || content.getDate().isEmpty()) {
                 content.setDate(LocalDate.now().toString());
@@ -137,7 +132,6 @@ public class ContentController {
         return "redirect:/mhp/home";
     }
 
-    // --- DELETE CONTENT (GET) ---
     @GetMapping("/delete-content")
     public String deleteContent(@RequestParam("id") int id, HttpSession session) {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
@@ -146,10 +140,6 @@ public class ContentController {
         contentDao.delete(id);
         return "redirect:/mhp/home";
     }
-
-    // ==========================================
-    // PRIVATE MERGE HELPERS
-    // ==========================================
 
     private void mergeArticleSections(Content existing, List<ArticleSection> newSections) {
         if (newSections == null) { existing.getArticleSections().clear(); return; }

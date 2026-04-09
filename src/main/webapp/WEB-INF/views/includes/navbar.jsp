@@ -21,10 +21,11 @@
             <li><a href="${pageContext.request.contextPath}/student/chatbot" class="navbar-link ${pageContext.request.requestURI.contains('/chatbot') ? 'active' : ''}">Chatbot</a></li>
 
             <c:if test="${not empty sessionScope.loggedInUser}">
+                <c:set var="displayName" value="${not empty sessionScope.loggedInUser.fullName ? sessionScope.loggedInUser.fullName : sessionScope.loggedInUser.username}" />
                 <li>
                         <div class="user-info">
-                            <div class="user-avatar">${fn:toUpperCase(fn:substring(sessionScope.loggedInUser.username, 0, 1))}</div>
-                            <span>${sessionScope.loggedInUser.username}</span>
+                            <div class="user-avatar">${fn:toUpperCase(fn:substring(displayName, 0, 1))}</div>
+                            <span>${displayName}</span>
                         </div>
                 </li>
             </c:if>

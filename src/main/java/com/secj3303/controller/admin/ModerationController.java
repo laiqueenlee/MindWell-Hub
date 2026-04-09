@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,9 +17,8 @@ import com.secj3303.dao.ForumPostDao;
 import com.secj3303.dao.ModerationItemDao;
 import com.secj3303.dao.StudentReportDao;
 import com.secj3303.dao.UserDao;
-
+import com.secj3303.model.Content.Content;
 import com.secj3303.model.User;
-import com.secj3303.model.Content.Content; 
 
 @Controller
 @RequestMapping("/admin")
@@ -43,49 +41,33 @@ public class ModerationController {
         this.studentReportDao = studentReportDao;
     }
 
-    // --- Header Stats ---
-    // @ModelAttribute
-    // public void addGlobalAttributes(Model model) {
-    //     model.addAttribute("totalUsers", userDao.countAllUsers());
-    //     model.addAttribute("activeContentCount", contentDao.countActiveContent());
-    //     model.addAttribute("forumPostsCount", 892); 
-    //     model.addAttribute("dailyActiveCount", 432); 
-    // }
 
-    // 1. Show Queue (Fixed to fetch Content)
     @GetMapping("/moderation-queue") 
     public String showModerationQueue(Model model, HttpSession session) {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
         if (loggedInUser == null) return "redirect:/auth/login";
 
-        // RESTORED: Fetch from ContentDao like your old controller
-        // Note: If you want to see FLAGGED items too, ensure this method returns them
-        // or creates a custom list combining "published" and "Flagged"
         model.addAttribute("moderationItems", contentDao.findByStatus("Pending"));
         model.addAttribute("user", loggedInUser);
         
         return "/admin/moderation-queue"; 
     }
 
-    // Forum-specific moderation page (alias)
     @GetMapping("/forum-moderation-queue")
     public String showForumModerationQueue(Model model, HttpSession session) {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
         if (loggedInUser == null) return "redirect:/auth/login";
 
-        // start with persisted moderation items
         java.util.List<com.secj3303.model.Content.ModerationItem> items = new java.util.ArrayList<>();
         java.util.List<com.secj3303.model.Content.ModerationItem> persisted = moderationItemDao.findPendingItems();
         if (persisted != null) items.addAll(persisted);
 
-        // append student reports as in-memory ModerationItem objects (id set negative to avoid collision)
         java.util.List<com.secj3303.model.Report.StudentReport> reports = studentReportDao.findPendingReports();
         java.util.Map<Integer, com.secj3303.model.Report.StudentReport> studentReportsMap = new java.util.HashMap<>();
         java.util.Map<Integer, String> studentReporters = new java.util.HashMap<>();
         if (reports != null) {
             for (com.secj3303.model.Report.StudentReport sr : reports) {
                 if (sr == null) continue;
-                // If this report is for a reply, mark as Comment and encode reply id; otherwise mark as Forum Post
                 com.secj3303.model.Content.ModerationItem mi;
                 if (sr.getReplyId() != null) {
                     mi = new com.secj3303.model.Content.ModerationItem("Comment", "medium", "reply:" + sr.getReplyId(), null, sr.getReason());
@@ -93,13 +75,11 @@ public class ModerationController {
                     mi = new com.secj3303.model.Content.ModerationItem("Forum Post", "medium", "post:" + (sr.getPostId() == null ? "0" : sr.getPostId()), null, sr.getReason());
                 }
                 mi.setStatus(sr.getStatus() == null ? "PENDING" : sr.getStatus());
-                // mark id negative so we can detect it's from student_report
                 int nid = sr.getId() == null ? 0 : -sr.getId();
                 mi.setId(nid);
                 items.add(mi);
                 studentReportsMap.put(nid, sr);
 
-                // resolve reporter name if available
                 String reporterName = "Unknown";
                 try {
                     if (sr.getReporterId() != null) {
@@ -119,12 +99,10 @@ public class ModerationController {
         model.addAttribute("moderationItems", items == null ? java.util.Collections.emptyList() : items);
         model.addAttribute("user", loggedInUser);
 
-        // Build helper maps used by the JSP: reportedPosts and reportedPostExcerpts
         java.util.Map<Integer, Object> reportedPosts = new java.util.HashMap<>();
         java.util.Map<Integer, String> reportedPostExcerpts = new java.util.HashMap<>();
         java.util.Map<Integer, Object> reportedReplies = new java.util.HashMap<>();
         java.util.Map<Integer, String> reportedReplyExcerpts = new java.util.HashMap<>();
-        // map from moderation item id -> parent ForumPost for replies/comments
         java.util.Map<Integer, com.secj3303.model.ForumPost> reportedParentPosts = new java.util.HashMap<>();
 
         if (items != null) {
@@ -142,7 +120,7 @@ public class ModerationController {
                             reportedPostExcerpts.put(mi.getId(), excerpt);
                         }
                     } catch (Exception ex) {
-                        // ignore parse errors
+                        // ignore 
                     }
                 } else if (title != null && title.startsWith("reply:")) {
                     try {
@@ -182,13 +160,11 @@ public class ModerationController {
         return "/admin/forum-moderation-queue";
     }
 
-    // 2. Flag Content
     @PostMapping("/moderation/flag") 
     public String flagContent(@RequestParam("contentId") int contentId, 
                               @RequestParam("reason") String reason,
                               RedirectAttributes redirectAttributes) {
         
-        // Update the CONTENT entity
         Content content = contentDao.findById(contentId);
         if (content != null) {
             content.setStatus("Flagged");
@@ -200,7 +176,6 @@ public class ModerationController {
         return "redirect:/admin/moderation-queue";
     }
 
-    // 3. Approve
     @GetMapping("/moderation/approve/{id}") 
     public String approveContent(@PathVariable("id") int id, RedirectAttributes redirectAttributes) {
         Content content = contentDao.findById(id);
@@ -212,11 +187,9 @@ public class ModerationController {
         return "redirect:/admin/moderation-queue";
     }
 
-    // Dismiss a moderation report (mark resolved)
     @GetMapping("/moderation/dismiss/{id}")
     public String dismissReport(@PathVariable("id") int id, RedirectAttributes redirectAttributes) {
         if (id < 0) {
-            // student report id encoded as negative
             int rid = -id;
             com.secj3303.model.Report.StudentReport sr = studentReportDao.findById(rid);
             if (sr != null) {
@@ -235,7 +208,6 @@ public class ModerationController {
         return "redirect:/admin/forum-moderation-queue";
     }
 
-    // Delete the forum post referenced by a moderation item and remove the report
     @GetMapping("/moderation/removePost/{id}")
     public String removePostFromReport(@PathVariable("id") int id, RedirectAttributes redirectAttributes) {
         if (id < 0) {
@@ -246,21 +218,19 @@ public class ModerationController {
                 if (postId != null) {
                     try { forumPostDao.delete(postId); } catch (Exception e) { }
                 }
-                // remove the student report record
                 studentReportDao.delete(rid);
                 redirectAttributes.addFlashAttribute("message", "Post removed and student report cleared.");
             }
         } else {
             com.secj3303.model.Content.ModerationItem mi = moderationItemDao.findById(id);
             if (mi != null) {
-                // ModerationItem title is expected to be "post:<postId>"
                 String title = mi.getTitle();
                 if (title != null && title.startsWith("post:")) {
                     try {
                         Long postId = Long.valueOf(title.substring(5));
                         forumPostDao.delete(postId);
                     } catch (Exception ex) {
-                        // ignore parse errors
+                        // ignore 
                     }
                 }
                 moderationItemDao.delete(id);
@@ -270,7 +240,6 @@ public class ModerationController {
         return "redirect:/admin/forum-moderation-queue";
     }
 
-    // Delete the forum reply (comment) referenced by a moderation item and remove the report
     @GetMapping("/moderation/removeReply/{id}")
     public String removeReplyFromReport(@PathVariable("id") int id, RedirectAttributes redirectAttributes) {
         if (id < 0) {
@@ -281,7 +250,6 @@ public class ModerationController {
                 if (replyId != null) {
                     try { forumReplyDao.delete(replyId); } catch (Exception e) { }
                 }
-                // remove the student report record
                 studentReportDao.delete(rid);
                 redirectAttributes.addFlashAttribute("message", "Comment removed and student report cleared.");
             }
@@ -294,7 +262,7 @@ public class ModerationController {
                         Long replyId = Long.valueOf(title.substring(6));
                         try { forumReplyDao.delete(replyId); } catch (Exception e) { }
                     } catch (Exception ex) {
-                        // ignore parse errors
+                        // ignore 
                     }
                 }
                 moderationItemDao.delete(id);
@@ -304,7 +272,6 @@ public class ModerationController {
         return "redirect:/admin/forum-moderation-queue";
     }
 
-    // 4. Remove
     @GetMapping("/moderation/remove/{id}") 
     public String removeContent(@PathVariable("id") int id, RedirectAttributes redirectAttributes) {
         contentDao.delete(id);

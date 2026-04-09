@@ -4,7 +4,6 @@
 
 <div class="admin-header-container">
     <style>
-        /* Scope styles to this container only */
         .admin-header-container {
             width: 100%;
             margin-bottom: 30px;
@@ -39,7 +38,6 @@
             color: white;
         }
 
-        /* Summary Cards */
         .summary-cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -77,7 +75,6 @@
             color: #14b8a6;
         }
 
-        /* Tabs - Updated for long labels */
         .tabs {
             display: flex;
             gap: 8px;
@@ -86,7 +83,7 @@
             border-radius: 12px;
             width: fit-content;
             margin-bottom: 20px;
-            flex-wrap: wrap; /* Allows wrapping if screen is small */
+            flex-wrap: wrap; 
         }
 
         .tab-link {
@@ -98,7 +95,7 @@
             color: #6b7280; 
             text-decoration: none;
             transition: 0.2s;
-            white-space: nowrap; /* Keeps long labels on one line */
+            white-space: nowrap; 
         }
 
         .tab-link.active {

@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <title>Virtual Session | MindWell</title>
     <style>
-        /* ... (Your existing styles remain exactly the same) ... */
         body { margin: 0; padding: 0; font-family: "Inter", Arial, sans-serif; background: #f7f9fc; color: #333; }
         .header { display: flex; align-items: center; padding: 15px 25px; background: #ffffff; font-size: 18px; font-weight: 500; border-bottom: 1px solid #e5e7eb; }
         .container { display: flex; padding: 25px; gap: 25px; }

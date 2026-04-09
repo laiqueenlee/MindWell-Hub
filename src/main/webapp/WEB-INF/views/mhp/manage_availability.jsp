@@ -9,7 +9,6 @@
     <style>
         body { margin:0; font-family: "Segoe UI", Roboto, Arial, sans-serif; color:#222; background-color: #f7fbfc; }
         
-        /* Matching the Homepage Hero */
         .mhp-header {
             display:flex;
             align-items:center;
@@ -26,7 +25,6 @@
 
         .container { max-width: 900px; margin: -40px auto 40px; padding: 0 20px; }
 
-        /* Content Card */
         .card {
             background: #fff;
             border-radius: 16px;
@@ -68,7 +66,6 @@
         }
         .btn-add:hover { background: #138d74; }
 
-        /* Table Styling */
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th { text-align: left; padding: 15px; color: #666; font-weight: 600; border-bottom: 2px solid #eee; }
         td { padding: 15px; border-bottom: 1px solid #eee; }

@@ -16,7 +16,6 @@ public class AssessmentResult {
         this.recommendedActions = recommendedActions;
     }
 
-    // Getters & Setters
     public int getOverallScore() {
         return overallScore;
     }
@@ -57,7 +56,6 @@ public class AssessmentResult {
         this.metrics = metrics;
     }
 
-    // Inner class for assessment metrics
     public static class AssessmentMetrics {
         public int engagement;
         public int consistency;

@@ -1,6 +1,14 @@
 package com.secj3303.model.Content;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "VIDEO_SECTION")
@@ -22,7 +30,6 @@ public class VideoSection {
     @JoinColumn(name = "content_id", nullable = false)
     private Content content;
 
-    // --- Constructors ---
     public VideoSection() {}
 
     public VideoSection(String videoUrl, String description) {
@@ -30,7 +37,6 @@ public class VideoSection {
         this.description = description;
     }
 
-    // --- Getters and Setters ---
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 

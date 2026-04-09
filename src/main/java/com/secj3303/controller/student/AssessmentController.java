@@ -1,5 +1,7 @@
 package com.secj3303.controller.student;
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +18,6 @@ import com.secj3303.model.AssessmentResult;
 import com.secj3303.model.AssessmentService;
 import com.secj3303.model.User;
 
-import java.util.List;
-
 @Controller
 @RequestMapping("/student/assessment")
 public class AssessmentController {
@@ -25,7 +25,6 @@ public class AssessmentController {
     @Autowired
     private AssessmentDao assessmentDao;
 
-    // --- ASSESSMENT LISTING PAGE (GET) ---
     @GetMapping("/")
     public String showAssessmentPage(Model model, HttpSession session) {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
@@ -35,10 +34,9 @@ public class AssessmentController {
         }
 
         model.addAttribute("user", loggedInUser);
-        return "student/assessment-list"; // => /WEB-INF/views/student/assessment-list.jsp
+        return "student/assessment-list"; 
     }
 
-    // --- TAKE DAILY MOOD CHECK (GET) ---
     @GetMapping("/mood")
     public String showMoodAssessment(Model model, HttpSession session) {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
@@ -53,7 +51,6 @@ public class AssessmentController {
         return "student/mood-assessment";
     }
 
-    // --- TAKE STRESS ASSESSMENT (GET) ---
     @GetMapping("/stress")
     public String showStressAssessment(Model model, HttpSession session) {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
@@ -68,7 +65,6 @@ public class AssessmentController {
         return "student/stress-assessment";
     }
 
-    // --- TAKE ANXIETY SCREENING (GET) ---
     @GetMapping("/anxiety")
     public String showAnxietyAssessment(Model model, HttpSession session) {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
@@ -83,7 +79,6 @@ public class AssessmentController {
         return "student/anxiety-assessment";
     }
 
-    // --- TAKE GENERAL WELLBEING ASSESSMENT (GET) ---
     @GetMapping("/wellbeing")
     public String showWellbeingAssessment(Model model, HttpSession session) {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
@@ -98,7 +93,6 @@ public class AssessmentController {
         return "student/wellbeing-assessment";
     }
 
-    // --- SUBMIT ASSESSMENT (POST) ---
     @PostMapping("/submit")
     public String submitAssessment(
             @RequestParam("assessmentType") String assessmentType,
@@ -112,7 +106,6 @@ public class AssessmentController {
             return "redirect:/auth/login";
         }
 
-        // DEBUG: Print what we received
         System.out.println("=== ASSESSMENT SUBMISSION DEBUG ===");
         System.out.println("Assessment Type: " + assessmentType);
         System.out.println("Answers received: " + (answersStr == null ? "NULL" : "Array of length " + answersStr.length));
@@ -121,7 +114,6 @@ public class AssessmentController {
         }
         System.out.println("===================================");
         
-        // Convert string answers to int array
         int[] answers = new int[0];
         if (answersStr != null && answersStr.length > 0) {
             answers = new int[answersStr.length];
@@ -139,7 +131,6 @@ public class AssessmentController {
         }
 
         try {
-            // Calculate result
             System.out.println("[AssessmentController] Received submit for type=" + assessmentType + " answersCount=" + (answers == null ? 0 : answers.length));
             if (answers != null) {
                 System.out.println("[AssessmentController] Answers:" + java.util.Arrays.toString(answers));
@@ -147,7 +138,6 @@ public class AssessmentController {
 
             AssessmentResult result = AssessmentService.calculateResult(assessmentType, answers);
 
-            // Create Assessment object and save to database
             Assessment assessment = new Assessment(
                 loggedInUser.getUsername(),
                 assessmentType,
@@ -157,11 +147,9 @@ public class AssessmentController {
             );
             assessment.setRecommendations(result.getRecommendedActions());
             
-            // Save to database
             assessmentDao.save(assessment);
             System.out.println("[AssessmentController] Saved assessment to database: ID=" + assessment.getAssessmentId());
 
-            // Add to model
             model.addAttribute("user", loggedInUser);
             model.addAttribute("assessmentType", assessmentType);
             model.addAttribute("result", result);
@@ -171,20 +159,17 @@ public class AssessmentController {
             model.addAttribute("recommendations", result.getRecommendedActions());
             model.addAttribute("metrics", result.getMetrics());
 
-            // Store in session for reference
             session.setAttribute("lastAssessmentResult", result);
             session.setAttribute("lastAssessmentType", assessmentType);
 
-            return "student/assessment-result"; // => /WEB-INF/views/student/assessment-result.jsp
+            return "student/assessment-result"; 
         } catch (Exception ex) {
-            // Log and forward to the same JSP with an error message so page can render diagnostic info
             ex.printStackTrace();
             model.addAttribute("errorMessage", "An error occurred while processing the assessment: " + ex.getMessage());
             return "student/assessment-result";
         }
     }
 
-    // --- VIEW ASSESSMENT RESULTS (GET) ---
     @GetMapping("/results")
     public String viewAssessmentResults(Model model, HttpSession session) {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
@@ -212,7 +197,6 @@ public class AssessmentController {
         return "student/assessment-result";
     }
     
-    // --- VIEW ASSESSMENT HISTORY (GET) ---
     @GetMapping("/history")
     public String viewAssessmentHistory(
             @RequestParam(value = "type", required = false) String assessmentType,
@@ -227,11 +211,9 @@ public class AssessmentController {
         List<Assessment> assessments;
         
         if (assessmentType != null && !assessmentType.isEmpty()) {
-            // Filter by type
             assessments = assessmentDao.findByUsernameAndType(loggedInUser.getUsername(), assessmentType);
             model.addAttribute("selectedType", assessmentType);
         } else {
-            // All assessments
             assessments = assessmentDao.findByUsername(loggedInUser.getUsername());
             model.addAttribute("selectedType", "all");
         }
@@ -239,6 +221,6 @@ public class AssessmentController {
         model.addAttribute("user", loggedInUser);
         model.addAttribute("assessments", assessments);
         
-        return "student/assessment-history"; // => /WEB-INF/views/student/assessment-history.jsp
+        return "student/assessment-history"; 
     }
 }

@@ -282,7 +282,6 @@
             </h2>
         </div>
                 
-        <!-- Filter Buttons -->
         <div class="filter-section">
             <h5>Filter by Type:</h5>
             <a href="${pageContext.request.contextPath}/student/assessment/history" 
@@ -307,7 +306,6 @@
             </a>
         </div>
                 
-        <!-- Assessment List -->
                 <c:choose>
                     <c:when test="${empty assessments}">
                         <div class="alert alert-info">
@@ -384,7 +382,6 @@
                                             </div>
                                         </div>
                                         
-                                        <!-- Recommendations (collapsible) -->
                                         <c:if test="${not empty assessment.recommendations}">
                                             <div class="mt-3">
                                                 <a class="btn btn-sm btn-outline-secondary" data-bs-toggle="collapse" 
@@ -407,7 +404,6 @@
                             </c:forEach>
                         </div>
                         
-                        <!-- Statistics Summary -->
                         <div class="card mt-4">
                             <div class="card-header bg-primary text-white">
                                 <h5 class="mb-0"><i class="fas fa-chart-bar"></i> Summary Statistics</h5>
@@ -446,7 +442,6 @@
     </div>
     
     <script>
-        // Simple collapse toggle
         document.addEventListener('DOMContentLoaded', function() {
             const toggles = document.querySelectorAll('[data-bs-toggle="collapse"]');
             toggles.forEach(toggle => {
@@ -459,7 +454,6 @@
                 });
             });
             
-            // Initialize all collapse elements as hidden
             document.querySelectorAll('.collapse').forEach(el => {
                 el.style.display = 'none';
             });

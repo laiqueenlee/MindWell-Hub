@@ -43,7 +43,6 @@ public class User {
         this.role = role;
     }
 
-    // Getters & Setters
     public Integer getId() {
         return id;
     }

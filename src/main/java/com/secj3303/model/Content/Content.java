@@ -1,9 +1,17 @@
 package com.secj3303.model.Content;
 
-import javax.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "CONTENT")
@@ -17,7 +25,6 @@ public class Content {
     @Column(name = "title", nullable = false)
     private String title;
 
-    // --- NEW FIELD ADDED ---
     @Column(name = "description", length = 500)
     private String description;
 
@@ -31,7 +38,7 @@ public class Content {
     private String status;
 
     @Column(name = "content_type")
-    private String type; // Values: "Video", "Article", "Interactive"
+    private String type; 
 
     @OneToMany(mappedBy = "content", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<VideoSection> videoSections = new ArrayList<>();
@@ -44,7 +51,6 @@ public class Content {
 
     @OneToMany(mappedBy = "content", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ContentProgress> contentProgress = new ArrayList<>();
-    // ---------------------------------
 
     @Column(name = "difficulty")
     private String difficulty;
@@ -55,14 +61,12 @@ public class Content {
     @Column(name = "points")
     private int points;
 
-    // 1. ADD THIS FIELD
     @Column(name = "author")
     private String author;
 
     @Column(name = "flag_reason")
     private String flagReason;
 
-    // --- Constructors ---
     public Content() {
     }
 
@@ -90,7 +94,6 @@ public class Content {
         this.flagReason = flagReason;
     }
 
-    // --- Getters and Setters ---
 
     public int getId() {
         return id;
@@ -108,7 +111,6 @@ public class Content {
         this.title = title;
     }
 
-    // --- NEW GETTER/SETTER ---
     public String getDescription() {
         return description;
     }
@@ -173,7 +175,6 @@ public class Content {
         this.quizQuestions = quizQuestions;
     }
 
-    // --- NEW GETTER/SETTER FOR FIX ---
     public List<ContentProgress> getContentProgress() {
         return contentProgress;
     }
@@ -181,7 +182,6 @@ public class Content {
     public void setContentProgress(List<ContentProgress> contentProgress) {
         this.contentProgress = contentProgress;
     }
-    // ---------------------------------
 
     public String getDifficulty() {
         return difficulty;

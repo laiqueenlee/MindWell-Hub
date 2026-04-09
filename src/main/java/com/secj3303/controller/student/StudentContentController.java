@@ -1,15 +1,20 @@
 package com.secj3303.controller.student;
 
 import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import com.secj3303.dao.ContentDao;
 import com.secj3303.dao.ContentProgressDao;
-import com.secj3303.model.User;
 import com.secj3303.model.Content.Content;
 import com.secj3303.model.Content.ContentProgress;
+import com.secj3303.model.User;
 
 @Controller
 @RequestMapping("/student/module")
@@ -38,7 +43,7 @@ public class StudentContentController {
         model.addAttribute("progressPercent", percent);
         model.addAttribute("userRating", rating);
         model.addAttribute("savedQuizAnswers", quizAnswers);
-        model.addAttribute("lastPage", lastPage); // Pass to View
+        model.addAttribute("lastPage", lastPage); 
 
         return "/student/module-view";
     }
@@ -46,7 +51,7 @@ public class StudentContentController {
     @PostMapping("/save-progress")
     public String saveProgress(@RequestParam("contentId") int contentId,
             @RequestParam("percent") int percent,
-            @RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex, // NEW param
+            @RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex, 
             HttpSession session) {
         User user = (User) session.getAttribute("loggedInUser");
         if (user == null)
@@ -54,7 +59,7 @@ public class StudentContentController {
 
         ContentProgress cp = getOrCreateProgress(user, contentId);
         cp.setProgressPercent(percent);
-        cp.setLastVisitedPage(pageIndex); // Save the exact page index
+        cp.setLastVisitedPage(pageIndex); 
         progressDao.saveOrUpdate(cp);
 
         return "redirect:/content/browse";

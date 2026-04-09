@@ -380,7 +380,7 @@
                 toggleContentType();
             } else {
                 for(var i=0; i<select.options.length; i++) {
-                    if(select.options[i].selected) { // Changed for JSP: standard DOM property
+                    if(select.options[i].selected) { 
                         select.value = select.options[i].value;
                         toggleContentType();
                         break;
@@ -414,14 +414,11 @@
             }
         }
 
-        // ==========================================
-        // ARTICLE LOGIC
-        // ==========================================
+  
         function addArticleSection() {
             var container = document.getElementById('dynamicArticleContainer');
-            // Simplified logic for JSP: just count the total blocks
             var totalSections = container.querySelectorAll('.article-dynamic-block').length;
-            var nextSectionNum = totalSections + 2; // +1 for 0-index, +1 because static is Sec 1
+            var nextSectionNum = totalSections + 2; 
 
             var div = document.createElement('div');
             div.className = 'form-group article-dynamic-block';
@@ -449,14 +446,10 @@
             });
         }
 
-        // ==========================================
-        // QUIZ LOGIC
-        // ==========================================
         function addQuestion() {
             var container = document.getElementById('dynamicQuizContainer');
-            // Simplified logic for JSP: count total blocks
             var currentDynamicCount = container.querySelectorAll('.dynamic-question-block').length;
-            var qNum = currentDynamicCount + 2; // +1 for existing static q1, +1 for new one
+            var qNum = currentDynamicCount + 2;
             var uniqueId = 'dq_' + Date.now();
 
             var div = document.createElement('div');
@@ -552,15 +545,12 @@
                 form.appendChild(input);
             }
 
-            // Clean up old generated inputs
             var oldInputs = document.querySelectorAll('.generated-input');
             oldInputs.forEach(el => el.remove());
 
-            // --- ARTICLE LOGIC ---
             if(type === 'Article') {
                 var sectionIndex = 0;
 
-                // Process Section 1 (Static)
                 var id1 = document.getElementById('articlePage1-id').value;
                 var sub1 = document.getElementById('articlePage1-subtitle').value;
                 var body1 = document.getElementById('articlePage1').value;
@@ -570,7 +560,6 @@
                 createHiddenInput('articleSections[' + sectionIndex + '].body', body1);
                 sectionIndex++;
 
-                // Process Dynamic Sections
                 var dynamicBlocks = document.querySelectorAll('.article-dynamic-block');
                 dynamicBlocks.forEach(function(block) {
                     var idInput = block.querySelector('.article-id');
@@ -586,7 +575,6 @@
                 });
             }
 
-            // --- VIDEO LOGIC ---
             else if(type === 'Video') {
                 var vidId = document.getElementById('videoIdInput').value;
                 var videoUrl = document.getElementById('videoUrlInput').value;
@@ -604,7 +592,6 @@
                 createHiddenInput('videoSections[0].description', videoDesc);
             }
 
-            // --- INTERACTIVE QUIZ LOGIC ---
             else if(type === 'Interactive') {
                 var introContent = document.getElementById('interactiveContent').value;
                 var qIndex = 0;
@@ -639,12 +626,10 @@
                     qIndex++;
                 }
 
-                // Process first question (Static)
                 var q1Block = document.getElementById('q1-block');
                 var q1Id = document.getElementById('q1-id').value;
                 if(q1Block) processQuizBlock(q1Block, 'q1-text', q1Id);
 
-                // Process dynamic questions
                 var dynamicBlocks = document.querySelectorAll('.dynamic-question-block');
                 dynamicBlocks.forEach(function(block) {
                     var idInput = block.querySelector('.question-id');
@@ -656,20 +641,15 @@
             form.submit();
         }
 
-        // Add this helper function to convert any YouTube link to an Embed link
 function convertToEmbedUrl(url) {
     if (!url) return "";
     
-    // Regular expression to find the Video ID from various YouTube URL formats
-    // Handles: youtube.com/watch?v=ID, youtu.be/ID, youtube.com/embed/ID
     var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
     var match = url.match(regExp);
 
     if (match && match[2].length === 11) {
-        // Return the correct embed format
         return "https://www.youtube.com/embed/" + match[2];
     } else {
-        // If regex fails, return the original URL (or handle error)
         return url;
     }
 }

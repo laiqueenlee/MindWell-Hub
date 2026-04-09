@@ -695,7 +695,6 @@
     <script>
         const contextPath = '${pageContext.request.contextPath}/';
         
-        // Sort replies with latest first on page load
         document.addEventListener('DOMContentLoaded', function() {
             const repliesSection = document.querySelector('.replies-section');
             if (!repliesSection) return;
@@ -703,14 +702,12 @@
             const replies = Array.from(repliesSection.querySelectorAll('.reply'));
             if (replies.length === 0) return;
             
-            // Sort replies by date in descending order (latest first)
             replies.sort((a, b) => {
                 const aTime = a.querySelector('.reply-time') ? new Date(a.querySelector('.reply-time').textContent.trim()) : new Date(0);
                 const bTime = b.querySelector('.reply-time') ? new Date(b.querySelector('.reply-time').textContent.trim()) : new Date(0);
-                return bTime - aTime; // descending order (latest first)
+                return bTime - aTime; 
             });
             
-            // Re-append replies in sorted order
             replies.forEach(reply => {
                 repliesSection.appendChild(reply);
             });
@@ -727,7 +724,6 @@
                 const form = new URLSearchParams();
                 form.append('postId', postId);
                 
-                // Include CSRF header if present (sanitize header name)
                 const csrfMeta = document.querySelector('meta[name="_csrf"]');
                 const csrfHeaderMeta = document.querySelector('meta[name="_csrf_header"]');
                 const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
@@ -801,7 +797,6 @@
         }
     </script>
 
-        <!-- Report Modal (hidden by default) -->
         <div id="reportModal" class="modal-overlay" style="display:none;">
             <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="reportModalTitle">
                 <div class="modal-header">
@@ -855,7 +850,6 @@
             if (replyEl) replyEl.value = '';
         }
 
-        // attach submit handler similar to peer.jsp but include replyId when present
         document.addEventListener('DOMContentLoaded', () => {
             const form = document.getElementById('reportForm');
             if (!form) return;
@@ -870,13 +864,11 @@
                 const fullReason = reasonSel + (details ? ': ' + details : '');
 
                 const params = new URLSearchParams();
-                // If reporting a reply, send only replyId (server will associate post if needed).
                 if (replyId) {
                     params.append('replyId', replyId);
                 } else {
                     params.append('postId', postId);
                 }
-                // send reason and details separately so StudentReport stores both fields
                 params.append('reason', reasonSel);
                 params.append('details', details);
 
@@ -907,7 +899,6 @@
             });
         });
 
-        // helper to open report modal for a reply while preserving reply id
         function openReportModalForReply(btn){
             var replyId = btn.getAttribute('data-reply-id');
             var postId = document.querySelector('.post-card').getAttribute('data-post-id') || '${post.id}';
@@ -917,7 +908,6 @@
         }
     </script>
     
-    <!-- Edit Modal -->
     <div id="editModal" class="modal-overlay" style="display:none;">
         <div class="modal-card" role="dialog">
             <div class="modal-header">
@@ -941,11 +931,9 @@
     </div>
 
     <script>
-        // menu toggle
         function toggleMenu(btn){
             var dd = btn.nextElementSibling;
             if(!dd) return;
-            // close other open menus
             document.querySelectorAll('.menu-dropdown').forEach(function(d){ if(d!==dd) d.style.display='none'; });
             dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
         }
@@ -958,7 +946,6 @@
 
         function confirmDeletePost(postId){
             if(!confirm('Delete this post? This cannot be undone.')) return;
-            // submit form
             const form = new FormData(); form.append('postId', postId);
             submitPostAction('/student/forum/deletePost', form, function(){ window.location.href = contextPath + 'student/forum'; });
         }
@@ -966,7 +953,6 @@
         function confirmDeleteReply(replyId){
             if(!confirm('Delete this reply? This cannot be undone.')) return;
             const form = new FormData(); form.append('replyId', replyId);
-            // will redirect back to post page when done
             submitPostAction('/student/forum/deleteReply', form, function(){ location.reload(); });
         }
 
@@ -985,7 +971,6 @@
                     console.warn('Skipping invalid CSRF header name:', headerNameRaw);
                 }
             }
-            // If caller passed a FormData, convert to URL-encoded body so Spring @RequestParam reads it reliably
             let bodyToSend = formData;
             if (typeof FormData !== 'undefined' && formData instanceof FormData) {
                 const params = new URLSearchParams();
@@ -1007,7 +992,6 @@
         }
 
         function openEditModal(postId){
-            // prefill with current values
             document.getElementById('editPostId').value = postId;
             document.getElementById('editTitle').value = document.querySelector('.post-title').textContent.trim();
             document.getElementById('editContent').value = document.querySelector('.post-content').textContent.trim();

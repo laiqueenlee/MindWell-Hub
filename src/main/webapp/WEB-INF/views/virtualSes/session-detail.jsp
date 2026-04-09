@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
-        /* Shared Variables from Home Page */
         :root { 
             --teal: #6fd7cc; 
             --teal-dark: #3fb9a8; 
@@ -62,7 +61,6 @@
         }
         .inner-box i { color: var(--teal-dark); width: 20px; text-align: center; }
 
-        /* Buttons matching Home Page style */
         .btn { 
             padding: 12px 24px; 
             border-radius: 8px; 

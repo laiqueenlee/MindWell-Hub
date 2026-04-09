@@ -24,7 +24,6 @@
             color: #1a1a1a;
         }
 
-        /* --- Header Styling --- */
         .page-header-strip {
             background-color: #fff;
             border-bottom: 1px solid #e5e7eb;
@@ -52,7 +51,6 @@
             margin-top: 2px;
         }
 
-        /* --- Button Styling --- */
         .btn-back {
             display: inline-flex;
             align-items: center;
@@ -74,7 +72,6 @@
             transform: translateY(-1px);
         }
 
-        /* --- Chat Layout --- */
         .chat-container {
             flex: 1;
             display: flex;
@@ -134,7 +131,6 @@
         .chat-box::-webkit-scrollbar-track { background: transparent; }
         .chat-box::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
 
-        /* Empty State */
         .empty-state {
             text-align: center;
             margin: auto;
@@ -168,7 +164,6 @@
             color: #5dd5c3;
         }
 
-        /* Messages */
         .chat-message {
             padding: 12px 16px;
             margin-bottom: 12px;
@@ -194,7 +189,6 @@
             box-shadow: 0 1px 2px rgba(93, 213, 195, 0.3);
         }
 
-        /* Input Area */
         .input-container {
             background-color: #fff;
             border-top: 1px solid #e5e7eb;
@@ -362,7 +356,6 @@
             }, 1500);
         }
 
-        // UPDATED MHP RESPONSES based on project requirements [cite: 51, 54, 56]
         function getBotResponse(message) {
             message = message.toLowerCase();
             
@@ -381,7 +374,6 @@ if (message.includes("article") || message.includes("research") || message.inclu
                "Would you like to securely share these digital resources with your students? ";
     }
 
-    // INTERACTIVE QUIZ WITH MULTIPLE QUESTIONS AND ANSWERS
     else if (message.includes("quiz") || message.includes("test") || message.includes("knowledge")) {
         return "<strong>Interactive Literacy Quiz Preview:</strong>\n\n" +
                "These modules ensure students grasp foundational concepts to reduce stigma:\n\n" +
@@ -394,7 +386,6 @@ if (message.includes("article") || message.includes("research") || message.inclu
                "Shall I assign these knowledge checks to your current student groups? ";
     }
 
-    // VIDEO CONTENT WITH LINKS AND DESCRIPTIONS
     else if (message.includes("video") || message.includes("watch") || message.includes("simulation")) {
         return "<strong>Mental Health Educational Videos:</strong>\n\n" +
                "The following modules are designed for high engagement through simulations and infographics:\n\n" +
@@ -407,7 +398,6 @@ if (message.includes("article") || message.includes("research") || message.inclu
                "These videos support a mobile-responsive design for accessible, on-demand learning.";
     }
 
-    // DEFAULT MHP ASSISTANCE
     else {
         return "Welcome to the MHP Resource Workspace. I am here to assist with:\n" +
                "- <strong>Articles:</strong> Finding clinical literacy content with proper citations. \n" +

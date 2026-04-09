@@ -6,27 +6,22 @@ import java.util.List;
 import com.secj3303.model.Assessment;
 
 public interface AssessmentDao {
-    // Create
+
     void save(Assessment assessment);
     
-    // Read
+
     Assessment findById(String assessmentId);
     List<Assessment> findByUsername(String username);
     List<Assessment> findByUsernameAndType(String username, String assessmentType);
     List<Assessment> findAll();
     
-    // Update
     void update(Assessment assessment);
     
-    // Delete
     void delete(String assessmentId);
     
-    // Reporting - Get latest assessment by type
     Assessment findLatestByUsernameAndType(String username, String assessmentType);
     
-    // Reporting - Get assessment history (last N assessments)
     List<Assessment> findRecentByUsername(String username, int limit);
 
-    // Get assessments within a time range
     List<Assessment> findRecentByUsername(String username, LocalDateTime since);
 }

@@ -30,14 +30,13 @@
             border: 1px solid #e5e7eb;
         }
 
-        /* Recent Users Table */
         .u-table { width: 100%; border-collapse: collapse; }
         .u-table td { padding: 14px 0; border-bottom: 1px solid #f3f4f6; }
         
         .user-name {
             display: block;
             font-size: 16px;
-            font-weight: 700; /* Extra bold */
+            font-weight: 700; 
             color: #111827;
             margin-bottom: 2px;
         }
@@ -59,7 +58,6 @@
             letter-spacing: 0.025em;
         }
 
-        /* Distribution Bars */
         .bar-container { margin-bottom: 20px; }
         .bar-label { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; }
         .bar-bg { height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; }

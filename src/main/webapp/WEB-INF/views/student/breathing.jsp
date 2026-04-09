@@ -14,7 +14,6 @@
         .header { margin-bottom: 40px; }
         .header h1 { color: var(--teal-dark); margin-bottom: 5px; }
         
-        /* Breathing Circle Animation */
         .circle-container { position: relative; width: 250px; height: 250px; margin: 0 auto 40px; }
         .circle {
             background: linear-gradient(180deg, #6fd7cc 0%, #3fb9a8 100%);
@@ -37,9 +36,8 @@
             pointer-events: none;
         }
 
-        /* Animation Keyframes */
         .circle.inhale { animation: grow 4s ease-in-out forwards; }
-        .circle.hold { animation: pulse 4s infinite; } /* 7 seconds hold in 4-7-8 method, adjusted for visual */
+        .circle.hold { animation: pulse 4s infinite; } 
         .circle.exhale { animation: shrink 8s ease-in-out forwards; }
 
         @keyframes grow { from { transform: scale(0.6); } to { transform: scale(1.1); } }
@@ -87,22 +85,18 @@
             btn.innerText = "Focus...";
             
             runCycle();
-            // 4s Inhale + 7s Hold + 8s Exhale = 19s total cycle
             setInterval(runCycle, 19000); 
         }
 
         function runCycle() {
-            // Inhale (4 seconds)
             text.innerText = "Inhale...";
             circle.className = 'circle inhale';
 
             setTimeout(() => {
-                // Hold (7 seconds)
                 text.innerText = "Hold";
                 circle.className = 'circle hold';
 
                 setTimeout(() => {
-                    // Exhale (8 seconds)
                     text.innerText = "Exhale...";
                     circle.className = 'circle exhale';
                 }, 7000);

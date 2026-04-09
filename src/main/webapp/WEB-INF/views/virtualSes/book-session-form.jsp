@@ -226,7 +226,6 @@
 <script>
     function refreshTimeSlots() {
         const form = document.getElementById('bookingForm');
-        // Temporarily change action to return to the booking page to filter slots
         form.action = '${pageContext.request.contextPath}/sessions/book';
         form.submit();
     }

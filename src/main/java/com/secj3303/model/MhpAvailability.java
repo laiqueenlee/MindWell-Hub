@@ -1,6 +1,13 @@
 package com.secj3303.model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "mhp_availability")
@@ -15,10 +22,10 @@ public class MhpAvailability {
     private User mhp;
 
     @Column(name = "day_of_week", nullable = false)
-    private String dayOfWeek; // e.g., "Monday", "Tuesday"
+    private String dayOfWeek; 
 
     @Column(name = "time_slot", nullable = false)
-    private String timeSlot;  // e.g., "10:00 AM", "02:00 PM"
+    private String timeSlot;  
 
     public MhpAvailability() {}
 
@@ -28,7 +35,6 @@ public class MhpAvailability {
         this.timeSlot = timeSlot;
     }
 
-    // Getters and Setters
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
     public User getMhp() { return mhp; }
@@ -38,7 +44,6 @@ public class MhpAvailability {
     public String getTimeSlot() { return timeSlot; }
     public void setTimeSlot(String timeSlot) { this.timeSlot = timeSlot; }
     
-    // Helper to show as a single string (Mon 10:00 AM)
     public String getFormattedSlot() {
         return dayOfWeek.substring(0, 3) + " " + timeSlot;
     }

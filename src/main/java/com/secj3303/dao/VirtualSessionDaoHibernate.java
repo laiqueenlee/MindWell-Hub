@@ -1,13 +1,14 @@
 package com.secj3303.dao;
 
-import com.secj3303.model.VirtualSession;
+import java.time.LocalDate;
+import java.util.List;
+
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.util.List;
+import com.secj3303.model.VirtualSession;
 
 @Repository
 @Transactional 
@@ -53,7 +54,6 @@ public class VirtualSessionDaoHibernate implements VirtualSessionDao {
                 .getResultList();
     }
 
-    // Renamed from getAllSessions to findAll to match the Interface
     @Override
     public List<VirtualSession> findAll() {
         return sessionFactory.getCurrentSession()

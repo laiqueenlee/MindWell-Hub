@@ -20,7 +20,6 @@ public class ForumPostDaoHibernate implements ForumPostDao {
     @Transactional(readOnly = true)
     public List<ForumPost> findAllDesc() {
         Session session = sessionFactory.getCurrentSession();
-        // Simple HQL keeps ordering explicit and avoids any Criteria quirks
         return session.createQuery(
                 "from ForumPost fp order by fp.createdAt desc",
                 ForumPost.class)
@@ -67,7 +66,6 @@ public class ForumPostDaoHibernate implements ForumPostDao {
             .getResultList();
     }
 
-        // added for admin analytics
     @Transactional(readOnly = true)
     public long countAllPosts() {
         return (long) sessionFactory.getCurrentSession()

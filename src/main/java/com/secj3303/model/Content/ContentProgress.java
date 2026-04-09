@@ -1,6 +1,15 @@
 package com.secj3303.model.Content;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
 import com.secj3303.model.User;
 
 @Entity
@@ -27,11 +36,9 @@ public class ContentProgress {
     @Column(name = "rating")
     private int rating;
 
-    // Stores selected indices as comma-separated string (e.g., "1,0,2")
     @Column(name = "quiz_answers", length = 500)
     private String quizAnswers;
 
-    // NEW: Stores the exact index of the article section (0, 1, 2...)
     @Column(name = "last_visited_page")
     private int lastVisitedPage;
 
@@ -43,10 +50,9 @@ public class ContentProgress {
         this.content = content;
         this.progressPercent = 0;
         this.rating = 0;
-        this.lastVisitedPage = 0; // Default to 0
+        this.lastVisitedPage = 0; 
     }
 
-    // Getters and Setters
     public int getId() {
         return id;
     }

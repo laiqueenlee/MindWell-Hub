@@ -9,25 +9,20 @@
     <link rel="icon" href="data:,">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
-        /* 1. Global Layout */
         body { margin: 0; font-family: 'Inter', sans-serif; background-color: #f9fafb; padding: 40px; }
 
-        /* 2. Main Card Container */
         .mq-main-card { background-color: white; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #e5e7eb; }
 
-        /* 3. Internal Content Styles */
         .mq-header-section { margin-bottom: 24px; }
         .mq-page-title { font-size: 20px; font-weight: 600; margin: 0 0 4px 0; color: #111827; }
         .mq-page-subtitle { color: #6b7280; font-size: 14px; margin: 0; }
 
-        /* Item Cards */
         .mq-item-card { border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-bottom: 16px; background-color: #fff; position: relative; transition: box-shadow 0.2s; }
         .mq-item-card:hover { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
         
         .mq-tags-row { display: flex; gap: 8px; margin-bottom: 12px; align-items: center; }
         .mq-tag-type { border: 1px solid #e5e7eb; color: #374151; font-size: 12px; font-weight: 500; padding: 4px 10px; border-radius: 6px; background-color: #f3f4f6; }
         
-        /* Badges */
         .mq-badge { font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 9999px; color: white; text-transform: lowercase; }
         .priority-medium { background-color: #14b8a6; } 
 
@@ -35,23 +30,19 @@
         .mq-content-author { font-size: 14px; color: #6b7280; margin-bottom: 12px; display: block; }
         .mq-flag-reason { font-size: 14px; color: #6b7280; margin-bottom: 16px; }
 
-        /* Columns layout for moderation lists */
         .mq-columns-container { display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; }
         .mq-column { flex: 1 1 420px; min-width: 320px; }
         .mq-column h3 { font-size: 16px; font-weight: 600; color: #111827; margin-bottom: 16px; }
 
-        /* Buttons */
         .mq-actions { display: flex; gap: 10px; }
         .btn-mq { padding: 8px 16px; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer; text-decoration: none; border: none; display: inline-block; transition: 0.2s ease; }
         .btn-approve { background-color: #06b6d4; color: white; }
         .btn-review { background-color: white; border: 1px solid #d1d5db; color: #374151; }
         .btn-remove { background-color: #ec4899; color: white; }
         
-        /* New Flag Button Style */
         .btn-flag { background-color: #f59e0b; color: white; }
         .btn-cancel { background-color: #e5e7eb; color: #374151; }
 
-        /* Modal Styles - Modern Version */
         .modal-overlay { 
             display: none; 
             position: fixed; 
@@ -142,7 +133,6 @@
             transform: rotate(90deg);
         }
 
-        /* Scrollable body */
         .modal-body { 
             margin: 0;
             padding: 30px;
@@ -215,7 +205,6 @@
             line-height: 1.5;
         }
 
-        /* Content Preview Styling */
         .full-content-preview { 
             background: #ffffff;
             padding: 20px; 
@@ -273,7 +262,6 @@
             transform: translateY(-1px);
         }
 
-        /* Flag Form Styles */
         #flagFormContainer { 
             display: none; 
             margin-top: 15px; 
@@ -299,13 +287,11 @@
             <c:choose>
                 <c:when test="${not empty moderationItems}">
                     <div class="mq-columns-container">
-        <!-- Forum Posts Column -->
         <div class="mq-column">
             <h3><i class="bi bi-chat-dots-fill"></i> Forum Posts</h3>
             <c:forEach var="item" items="${moderationItems}">
                 <c:if test="${item.type == 'Forum Post'}">
                     <div class="mq-item-card">
-                        <!-- Condensed card: show report reason (or flag reason) bold, reporter beneath, then status -->
                         <c:choose>
                             <c:when test="${not empty studentReports[item.id]}">
                                 <div class="mq-content-title">${fn:escapeXml(studentReports[item.id].reason)}</div>
@@ -378,7 +364,6 @@
         </div>
         
 
-        <!-- Comments Column -->
         <div class="mq-column">
             <h3><i class="bi bi-chat-square-text-fill"></i> Comments</h3>
             <c:forEach var="item" items="${moderationItems}">
@@ -457,7 +442,6 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Parent Post Details for this comment -->
                         <div id="parent-post-details-${item.id}" style="display:none; margin-top:10px;">
                             <div class="full-content-preview">
                                 <div class="mq-post-section">
@@ -493,7 +477,6 @@
         </div>
     </div>
 
-<!-- Modal for review popup -->
 <div id="mq-modal" class="modal-overlay" style="display:none;">
     <div class="modal-box">
         <div class="modal-header">
@@ -501,7 +484,6 @@
             <button class="close-btn" onclick="closeModal()">&times;</button>
         </div>
         <div class="modal-body" id="mq-modal-body">
-            <!-- populated dynamically -->
         </div>
         <div class="modal-actions">
             <button class="btn-mq btn-cancel" onclick="closeModal()">Close</button>

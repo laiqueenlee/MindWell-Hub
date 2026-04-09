@@ -37,7 +37,6 @@
             line-height: 1.6;
         }
 
-        /* Header Section */
         .page-header {
             background: #fff;
             border-bottom: 1px solid var(--border);
@@ -89,14 +88,12 @@
             transform: translateX(-2px);
         }
 
-        /* Main Container */
         .create-post-container {
             max-width: 800px;
             margin: 32px auto;
             padding: 0 24px;
         }
 
-        /* Success Banner */
         .success-banner {
             background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
             border: 1px solid #10b981;
@@ -124,7 +121,6 @@
             color: #047857;
         }
 
-        /* Post Form Card */
         .post-form-card {
             background: var(--bg-card);
             border-radius: var(--radius);
@@ -146,7 +142,6 @@
             margin-bottom: 24px;
         }
 
-        /* Form Groups */
         .form-group {
             margin-bottom: 24px;
         }
@@ -197,7 +192,6 @@
             margin-top: 6px;
         }
 
-        /* Checkbox */
         .checkbox-group {
             display: flex;
             align-items: center;
@@ -229,7 +223,6 @@
             user-select: none;
         }
 
-        /* Form Actions */
         .form-actions {
             display: flex;
             gap: 12px;
@@ -277,7 +270,6 @@
             color: var(--text-primary);
         }
 
-        /* Success Post Preview */
         .post-preview {
             background: white;
             padding: 20px;
@@ -318,7 +310,6 @@
             margin-top: 24px;
         }
 
-        /* Animations */
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -346,7 +337,6 @@
             }
         }
 
-        /* Responsive Design */
         @media (max-width: 768px) {
             .page-header {
                 padding: 16px 12px;
@@ -379,7 +369,6 @@
             }
         }
 
-        /* Accessibility */
         @media (prefers-reduced-motion: reduce) {
             * {
                 animation: none !important;
@@ -399,7 +388,6 @@
 <body>
     <%@ include file="/WEB-INF/views/includes/navbar.jsp" %>
     
-    <!-- Page Header -->
     <div class="page-header">
         <div class="header-container">
             <div class="header-content">
@@ -414,7 +402,6 @@
 
     <c:choose>
         <c:when test="${not empty newPost}">
-            <!-- Success State -->
             <div class="create-post-container">
                 <div class="success-banner">
                     <span class="icon">✅</span>
@@ -444,7 +431,6 @@
             </div>
         </c:when>
         <c:otherwise>
-            <!-- Create Post Form -->
             <div class="create-post-container">
                 <div class="post-form-card">
                     <h2>Create a New Post</h2>
@@ -494,7 +480,6 @@
     </c:choose>
 
     <script>
-        // Character counter for title
         const titleInput = document.getElementById('postTitle');
         if (titleInput) {
             const titleCounter = titleInput.nextElementSibling;
@@ -505,7 +490,6 @@
             });
         }
 
-        // Character counter for content
         const contentInput = document.getElementById('postContent');
         if (contentInput) {
             const contentCounter = contentInput.nextElementSibling;

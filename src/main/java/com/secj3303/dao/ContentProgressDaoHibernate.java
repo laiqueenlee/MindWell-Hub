@@ -29,11 +29,9 @@ public class ContentProgressDaoHibernate implements ContentProgressDao {
         sessionFactory.getCurrentSession().saveOrUpdate(progress);
     }
 
-    // In ContentProgressDaoHibernate.java
 
     @Override
     public Double getAverageRating(int contentId) {
-        // HQL to calculate Average
         String hql = "SELECT AVG(cp.rating) FROM ContentProgress cp WHERE cp.content.id = :cid AND cp.rating > 0";
 
         Query<Double> query = sessionFactory.getCurrentSession().createQuery(hql, Double.class);
@@ -41,7 +39,6 @@ public class ContentProgressDaoHibernate implements ContentProgressDao {
 
         Double avg = query.uniqueResult();
 
-        // If no ratings exist, avg will be null. Return 0.0 in that case.
         return (avg != null) ? avg : 0.0;
     }
 
@@ -57,12 +54,10 @@ public class ContentProgressDaoHibernate implements ContentProgressDao {
         sumQuery.setParameter("uid", userId);
         Long totalUserProgress = sumQuery.uniqueResult();
 
-        // TOTAL COUNT of approved content existing in the system
         String countHql = "SELECT COUNT(c) FROM Content c WHERE c.status = 'Published'";
         Query<Long> countQuery = sessionFactory.getCurrentSession().createQuery(countHql, Long.class);
         Long totalPublishedContent = countQuery.uniqueResult();
 
-        // Calculate the Average
         if (totalPublishedContent == null || totalPublishedContent == 0) {
             return 0.0;
         }
@@ -71,8 +66,7 @@ public class ContentProgressDaoHibernate implements ContentProgressDao {
 
     @Override
     public long countCompletedContent(int userId) {
-        // Count progress records where user matches, progress is 100, and content is
-        // Approved
+
         String hql = "SELECT COUNT(cp) FROM ContentProgress cp " +
                 "WHERE cp.user.id = :uid " +
                 "AND cp.progressPercent = 100 " +

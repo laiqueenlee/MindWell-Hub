@@ -29,7 +29,6 @@
         .start-btn:hover { background-color: var(--teal-dark); }
         .btn-ghost { background: transparent; border: 1px solid #ccc; color: #555; margin-bottom: 20px; display:inline-block; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 0.9rem;}
 
-        /* Type Badge Styles */
         .type-badge {
             display: inline-block;
             font-size: 0.75rem;
@@ -45,7 +44,6 @@
         .type-Interactive { background-color: #dcfce7; color: #16a34a; }
         .type-default { background-color: #f3f4f6; color: #4b5563; }
 
-        /* Add these styles for the mini progress bar */
         .progress-mini-wrapper { margin-bottom: 15px; }
         .progress-header { display: flex; justify-content: space-between; font-size: 0.8rem; color: #95a5a6; margin-bottom: 5px; font-weight: 600; }
         .progress-track-mini { width: 100%; height: 6px; background-color: #f1f2f6; border-radius: 3px; overflow: hidden; }

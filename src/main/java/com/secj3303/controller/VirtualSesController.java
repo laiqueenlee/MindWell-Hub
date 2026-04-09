@@ -11,18 +11,19 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.secj3303.dao.MhpAvailabilityDao;
 import com.secj3303.dao.UserDao;
 import com.secj3303.dao.VirtualSessionDao;
+import com.secj3303.model.MhpAvailability;
 import com.secj3303.model.Role;
 import com.secj3303.model.User;
 import com.secj3303.model.VirtualSession;
-import com.secj3303.model.MhpAvailability;
-import com.secj3303.dao.MhpAvailabilityDao;
-// Import your User DAO if you have one, or use a general method to fetch MHPs
-// import com.secj3303.dao.UserDao; 
+
 
 @Controller
 @RequestMapping("/sessions")
@@ -37,7 +38,6 @@ public class VirtualSesController {
     @Autowired
     private MhpAvailabilityDao mhpAvailabilityDao;
 
-    // --- STUDENT BOOKING SECTION ---
 
     @GetMapping("/book")
     public String studBookSes(HttpSession session, Model model) {
@@ -48,7 +48,6 @@ public class VirtualSesController {
 
         List<User> mhps = userDao.findByRole(Role.MENTAL_HEALTH_PROFESSIONAL);
         
-        // Populate the Map for the preview pills on the card
         Map<String, List<String>> availableSlotsMap = new HashMap<>();
         for (User mhp : mhps) {
             List<MhpAvailability> slots = mhpAvailabilityDao.findByMhpId(mhp.getId());
@@ -71,28 +70,23 @@ public class VirtualSesController {
         User mhp = userDao.findById(mhpId);
         model.addAttribute("mhp", mhp);
         
-        // Set date constraints for HTML5 date picker
         LocalDate today = LocalDate.now();
         model.addAttribute("minDate", today);
         model.addAttribute("maxDate", today.plusMonths(2));
 
         if (dateStr != null && !dateStr.isEmpty()) {
             LocalDate chosenDate = LocalDate.parse(dateStr);
-            String dayOfWeek = chosenDate.getDayOfWeek().name(); // e.g., "MONDAY"
+            String dayOfWeek = chosenDate.getDayOfWeek().name();
             
-            // 1. Get MHP's regular routine for that day of the week
             List<MhpAvailability> routine = mhpAvailabilityDao.findByMhpId(mhpId);
             
-            // 2. Get existing bookings for that specific date
             List<VirtualSession> bookedSessions = sessionDao.findByMhpAndDate(mhpId, chosenDate);
             List<String> takenTimes = bookedSessions.stream()
                                         .map(VirtualSession::getTime)
                                         .collect(java.util.stream.Collectors.toList());
 
-            // 3. Filter: Only keep slots that match the day of week AND aren't taken
             List<String> availableTimes = new ArrayList<>();
             for (MhpAvailability slot : routine) {
-                // Match "Monday" from DB with "MONDAY" from Calendar
                 if (slot.getDayOfWeek().equalsIgnoreCase(dayOfWeek)) {
                     if (!takenTimes.contains(slot.getTimeSlot())) {
                         availableTimes.add(slot.getTimeSlot());
@@ -110,8 +104,8 @@ public class VirtualSesController {
     public String saveFinalBooking(@RequestParam("mhpId") Integer mhpId, 
                                 @RequestParam("time") String time,
                                 @RequestParam("selectedDate") String dateStr,
-                                @RequestParam("notes") String notes,     // Field: notes
-                                @RequestParam("preFocus") String preFocus, // Field: preFocus
+                                @RequestParam("notes") String notes,     
+                                @RequestParam("preFocus") String preFocus, 
                                 HttpSession session) {
         
         User student = (User) session.getAttribute("loggedInUser");
@@ -123,7 +117,6 @@ public class VirtualSesController {
             sessionObj.setMhp(mhp);
             sessionObj.setTime(time);
             
-            // Using your specific field names
             sessionObj.setNotes(notes);
             sessionObj.setPreFocus(preFocus);
             
@@ -137,7 +130,6 @@ public class VirtualSesController {
 
         return "redirect:/sessions/book?success=true";
     }
-        // --- MHP CONFIRMATION SECTION ---
 
     @GetMapping("/confirm")
     public String mhpConfirmPage(HttpSession session, Model model) {
@@ -146,7 +138,6 @@ public class VirtualSesController {
             return "redirect:/auth/login";
         }
 
-        // Dynamic fetch using your DAO
         List<VirtualSession> sessions = sessionDao.findByMhpUsername(mhp.getUsername());
         model.addAttribute("sessions", sessions);
         
@@ -163,26 +154,20 @@ public class VirtualSesController {
         return "redirect:/sessions/confirm";
     }
 
-    // --- DETAILS & MEETING SECTION ---
 
     @GetMapping("/detail")
     public String sessionDetail(@RequestParam("id") Integer sessionId, Model model, HttpSession session) {
-        // 1. Fetch the specific session
         VirtualSession sessionObj = sessionDao.findById(sessionId);
         
-        // 2. Security Check: Ensure a user is logged in
         User loggedInUser = (User) session.getAttribute("loggedInUser");
         if (loggedInUser == null) {
             return "redirect:/auth/login";
         }
 
         if (sessionObj == null) {
-            // Redirect based on role if session doesn't exist
             return loggedInUser.getRole() == Role.STUDENT ? "redirect:/student/home" : "redirect:/sessions/confirm";
         }
 
-        // 3. Add data to the model
-        // Note: I use "sessionObj" to avoid conflict with the reserved JSP "session" keyword
         model.addAttribute("sessionObj", sessionObj);
         model.addAttribute("userRole", loggedInUser.getRole().name()); // Passes "STUDENT" or "MENTAL_HEALTH_PROFESSIONAL"
 
@@ -207,10 +192,8 @@ public class VirtualSesController {
             return "redirect:/access-denied"; // Prevent strangers from joining the link
         }
 
-        // 1. Rename attribute to 'sessionObj' to avoid conflict with the built-in 'session' object
         model.addAttribute("sessionObj", sessionObj);
         
-        // 2. Add 'userRole' so the JSP knows whether to show the Student or MHP view
         model.addAttribute("userRole", user.getRole().toString()); 
 
         return "virtualSes/virtual-session-meeting"; 

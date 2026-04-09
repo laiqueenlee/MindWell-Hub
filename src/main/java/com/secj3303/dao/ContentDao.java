@@ -11,7 +11,7 @@ public interface ContentDao {
     void save(Content content);
     void delete(int id);
 
-    long countActiveContent(); // or countAllContent()
+    long countActiveContent(); 
 
     public long countByStatus(String status);
 

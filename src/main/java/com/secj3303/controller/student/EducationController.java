@@ -2,8 +2,10 @@ package com.secj3303.controller.student;
 
 import java.util.HashMap;
 import java.util.List;
-import javax.servlet.http.HttpSession;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,23 +16,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.secj3303.dao.ContentDao;
-import com.secj3303.dao.ContentProgressDao; // 1. Import This
-import com.secj3303.model.User;
+import com.secj3303.dao.ContentProgressDao;
 import com.secj3303.model.Content.ArticleSection;
 import com.secj3303.model.Content.Content;
-import com.secj3303.model.Content.ContentProgress; // 2. Import This
-
-import java.util.stream.Collectors;
+import com.secj3303.model.Content.ContentProgress; 
+import com.secj3303.model.User;
 
 @Controller
 @RequestMapping("/content") 
 public class EducationController {
 
     private final ContentDao contentDao;
-    private final ContentProgressDao progressDao; // 3. Add this field
+    private final ContentProgressDao progressDao; 
 
     @Autowired
-    // 4. Update Constructor to include ProgressDao
     public EducationController(ContentDao contentDao, ContentProgressDao progressDao) {
         this.contentDao = contentDao;
         this.progressDao = progressDao;
@@ -43,15 +42,12 @@ public class EducationController {
             return "redirect:/auth/login";
         }
 
-        // 1. Fetch ALL content from DAO
         List<Content> allContent = contentDao.findAll();
 
-        // 2. FILTER the list: Keep only content where status is "Published"
         List<Content> modules = allContent.stream()
                 .filter(c -> "Published".equalsIgnoreCase(c.getStatus()))
                 .collect(Collectors.toList());
 
-        // --- CREATE THE MAP (Only for published modules) ---
         Map<Integer, Integer> progressMap = new HashMap<>();
 
         for (Content module : modules) {
@@ -60,10 +56,9 @@ public class EducationController {
             progressMap.put(module.getId(), percent);
         }
 
-        // --- SEND THE MAP & FILTERED MODULES ---
         model.addAttribute("progressMap", progressMap);
         model.addAttribute("user", loggedInUser);
-        model.addAttribute("modules", modules); // This now contains only published items
+        model.addAttribute("modules", modules);
 
         return "/student/education"; 
     }
@@ -82,9 +77,6 @@ public class EducationController {
         if (content == null)
             return "redirect:/content/browse";
 
-        // ============================================================
-        // 5. NEW CODE: FETCH SAVED PROGRESS FROM DATABASE
-        // ============================================================
         ContentProgress savedProgress = progressDao.findByUserAndContent(loggedInUser.getId(), id);
 
         int percent = (savedProgress != null) ? savedProgress.getProgressPercent() : 0;
@@ -92,26 +84,21 @@ public class EducationController {
         int lastPage = (savedProgress != null) ? savedProgress.getLastVisitedPage() : 0;
         String quizAnswers = (savedProgress != null) ? savedProgress.getQuizAnswers() : "";
 
-        // Pass these to the view so JavaScript can use them
-        model.addAttribute("progressPercent", percent); // Overwrites the manual calculation below
+        model.addAttribute("progressPercent", percent); 
         model.addAttribute("userRating", rating);
-        model.addAttribute("lastPage", lastPage); // THIS IS THE KEY FIX
+        model.addAttribute("lastPage", lastPage); 
         model.addAttribute("savedQuizAnswers", quizAnswers);
-        // ============================================================
 
         model.addAttribute("module", content);
         model.addAttribute("currentPage", page);
 
-        // Keep existing logic for "Article" type to ensure backward compatibility
         if ("Article".equals(content.getType())) {
             int totalSections = content.getArticleSections().size();
 
             if (page < 1 || page > totalSections) {
-                // If we have a saved page, maybe we want to redirect there?
-                // For now, let's just let the view handle it via 'lastPage' variable.
+                // 
             }
 
-            // Fallback for non-JS rendering
             if (totalSections > 0 && page <= totalSections) {
                 ArticleSection currentSection = content.getArticleSections().get(page - 1);
                 model.addAttribute("currentSection", currentSection);

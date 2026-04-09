@@ -14,14 +14,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.secj3303.dao.ContentDao;
+import com.secj3303.dao.ContentProgressDao;
+import com.secj3303.dao.ForumPostDao;
 import com.secj3303.dao.UserDao;
+import com.secj3303.model.Content.Content;
 import com.secj3303.model.Role;
 import com.secj3303.model.User;
-import com.secj3303.dao.ContentProgressDao; 
-import com.secj3303.model.Content.Content;  
-import com.secj3303.dao.ForumPostDao;
 
-// import com.secj3303.model.User;
 
 @Controller
 @RequestMapping("/admin")
@@ -37,17 +36,16 @@ public class admincontroller {
     public admincontroller(ContentDao contentDao, 
                         UserDao userDao, 
                         ContentProgressDao contentProgressDao, 
-                        ForumPostDao forumPostDao) { // Add this here
+                        ForumPostDao forumPostDao) { 
         this.contentDao = contentDao;
         this.userDao = userDao;
         this.contentProgressDao = contentProgressDao;
-        this.forumPostDao = forumPostDao; // Remove the "new" keyword
+        this.forumPostDao = forumPostDao; 
     }
 
     
     @ModelAttribute
     public void addGlobalAttributes(Model model) {
-        // These will now be available in admin-header.html automatically
         model.addAttribute("totalUsers", userDao.countAllUsers());
         model.addAttribute("activeContentCount", contentDao.countActiveContent());
 
@@ -62,16 +60,8 @@ public class admincontroller {
             return "redirect:/auth/login";
         }
 
-        // 1. Dynamic Header Stats
-        // model.addAttribute("totalUsers", userDao.countAllUsers());
-        // model.addAttribute("activeContentCount", contentDao.countByStatus("PUBLISHED")); // Adjust status string as needed
-        // model.addAttribute("totalForumPosts", forumPostDao.countAllPosts());
-        // model.addAttribute("dailyActiveCount", 0); // Placeholder until you have a login tracker
-
-        // 2. The User Breakdown (Calculation)
         long total = userDao.countAllUsers();
         if (total > 0) {
-            // Use your existing countByRole method
             long studentCount = userDao.countByRole(Role.STUDENT);
             long mhpCount = userDao.countByRole(Role.MENTAL_HEALTH_PROFESSIONAL);
             long adminCount = userDao.countByRole(Role.ADMIN);
@@ -81,7 +71,6 @@ public class admincontroller {
             model.addAttribute("adminPercent", (adminCount * 100) / total);
         }
 
-        // 3. Recent Members Table
         model.addAttribute("recentUsers", userDao.findRecentUsers(5));
 
         return "admin/home";
@@ -96,22 +85,18 @@ public class admincontroller {
             return "redirect:/auth/login";
         }
 
-        // 1. Fetch the list (existing code)
         List<Content> contentList = contentDao.findAll();
 
-        // 2. NEW: Fetch the published count
         long publishedCount = contentDao.countByStatus("Published");
         long pendingCount   = contentDao.countByStatus("Pending"); 
         long flaggedCount   = contentDao.countByStatus("Flagged");  
 
-        // 3. Calculate ratings (from previous step)
         Map<Integer, Double> ratingMap = new HashMap<>();
         for (Content content : contentList) {
             Double avgRating = contentProgressDao.getAverageRating(content.getId());
             ratingMap.put(content.getId(), avgRating);
         }
 
-        // 4. Add data to model
         model.addAttribute("contentList", contentList);
         model.addAttribute("ratingMap", ratingMap);
         model.addAttribute("publishedCount", publishedCount); 
