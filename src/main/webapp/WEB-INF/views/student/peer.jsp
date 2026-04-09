@@ -1000,7 +1000,6 @@
     </script>
 
     <script>
-        // menu toggle (for three-dot menus)
         function toggleMenu(btn){
             var dd = btn.nextElementSibling;
             if(!dd) return;
@@ -1016,9 +1015,7 @@
     </script>
 
     <script>
-        // sort posts for 'popular' or sort by recent for 'recent'
         function switchTab(tab, evt) {
-            // update active button
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
 
             const postsSection = document.getElementById('postsSection');
@@ -1029,7 +1026,6 @@
                     const aLikes = parseInt((a.querySelector('.interaction-btn .count') || {textContent: '0'}).textContent) || 0;
                     const bLikes = parseInt((b.querySelector('.interaction-btn .count') || {textContent: '0'}).textContent) || 0;
                     if (bLikes !== aLikes) return bLikes - aLikes;
-                    // tie-breaker: replies
                     const aReplyEl = a.querySelector('a.interaction-btn');
                     const bReplyEl = b.querySelector('a.interaction-btn');
                     const aReplies = aReplyEl ? parseInt((aReplyEl.textContent || '').match(/(\d+)/)?.[0] || 0) : 0;
@@ -1037,18 +1033,15 @@
                     return bReplies - aReplies;
                 });
             } else {
-                // recent: sort by creation time (most recent first)
                 posts.sort((a, b) => {
-                    // Extract creation time from post-info (last span element)
                     const aTimeEl = a.querySelector('.post-info span:last-child');
                     const bTimeEl = b.querySelector('.post-info span:last-child');
                     const aTime = aTimeEl ? new Date(aTimeEl.textContent.trim()) : new Date(0);
                     const bTime = bTimeEl ? new Date(bTimeEl.textContent.trim()) : new Date(0);
-                    return bTime - aTime; // descending order (most recent first)
+                    return bTime - aTime; 
                 });
             }
 
-            // re-append in new order
             posts.forEach(p => postsSection.appendChild(p));
         }
 
@@ -1114,7 +1107,6 @@
                     return;
                 }
 
-                // Success - update UI
                 btn.classList.toggle('liked', !!data.liked);
                 const countSpan = btn.querySelector('.count');
                 if (countSpan) countSpan.textContent = data.likes;
@@ -1141,7 +1133,6 @@
             if (form) form.reset();
         }
 
-        // Attach submit handler after DOM ready
         document.addEventListener('DOMContentLoaded', () => {
             const form = document.getElementById('reportForm');
             if (!form) return;
@@ -1184,7 +1175,6 @@
             });
         });
     </script>
-        <!-- Report Modal (hidden by default) -->
         <div id="reportModal" class="modal-overlay" style="display:none;">
             <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="reportModalTitle">
                 <div class="modal-header">
@@ -1219,7 +1209,6 @@
             </div>
         </div>
     
-    <!-- Inline Edit Modal for listing -->
     <div id="peerEditModal" class="modal-overlay" style="display:none;">
         <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="peerEditTitle">
             <div class="modal-header">
@@ -1242,7 +1231,6 @@
         </div>
     </div>
     <script>
-        // delete helper for listing page
         function confirmDeletePost(postId){
             if(!confirm('Delete this post? This cannot be undone.')) return;
             const form = new FormData(); form.append('postId', postId);
@@ -1264,7 +1252,6 @@
                     console.warn('Skipping invalid CSRF header name:', headerNameRaw);
                 }
             }
-            // If caller passed a FormData, convert to URL-encoded body so Spring @RequestParam reads it reliably
             let bodyToSend = formData;
             if (typeof FormData !== 'undefined' && formData instanceof FormData) {
                 const params = new URLSearchParams();
@@ -1286,9 +1273,7 @@
         }
     </script>
     <script>
-        // Inline edit modal functions for listing
         function openPeerEditModal(postId){
-            // find the post card
             const postEl = document.querySelector('.post[data-post-id="' + postId + '"]');
             if(!postEl) return;
             const title = postEl.querySelector('h3') ? postEl.querySelector('h3').textContent.trim() : '';
@@ -1309,9 +1294,7 @@
             ef.addEventListener('submit', function(e){
                 e.preventDefault();
                 const form = new FormData(e.target);
-                // submit via existing helper
                 submitPostAction('student/forum/editPost', form, function(){
-                    // update UI optimistically
                     const postId = form.get('postId');
                     const postEl = document.querySelector('.post[data-post-id="' + postId + '"]');
                     if(postEl){
@@ -1319,7 +1302,6 @@
                         const newContent = form.get('content') || '';
                         const titleEl = postEl.querySelector('h3'); if(titleEl) titleEl.textContent = newTitle;
                         const contentEl = postEl.querySelector('.post-text'); if(contentEl) contentEl.textContent = newContent;
-                        // update timestamp to now (format similar to server view)
                         const timeEl = postEl.querySelector('.post-info span:last-child');
                         if(timeEl){
                             const iso = new Date().toISOString().replace('T',' ').slice(0,19);

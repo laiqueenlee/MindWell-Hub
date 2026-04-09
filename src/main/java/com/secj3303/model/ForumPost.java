@@ -50,7 +50,6 @@ public class ForumPost {
     public ForumPost() {
     }
 
-    // Getters and setters
     public Long getId() {
         return id;
     }

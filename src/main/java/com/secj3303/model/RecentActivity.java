@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public class RecentActivity {
     private String description;
     private LocalDateTime timestamp;
-    private String type; // "assessment", "post", "reply", "content"
+    private String type; 
 
     public RecentActivity() {
     }

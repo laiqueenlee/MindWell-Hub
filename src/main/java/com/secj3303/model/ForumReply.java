@@ -45,7 +45,6 @@ public class ForumReply {
         this.content = content;
     }
 
-    // Getters and setters
     public Long getId() {
         return id;
     }

@@ -1,7 +1,15 @@
 package com.secj3303.model;
 
 import java.time.LocalDate;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "VIRTUAL_SESSION")
@@ -30,7 +38,7 @@ public class VirtualSession {
     private boolean confirmed;
 
     @Column(name = "pre_focus", length = 255)
-    private String preFocus; // Stores the "Preliminary Focus" dropdown/input
+    private String preFocus; 
 
     @Column(name = "notes", length = 2000)
     private String notes;
@@ -45,7 +53,6 @@ public class VirtualSession {
         this.confirmed = confirmed;
     }
 
-    // Getters and Setters
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
     public User getStudent() { return student; }

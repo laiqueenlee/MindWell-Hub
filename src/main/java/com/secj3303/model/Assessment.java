@@ -1,7 +1,13 @@
 package com.secj3303.model;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "assessments")
@@ -16,13 +22,13 @@ public class Assessment {
     private String username;
     
     @Column(name = "assessment_type", nullable = false)
-    private String assessmentType; // "mood", "stress", "anxiety", "wellbeing"
+    private String assessmentType; 
     
     @Column(name = "score")
     private int score;
     
     @Column(name = "category")
-    private String category; // e.g., "Good", "Fair", "Poor"
+    private String category; 
     
     @Column(name = "feedback", columnDefinition = "TEXT")
     private String feedback;
@@ -31,7 +37,7 @@ public class Assessment {
     private LocalDateTime completedAt;
     
     @Column(name = "recommendations", columnDefinition = "TEXT")
-    private String recommendationsText; // Store as comma-separated values
+    private String recommendationsText; 
 
     public Assessment() {}
 
@@ -50,7 +56,6 @@ public class Assessment {
         this.completedAt = LocalDateTime.now();
     }
 
-    // Getters & Setters
     public Long getAssessmentId() {
         return assessmentId;
     }

@@ -232,7 +232,6 @@
         <form id="assessmentForm" action="${pageContext.request.contextPath}/student/assessment/submit" method="post">
             <input type="hidden" name="assessmentType" value="mood">
 
-            <!-- Question 1: Current Mood -->
             <div class="question-container" data-question="1">
                 <div class="question-title">How would you describe your current mood?</div>
                 <div class="options">
@@ -259,7 +258,6 @@
                 </div>
             </div>
 
-            <!-- Question 2: Energy Level -->
             <div class="question-container" data-question="2" style="display:none;">
                 <div class="question-title">What is your energy level today?</div>
                 <div class="options">
@@ -286,7 +284,6 @@
                 </div>
             </div>
 
-            <!-- Question 3: Social Connection -->
             <div class="question-container" data-question="3" style="display:none;">
                 <div class="question-title">How connected do you feel to others?</div>
                 <div class="options">
@@ -313,7 +310,6 @@
                 </div>
             </div>
 
-            <!-- Question 4: Sleep Quality -->
             <div class="question-container" data-question="4" style="display:none;">
                 <div class="question-title">How well did you sleep last night?</div>
                 <div class="options">
@@ -340,7 +336,6 @@
                 </div>
             </div>
 
-            <!-- Question 5: Overall Satisfaction -->
             <div class="question-container" data-question="5" style="display:none;">
                 <div class="question-title">How satisfied are you with your overall well-being?</div>
                 <div class="options">
@@ -385,12 +380,10 @@
     const answersArray = new Array(totalQuestions).fill(null);
 
     function updateUI() {
-        // Update progress
         const progressPercent = (currentQuestion / totalQuestions) * 100;
         document.querySelector('.progress-fill').style.width = progressPercent + '%';
         document.getElementById('progressText').textContent = currentQuestion + '/' + totalQuestions;
 
-        // Show/hide questions
         document.querySelectorAll('.question-container').forEach((q, index) => {
             if (index + 1 === currentQuestion) {
                 q.style.display = 'block';
@@ -399,7 +392,6 @@
             }
         });
 
-        // Update button states
         document.getElementById('prevBtn').style.display = currentQuestion > 1 ? 'block' : 'none';
         document.getElementById('nextBtn').textContent = currentQuestion === totalQuestions ? 'Submit' : 'Next →';
         document.getElementById('nextBtn').style.background = currentQuestion === totalQuestions 
@@ -410,7 +402,6 @@
     function nextQuestion() {
         console.log('nextQuestion called, currentQuestion:', currentQuestion);
         
-        // Get the CURRENT question container and check if ANY radio is selected in it
         const currentQuestionContainer = document.querySelector('.question-container[data-question="' + currentQuestion + '"]');
         console.log('currentQuestionContainer:', currentQuestionContainer);
         
@@ -427,11 +418,9 @@
             return;
         }
 
-        // Store the answer
         answersArray[currentQuestion - 1] = selected.value;
 
         if (currentQuestion === totalQuestions) {
-            // Before submitting, populate hidden inputs with all answers
             submitAssessment();
         } else {
             currentQuestion++;
@@ -444,11 +433,9 @@
         const form = document.getElementById('assessmentForm');
         console.log('submitAssessment called');
         
-        // Clear existing answer inputs
         form.querySelectorAll('input[name="answer"]').forEach(el => el.remove());
         form.querySelectorAll('input[name="answers"]').forEach(el => el.remove());
         
-        // Collect all answers from the form
         const collectedAnswers = [];
         for (let i = 1; i <= totalQuestions; i++) {
             const selected = document.querySelector('input[name="q' + i + '"]:checked');
@@ -480,7 +467,6 @@
         }
     }
 
-    // Allow keyboard navigation
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
             nextQuestion();
@@ -491,10 +477,8 @@
         }
     });
 
-    // Initialize
     updateUI();
 
-    // Debug: Log when page loads
     console.log('Assessment page loaded. Total questions:', totalQuestions);
 </script>
 </body>

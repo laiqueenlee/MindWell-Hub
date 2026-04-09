@@ -11,7 +11,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Global Body */
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f9fafb;
@@ -19,7 +18,6 @@
             padding: 40px;
         }
 
-        /* Main Card */
         .cq-main-card {
             background: white;
             border-radius: 12px;
@@ -28,12 +26,10 @@
             border: 1px solid #e5e7eb;
         }
 
-        /* Header Section */
         .cq-header-section { margin-bottom: 24px; }
         .cq-page-title { font-size: 20px; font-weight: 600; margin: 0; color: #111827; }
         .cq-page-subtitle { font-size: 14px; color: #6b7280; margin-top: 4px; }
 
-        /* Metrics Grid */
         .cq-metrics-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -64,7 +60,6 @@
         .cq-metric-value { font-size: 28px; font-weight: 700; color: #111827; margin-bottom: 4px; }
         .cq-metric-sub { font-size: 14px; color: #6b7280; }
 
-        /* Content List */
         .cq-list-header { font-size: 18px; font-weight: 600; margin-bottom: 16px; color: #111827; }
 
         .cq-content-item {

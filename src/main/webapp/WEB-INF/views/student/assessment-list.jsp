@@ -258,7 +258,6 @@
     </div>
 
     <div class="assessments-grid">
-        <!-- Daily Mood Check -->
         <div class="assessment-card">
             <div class="assessment-icon">📊</div>
             <h3 class="assessment-title">Daily Mood Check</h3>
@@ -272,7 +271,6 @@
             </form>
         </div>
 
-        <!-- Stress Assessment -->
         <div class="assessment-card">
             <div class="assessment-icon">📈</div>
             <h3 class="assessment-title">Stress Assessment</h3>
@@ -286,7 +284,6 @@
             </form>
         </div>
 
-        <!-- Anxiety Screening -->
         <div class="assessment-card">
             <div class="assessment-icon">💫</div>
             <h3 class="assessment-title">Anxiety Screening</h3>
@@ -300,7 +297,6 @@
             </form>
         </div>
 
-        <!-- General Wellbeing -->
         <div class="assessment-card">
             <div class="assessment-icon">✓</div>
             <h3 class="assessment-title">General Wellbeing</h3>

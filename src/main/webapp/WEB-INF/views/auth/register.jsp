@@ -194,7 +194,6 @@
     options.forEach(o => o.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.click(); } }));
 })();
 
-// Password validation
 document.addEventListener('DOMContentLoaded', function() {
     const registerForm = document.getElementById('registerForm');
     const fullNameInput = document.getElementById('fullName');
@@ -207,7 +206,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const validationErrorDiv = document.getElementById('validationError');
 
     function validateEmail(email) {
-        // Email must contain @ and end with .com (or other valid domain)
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     }
@@ -220,7 +218,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const password = passwordInput.value.trim();
         const confirm = confirmInput.value.trim();
 
-        // Check if any field is empty
         if (!fullName) {
             validationErrorDiv.textContent = 'Full Name cannot be empty';
             validationErrorDiv.style.display = 'block';
@@ -233,7 +230,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return false;
         }
 
-        // Validate email format
         if (!validateEmail(email)) {
             validationErrorDiv.textContent = 'Email must be in format: example@domain.com';
             validationErrorDiv.style.display = 'block';
@@ -264,7 +260,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return false;
         }
 
-        // Check if passwords match
         if (password !== confirm) {
             passwordErrorDiv.textContent = 'Passwords do not match';
             passwordErrorDiv.style.display = 'block';
@@ -291,11 +286,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Real-time validation for password match
     confirmInput.addEventListener('input', validatePasswordsMatch);
     passwordInput.addEventListener('input', validatePasswordsMatch);
 
-    // Real-time validation for email format
     emailInput.addEventListener('input', function() {
         const email = emailInput.value.trim();
         if (email && !validateEmail(email)) {
@@ -306,7 +299,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Form submission validation
     registerForm.addEventListener('submit', function(e) {
         if (!validateAllFields()) {
             e.preventDefault();

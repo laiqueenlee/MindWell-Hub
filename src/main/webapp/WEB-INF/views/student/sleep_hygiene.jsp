@@ -7,9 +7,8 @@
     <title>Sleep Hygiene Basics - MindWell</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Shared Theme Styles */
         :root { --teal: #6fd7cc; --teal-dark: #3fb9a8; --bg: #f8fafb; --text: #2c3e50; }
-        body { font-family: 'Georgia', serif; /* Serif for better reading experience */ background: var(--bg); color: #333; line-height: 1.8; padding: 20px; }
+        body { font-family: 'Georgia', serif;  background: var(--bg); color: #333; line-height: 1.8; padding: 20px; }
         .container { max-width: 800px; margin: 0 auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         h1 { font-family: 'Segoe UI', sans-serif; color: #1a1a1a; font-size: 2.2rem; margin-bottom: 10px; }
         h2 { font-family: 'Segoe UI', sans-serif; color: var(--teal-dark); margin-top: 30px; }

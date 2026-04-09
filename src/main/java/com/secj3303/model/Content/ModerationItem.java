@@ -16,12 +16,11 @@ public class ModerationItem {
     @Column(name = "moderation_id")
     private int id;
 
-    // "type" is often a reserved SQL keyword, so we map it to "item_type"
     @Column(name = "item_type")
-    private String type;        // "Forum Post", "Comment", "Article"
+    private String type;        
 
     @Column(name = "priority")
-    private String priority;    // "high", "medium", "low"
+    private String priority;    
 
     @Column(name = "title")
     private String title;
@@ -33,11 +32,10 @@ public class ModerationItem {
     private String flagReason;
 
     @Column(name = "status")
-    private String status = "PENDING"; // Default value initialized here
+    private String status = "PENDING"; 
 
     public ModerationItem() {}
 
-    // Constructor updated to match your logic
     public ModerationItem(String type, String priority, String title, String author, String flagReason) {
         this.type = type;
         this.priority = priority;
@@ -47,7 +45,6 @@ public class ModerationItem {
         this.status = "PENDING";
     }
 
-    // Getters and Setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 

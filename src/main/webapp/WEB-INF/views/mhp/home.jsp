@@ -9,7 +9,6 @@
     <title>Content Management - HealthHub MHP</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* [Keeping existing CSS] */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #ffffff; color: #333; } 
         
@@ -103,7 +102,6 @@
                         <h3>
                             <span>${item.title}</span> 
                             
-                            <%-- Determine color class based on status --%>
                             <c:set var="statusClass" value="badge-draft" /> 
                             <c:if test="${item.status == 'Published' || item.status == 'published'}">
                                 <c:set var="statusClass" value="badge-published" />

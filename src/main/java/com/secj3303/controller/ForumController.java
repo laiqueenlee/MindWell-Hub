@@ -26,13 +26,7 @@ import com.secj3303.model.ForumReply;
 import com.secj3303.model.Report.StudentReport;
 import com.secj3303.model.User;
 
-/**
- * Combined ForumController
- * - GET  /student/forum        -> list view (student/peer.jsp) with "posts"
- * - GET  /forum/post?id={id}   -> single post view (student/post.jsp) with "post" and "replies"
- * - GET  /forum/post/{id}      -> same as above (path variable)
- * - POST /forum/submit-post    -> add a new post
- */
+
 @Controller
 @RequestMapping("/student/forum")
 public class ForumController {
@@ -52,12 +46,10 @@ public class ForumController {
     @Autowired
     private ModerationItemDao moderationItemDao;
 
-    // --- PAGE ROUTES ---
 
     @GetMapping
     public String forumIndex(Model model, HttpSession session) {
         List<ForumPost> posts = postDao.findAllDesc();
-        // Ensure the view always gets a list and log the size for quick verification
         int count = posts == null ? 0 : posts.size();
         log.info("[ForumController] posts fetched: {}", count);
         if (posts != null) {
@@ -67,7 +59,6 @@ public class ForumController {
             }
         }
         model.addAttribute("posts", posts == null ? java.util.Collections.emptyList() : posts);
-        // Determine which posts the current user has liked
         User u = (User) session.getAttribute("loggedInUser");
         java.util.Set<Long> likedPostIds = new java.util.HashSet<>();
         if (u != null && posts != null) {
@@ -83,7 +74,7 @@ public class ForumController {
             }
         }
         model.addAttribute("likedPostIds", likedPostIds);
-        return "student/peer"; // JSP view
+        return "student/peer"; 
     }
 
     @GetMapping("/new-post")
@@ -113,7 +104,6 @@ public class ForumController {
         List<ForumReply> replies = replyDao.findByPostId(post.getId());
         model.addAttribute("post", post);
         model.addAttribute("replies", replies);
-        // liked flag for current user
         User u = (User) (session != null ? session.getAttribute("loggedInUser") : null);
         boolean liked = false;
         if (u != null) {
@@ -128,7 +118,6 @@ public class ForumController {
         return "student/post";
     }
 
-    // --- ACTION ROUTES ---
 
     @PostMapping("/submit-post")
     public String submitPost(
@@ -149,7 +138,6 @@ public class ForumController {
         p.setAuthorName(author);
         p.setAuthorId(u != null ? Long.valueOf(u.getId()) : null);
         p.setAvatar(avatar);
-        // initialize counts to avoid null handling later
         p.setReplyCount(p.getReplyCount() == null ? 0 : p.getReplyCount());
         p.setLikes(p.getLikes() == null ? 0 : p.getLikes());
         postDao.save(p);
@@ -171,7 +159,6 @@ public class ForumController {
         ForumReply r = new ForumReply(postId, author, avatar, content);
         r.setAuthorId(u != null ? Long.valueOf(u.getId()) : null);
         replyDao.save(r);
-        // guard against null replyCount
         Integer current = post.getReplyCount();
         post.setReplyCount((current == null ? 0 : current) + 1);
         postDao.save(post);
@@ -200,7 +187,7 @@ public class ForumController {
         Long userId = Long.valueOf(u.getId());
         com.secj3303.model.ForumPostLike existing = likeDao.findByPostAndUser(postId, userId);
         if (existing != null) {
-            // unlike
+            // unike
             likeDao.delete(existing);
             Integer likes = post.getLikes() == null ? 0 : post.getLikes();
             post.setLikes(Math.max(0, likes - 1));
@@ -241,7 +228,6 @@ public class ForumController {
         java.util.Map<String, Object> resp = new java.util.HashMap<>();
         User u = (User) session.getAttribute("loggedInUser");
         Integer reporterId = (u != null) ? Integer.valueOf(u.getId()) : null;
-        // Validate: require either postId or replyId
         if (postId == null && replyId == null) {
             resp.put("ok", false);
             resp.put("error", "missing-target");
@@ -249,11 +235,9 @@ public class ForumController {
             return resp;
         }
 
-        // If replyId present, persist report with replyId only (postId will be null per request)
         Long persistPostId = (replyId != null) ? null : postId;
         Long persistReplyId = (replyId != null) ? replyId : null;
 
-        // Persist StudentReport record
         StudentReport sr = new StudentReport(reporterId, persistPostId, persistReplyId, reason, details == null ? "" : details);
         try {
             studentReportDao.save(sr);
@@ -263,7 +247,6 @@ public class ForumController {
             return resp;
         }
 
-        // Do NOT create a ModerationItem; reports are persisted in STUDENT_REPORT only.
 
         resp.put("ok", true);
         return resp;
@@ -292,7 +275,6 @@ public class ForumController {
             ra.addFlashAttribute("error", "Not authorized to delete this reply.");
             return "redirect:/student/forum/post/" + r.getPostId();
         }
-        // delete reply and decrement parent post reply count
         Long postId = r.getPostId();
         replyDao.delete(replyId);
         ForumPost p = postDao.findById(postId);
@@ -316,7 +298,6 @@ public class ForumController {
         }
         post.setTitle(title);
         post.setContent(content);
-        // Update the timestamp to reflect the edit using the existing createdAt field
         post.setCreatedAt(LocalDateTime.now());
         postDao.save(post);
         ra.addFlashAttribute("message", "Post updated.");

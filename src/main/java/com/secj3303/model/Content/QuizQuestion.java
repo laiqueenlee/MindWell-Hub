@@ -1,8 +1,17 @@
 package com.secj3303.model.Content;
 
-import javax.persistence.*;
-
 import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "QUIZ_QUESTION")
@@ -13,7 +22,7 @@ public class QuizQuestion {
 
     private String questionText;
 
-    @Column(columnDefinition = "TEXT") // Use TEXT if the intro is long
+    @Column(columnDefinition = "TEXT") 
     private String introduction;
 
     @ManyToOne
@@ -21,7 +30,7 @@ public class QuizQuestion {
     private Content content;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "question_id") // Unidirectional is simpler for options
+    @JoinColumn(name = "question_id") 
     private List<QuizOption> options;
 
     public int getId() {

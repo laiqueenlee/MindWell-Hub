@@ -43,23 +43,17 @@ public class studentcontroller {
     private VirtualSessionDao virtualSessionDao;
 
 
-    // --- STUDENT HOME PAGE (GET) ---
     @GetMapping("/home")
     public String showStudentHomePage(Model model, HttpSession session) {
-        // Retrieve the logged-in user from the session
         User loggedInUser = (User) session.getAttribute("loggedInUser");
         if (loggedInUser == null) {
-            // If no user is logged in, redirect to the login page
             return "redirect:/auth/login";
         }
 
-        // Add the logged-in user to the model
         model.addAttribute("user", loggedInUser);
         model.addAttribute("sessions", virtualSessionDao.findByStudentId(loggedInUser.getId()));
 
-        // In StudentController.java inside showStudentHomePage()
 
-        //Calculate average of APPROVED content from DAO
         Double rawAvg = contentProgressDao.getUserAverageProgress(loggedInUser.getId());
         int progressVal = (int) Math.round(rawAvg);
 
@@ -71,17 +65,13 @@ public class studentcontroller {
 
         model.addAttribute("learningModulesCompleted", modulesString);
 
-        // Fetch forum posts count for the logged-in user
         long userForumPostsCount = forumPostDao.countByAuthorId(Long.valueOf(loggedInUser.getId()));
         model.addAttribute("forumPosts", userForumPostsCount);
 
-        // Fetch completed assessments count
         List<Assessment> allAssessments = assessmentDao.findByUsername(loggedInUser.getUsername());
         int completedAssessmentsCount = allAssessments.size();
         model.addAttribute("completedAssessments", completedAssessmentsCount);
 
-        // Calculate wellness score (average of all assessment scores converted to percentage)
-        // Assessment scores are out of 25, so we convert to out of 100
         int wellnessScore = 0; // Default
         if (!allAssessments.isEmpty()) {
             int totalScore = 0;
@@ -93,32 +83,27 @@ public class studentcontroller {
         }
         model.addAttribute("wellnessScore", wellnessScore);
 
-        // Fetch recent activities within the last week
         LocalDateTime oneWeekAgo = LocalDateTime.now().minus(7, ChronoUnit.DAYS);
         List<RecentActivity> recentActivities = new ArrayList<>();
 
-        // Get recent assessments
         List<Assessment> recentAssessments = assessmentDao.findRecentByUsername(loggedInUser.getUsername(), oneWeekAgo);
         for (Assessment assessment : recentAssessments) {
             String desc = "Completed " + capitalizeFirst(assessment.getAssessmentType()) + " Assessment";
             recentActivities.add(new RecentActivity(desc, assessment.getCompletedAt(), "assessment"));
         }
 
-        // Get recent forum posts
         List<ForumPost> recentPosts = forumPostDao.findRecentByAuthorId(Long.valueOf(loggedInUser.getId()), oneWeekAgo);
         for (ForumPost post : recentPosts) {
             String desc = "Posted in Support Forum: \"" + truncate(post.getTitle(), 30) + "\"";
             recentActivities.add(new RecentActivity(desc, post.getCreatedAt(), "post"));
         }
 
-        // Get recent forum replies
         List<ForumReply> recentReplies = forumReplyDao.findRecentByAuthorId(Long.valueOf(loggedInUser.getId()), oneWeekAgo);
         for (ForumReply reply : recentReplies) {
             String desc = "Replied in Forum Discussion";
             recentActivities.add(new RecentActivity(desc, reply.getCreatedAt(), "reply"));
         }
 
-        // Sort by timestamp descending and limit to 5 most recent
         recentActivities.sort(Comparator.comparing(RecentActivity::getTimestamp).reversed());
         if (recentActivities.size() > 5) {
             recentActivities = recentActivities.subList(0, 5);
@@ -126,8 +111,7 @@ public class studentcontroller {
 
         model.addAttribute("recentActivities", recentActivities);
 
-        // Render the student homepage
-        return "/student/home";  // => /WEB-INF/views/student/home.jsp
+        return "/student/home";  
     }
 
     private String capitalizeFirst(String str) {
@@ -140,48 +124,27 @@ public class studentcontroller {
         return str.length() > length ? str.substring(0, length) + "..." : str;
     }
 
-    // --- STUDENT LOGOUT (GET) ---
     @GetMapping("/logout")
     public String studentLogout(HttpSession session) {
-        session.invalidate();  // Invalidate the session to log out
-        return "redirect:/auth/login";  // Redirect to the login page
+        session.invalidate();  
+        return "redirect:/auth/login";  
     }
 
-    // --- NEW POST PAGE (GET) ---
-    // @GetMapping("/new-post")
-    // public String showNewPostPage(Model model) {
-    // Add model attributes if needed
-    // return "/student/new-post"; // Resolves to
-    // /WEB-INF/views/student/new-post.jsp
-    // }
-
-    // Redirect student-scoped forum route to the central ForumController
-    // @GetMapping("/forum")
-    // public String showForumPage(Model model) {
-    // return "redirect:/forum";
-    // }
-
+    
     @GetMapping("/chatbot")
     public String showChatbotPage(Model model) {
-        // Serve the static chatbot JSP; remove server-side AI invocation.
         return "/student/chatbot"; 
     }
 
-    // ... inside StudentController class ...
 
-    // Mapping for Study Stress Page
     @GetMapping("/content/study-stress")
     public String showStudyStressPage(Model model, HttpSession session) {
-        // Security check (optional but recommended)
         if (session.getAttribute("loggedInUser") == null) {
             return "redirect:/auth/login";
         }
 
-        // Return the path to the JSP (without .jsp extension)
-        // This assumes your JSP is at /WEB-INF/views/student/study_stress.jsp
         return "student/study_stress"; 
     }
-    // Mapping for Sleep Hygiene Page
     @GetMapping("/content/sleep-hygiene")
     public String showSleepHygienePage(Model model, HttpSession session) {
         if (session.getAttribute("loggedInUser") == null) {
@@ -190,7 +153,6 @@ public class studentcontroller {
         return "student/sleep_hygiene"; 
     }
 
-    // Mapping for Breathing Exercise Page
     @GetMapping("/content/breathing")
     public String showBreathingPage(Model model, HttpSession session) {
         if (session.getAttribute("loggedInUser") == null) {

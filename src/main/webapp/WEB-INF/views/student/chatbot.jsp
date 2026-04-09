@@ -314,7 +314,6 @@
     </div>
 
     <script>
-        // JS logic with clickable educational links added
         var basePath = '${pageContext.request.contextPath}';
         function fillPrompt(text) {
             document.getElementById("userMessage").value = text;
@@ -368,7 +367,6 @@
         function getBotResponse(message) {
             message = message.toLowerCase();
 
-            // Provide expressive clickable links to hub pages (use controller routes under the app)
             if (message.includes("stress")) {
                 return 'Our Hub provides interactive modules on stress management techniques. <a href="' + basePath + '/student/content/study-stress">Open stress modules</a>.';
             } else if (message.includes("symptom") || message.includes("recognize")) {

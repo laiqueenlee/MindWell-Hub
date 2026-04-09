@@ -1,6 +1,10 @@
 package com.secj3303.model.Content;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "QUIZ_OPTION")
@@ -10,7 +14,7 @@ public class QuizOption {
     private int id;
 
     private String optionText;
-    private boolean isCorrect; // true if this is the answer
+    private boolean isCorrect; 
 
     public int getId() {
         return id;

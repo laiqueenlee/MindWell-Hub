@@ -7,14 +7,12 @@
     <title>Managing Study Stress - MindWell</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Shared Theme Styles */
         :root { --teal: #6fd7cc; --teal-dark: #3fb9a8; --bg: #f8fafb; --text: #2c3e50; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
         .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .btn-back { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: #666; font-weight: 600; margin-bottom: 20px; }
         .btn-back:hover { color: var(--teal-dark); }
         
-        /* Video Specific Styles */
         .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; border-radius: 12px; overflow: hidden; background: #000; margin-bottom: 25px; }
         .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
         .meta-tags { display: flex; gap: 15px; font-size: 0.9rem; color: #7f8c8d; margin-bottom: 15px; }

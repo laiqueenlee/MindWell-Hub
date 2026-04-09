@@ -5,7 +5,6 @@ import java.util.List;
 
 public class UserRepository {
 
-    // In-memory user list (acts like a fake DB)
     private static final List<User> users = new ArrayList<>();
 
     public static User findByUsernameAndPasswordAndRole(String username, String password, Role role) {

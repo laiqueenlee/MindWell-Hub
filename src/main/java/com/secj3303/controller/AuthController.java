@@ -25,14 +25,12 @@ public class AuthController {
         this.userDao = userDao;
     }
 
-    // --- LOGIN PAGE (GET) ---
     @GetMapping("/login")
     public String showLoginPage(Model model) {
         model.addAttribute("roles", Role.values());
-        return "/auth/login";    // => /WEB-INF/views/login.jsp  
+        return "/auth/login";    
     }
 
-    // --- LOGIN PROCESS (POST) ---
     @PostMapping("/login")
     public String processLogin(
             @RequestParam("username") String email,
@@ -40,7 +38,6 @@ public class AuthController {
             Model model,
             HttpSession session) {
 
-        // find by email from DB (using the username field as email)
         User user = userDao.findByEmail(email);
 
         if (user == null || !user.getPassword().equals(password)) {
@@ -62,14 +59,12 @@ public class AuthController {
         }
     }
 
-    // --- REGISTER PAGE (GET) ---
     @GetMapping("/register")
     public String showRegisterPage(Model model) {
         model.addAttribute("roles", Role.values());
-        return "/auth/register";  // => /WEB-INF/views/register.jsp
+        return "/auth/register";  
     }
 
-    // --- REGISTER PROCESS (POST) ---
     @PostMapping("/register")
     public String processRegister(
             @RequestParam("username") String username,
@@ -79,7 +74,6 @@ public class AuthController {
             @RequestParam("role") String roleStr,
             Model model) {
 
-        // check if email already exists in DB
         if (userDao.findByEmail(email) != null) {
             model.addAttribute("error", "Email already exists");
             model.addAttribute("roles", Role.values());
@@ -90,13 +84,11 @@ public class AuthController {
         User newUser = new User(username, password, fullName, email, role);
         userDao.save(newUser);
 
-        // after register, go to login
         model.addAttribute("msg", "Registration successful! Please log in.");
         model.addAttribute("roles", Role.values());
         return "/auth/login";
     }
 
-    // --- LOGOUT ---
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();

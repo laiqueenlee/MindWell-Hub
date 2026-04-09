@@ -11,7 +11,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Global Body */
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f9fafb;
@@ -19,7 +18,6 @@
             padding: 40px;
         }
 
-        /* Main Card */
         .mq-main-card {
             background: white;
             border-radius: 12px;
@@ -28,12 +26,10 @@
             border: 1px solid #e5e7eb;
         }
 
-        /* Header Section */
         .mq-header-section { margin-bottom: 24px; }
         .mq-page-title { font-size: 20px; font-weight: 600; margin: 0; color: #111827; }
         .mq-page-subtitle { font-size: 14px; color: #6b7280; margin-top: 4px; }
 
-        /* Moderation Item Card */
         .mq-item-card {
             background: white;
             border: 1px solid #e5e7eb;
@@ -61,7 +57,6 @@
         .mq-content-author { font-size: 14px; color: #6b7280; margin-bottom: 12px; display: block; }
         .mq-flag-reason { font-size: 14px; color: #6b7280; margin-bottom: 16px; }
 
-        /* Buttons */
         .mq-actions { display: flex; gap: 10px; }
         .btn-mq { padding: 8px 16px; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer; text-decoration: none; border: none; display: inline-block; transition: 0.2s ease; }
         .btn-approve { background-color: #06b6d4; color: white; }
@@ -70,7 +65,6 @@
         .btn-flag { background-color: #f59e0b; color: white; }
         .btn-cancel { background-color: #e5e7eb; color: #374151; }
 
-        /* Modal Styles */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(2px); }
         .modal-box {
             background: white;
@@ -112,7 +106,6 @@
 
         .modal-actions { display: flex; justify-content: flex-end; gap: 10px; padding-top: 15px; border-top: 1px solid #e5e7eb; }
 
-        /* Flag Form */
         #flagFormContainer {
             display: none;
             margin-top: 15px;
@@ -244,7 +237,6 @@
 
     </div>
 
-    <!-- Modal Section -->
     <div id="reviewModal" class="modal-overlay">
         <div class="modal-box">
             <div class="modal-header">

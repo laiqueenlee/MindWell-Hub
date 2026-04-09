@@ -63,7 +63,6 @@ public class UserDaoHibernate implements UserDao {
     }
 
 
-    //added this for mhp-virtual ses part
     @Override
     public List<User> findByRole(Role role) {
     return sessionFactory.getCurrentSession()

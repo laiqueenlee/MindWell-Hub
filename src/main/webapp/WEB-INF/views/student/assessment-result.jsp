@@ -24,7 +24,6 @@
         body{margin:0;font-family:Inter, "Segoe UI", Roboto, Arial, sans-serif;background:var(--page-bg);color:#123;line-height:1.5}
         .page{max-width:1000px;margin:0 auto;padding:40px 20px}
         
-        /* Header section */
         .completion-header{text-align:center;margin-bottom:50px;animation:fadeInDown 0.6s ease-out}
         .checkmark{
             width:80px;height:80px;background:linear-gradient(135deg, var(--success), #1e8449);
@@ -34,11 +33,9 @@
         .completion-header h1{font-size:28px;font-weight:700;color:#123;margin:0 0 8px 0}
         .completion-header p{color:var(--muted);font-size:14px;margin:0}
         
-        /* Main results container */
         .results-container{display:grid;grid-template-columns:1fr 320px;gap:24px;margin-bottom:40px}
         .results-main{display:flex;flex-direction:column;gap:24px}
         
-        /* Score card */
         .score-card{
             background:var(--card-bg);
             border-radius:var(--radius);
@@ -56,7 +53,6 @@
             margin-top:16px;border:1px solid var(--teal)
         }
         
-        /* Wellness score display */
         .wellness-score{
             background:var(--card-bg);
             border-radius:var(--radius);
@@ -74,7 +70,6 @@
         }
         .wellness-percent{text-align:right;font-weight:700;color:var(--teal-dark);font-size:13px;margin-bottom:16px}
         
-        /* Feedback section */
         .feedback-section{
             background:var(--card-bg);
             border-radius:var(--radius);
@@ -86,7 +81,6 @@
         .feedback-section h3{margin:0 0 12px 0;font-size:16px;font-weight:700;color:#123}
         .feedback-section p{margin:0;color:#123;font-size:14px;line-height:1.8}
         
-        /* Recommendations section */
         .recommendations-section{
             background:var(--card-bg);
             border-radius:var(--radius);
@@ -109,7 +103,6 @@
         }
         .recommendation-item span{color:#123;font-size:14px;line-height:1.5}
         
-        /* Sidebar */
         .sidebar{display:flex;flex-direction:column;gap:20px}
         .sidebar-card{
             background:var(--card-bg);
@@ -127,7 +120,6 @@
         .metric-name{color:var(--muted);font-weight:600}
         .metric-value{color:var(--teal-dark);font-weight:700}
         
-        /* Action buttons */
         .button-group{
             display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:40px
         }
@@ -146,7 +138,6 @@
         }
         .btn-secondary:hover{background:var(--teal-light);border-color:var(--teal)}
         
-        /* Animations */
         @keyframes fadeInUp{
             from{opacity:0;transform:translateY(20px)}
             to{opacity:1;transform:translateY(0)}
@@ -164,7 +155,6 @@
             to{width:100%}
         }
         
-        /* Responsive */
         @media (max-width:768px){
             .page{padding:20px}
             .results-container{grid-template-columns:1fr;padding-bottom:20px}
@@ -178,7 +168,6 @@
 </head>
 <body>
 <div class="page">
-    <!-- Completion Header -->
     <div class="completion-header">
         <div class="checkmark">✓</div>
         <h1>Assessment Complete!</h1>
@@ -186,18 +175,14 @@
     </div>
 
 
-    <!-- Check if error message exists -->
     <c:if test="${not empty errorMessage}">
         <div style="background: #fdecea; color: #611a15; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
             <strong>❗ Error:</strong> <c:out value="${errorMessage}"/>
         </div>
     </c:if>
 
-    <!-- Results Grid -->
     <div class="results-container">
-        <!-- Main Content -->
         <div class="results-main">
-            <!-- Score Card -->
             <div class="score-card">
                 <div class="score-label">Your Overall Score</div>
                 <div>
@@ -206,7 +191,6 @@
                 <div class="score-category"><c:out value="${category}"/></div>
             </div>
 
-            <!-- Wellness Score -->
             <div class="wellness-score">
                 <h4>Wellness Score</h4>
                 <div class="progress-bar">
@@ -215,13 +199,11 @@
                 <div class="wellness-percent"><c:out value="${score * 4}"/>%</div>
             </div>
 
-            <!-- Feedback Section -->
             <div class="feedback-section">
                 <h3>💭 Personalized Feedback</h3>
                 <p><c:out value="${feedback}"/></p>
             </div>
 
-            <!-- Recommendations Section -->
             <div class="recommendations-section">
                 <h3>✨ Recommended Actions</h3>
                 <ul class="recommendations-list">
@@ -235,9 +217,7 @@
             </div>
         </div>
 
-        <!-- Sidebar -->
         <div class="sidebar">
-            <!-- Wellness Metrics -->
             <div class="sidebar-card">
                 <h4>📊 Wellness Metrics</h4>
                 <div class="metric">
@@ -254,7 +234,6 @@
                 </div>
             </div>
 
-            <!-- Success Message -->
             <div class="sidebar-card" style="background:linear-gradient(135deg, var(--teal-light), #f0fffe);border-left:4px solid var(--teal-dark)">
                 <h4 style="color:var(--teal-dark)">✅ Assessment complete!</h4>
                 <p style="margin:0;color:var(--teal-dark);font-size:13px;line-height:1.6">Your results have been saved.</p>
@@ -262,7 +241,6 @@
         </div>
     </div>
 
-    <!-- Action Buttons -->
     <div class="button-group">
         <a href="${pageContext.request.contextPath}/student/assessment/" class="btn btn-secondary">Take Another Assessment</a>
         <a href="${pageContext.request.contextPath}/student/home" class="btn btn-primary">View Dashboard</a>
@@ -270,7 +248,6 @@
 </div>
 
 <script>
-    // Animate progress bar on load
     window.addEventListener('load', function() {
         const score = <c:out value="${score}"/>;
         const progressFill = document.querySelector('.progress-fill');

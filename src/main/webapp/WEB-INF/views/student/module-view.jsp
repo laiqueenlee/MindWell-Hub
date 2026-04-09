@@ -17,34 +17,28 @@
         
         .hidden { display: none; }
 
-        /* Header */
         .module-header { margin-bottom: 30px; }
         .module-header h1 { font-size: 2rem; color: #2c3e50; font-weight: 700; margin-bottom: 10px; }
         .module-header p { color: #95a5a6; font-size: 0.95rem; }
 
-        /* Progress Bar */
         .progress-section { margin-bottom: 25px; }
         .progress-labels { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; color: #7f8c8d; font-weight: 600; }
         .progress-track { width: 100%; background-color: #ecf0f1; border-radius: 10px; height: 10px; overflow: hidden; }
         .progress-fill { height: 100%; background-color: #1abc9c; border-radius: 10px; transition: width 0.5s ease; }
 
-        /* Tabs */
         .tabs-container { display: flex; gap: 10px; margin-bottom: 20px; }
         .tab { padding: 8px 30px; border-radius: 6px; font-weight: 600; font-size: 0.9rem; cursor: default; background-color: #f8f9fa; color: #95a5a6; }
         .tab.active { background-color: #ffffff; color: #333; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         a.tab { text-decoration: none; } 
 
-        /* Content Card */
         .content-card { background: #ffffff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); margin-bottom: 30px; }
         .content-card h3 { font-size: 1.25rem; color: #2c3e50; margin-top: 25px; margin-bottom: 15px; font-weight: 700; }
         .content-card h3:first-child { margin-top: 0; }
         .content-card p { color: #7f8c8d; line-height: 1.6; margin-bottom: 15px; font-size: 1rem; }
         
-        /* Video Specific */
         .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; background-color: #000; margin-bottom: 25px; }
         .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
 
-        /* Quiz Specific */
         .question-block { margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #f0f0f0; }
         .question-block:last-child { border-bottom: none; }
         .question-text { font-size: 1.1rem; font-weight: 600; color: #2c3e50; margin-bottom: 15px; }
@@ -54,19 +48,16 @@
         .option-label:hover { background-color: #f9f9f9; }
         .option-label input[type="radio"] { margin-right: 15px; accent-color: #00d2d3; transform: scale(1.2); }
         
-        /* Quiz Results */
         #resultContainer { display: none; margin-top: 20px; padding: 20px; border-radius: 8px; text-align: center; font-weight: bold; }
         .success-score { background-color: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
         .fail-score { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
 
-        /* Buttons */
         .action-buttons { display: flex; justify-content: space-between; gap: 20px; }
         .btn { flex: 1; padding: 15px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; text-align: center; cursor: pointer; text-decoration: none; transition: opacity 0.2s; border: none; }
         .btn:hover { opacity: 0.9; }
         .btn-save { background-color: #1abc9c; color: white; }
         .btn-continue { background-color: #00d2d3; color: white; }
         
-        /* Modal */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000; justify-content: center; align-items: center; }
         .modal-box { background: white; padding: 30px; border-radius: 12px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.2); max-width: 400px; width: 90%; animation: fadeIn 0.3s ease; }
         .modal-icon { font-size: 3rem; color: #1abc9c; margin-bottom: 15px; }
@@ -74,7 +65,6 @@
         .modal-btn { background-color: #1abc9c; color: white; border: none; padding: 10px 24px; border-radius: 6px; font-weight: 600; cursor: pointer; margin-top: 15px; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Rating Modal Styles */
         .rating-container { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
         .star { font-size: 2rem; color: #dcdde1; cursor: pointer; transition: color 0.2s; }
         .star:hover, .star.selected { color: #f1c40f; } /* Gold */
@@ -282,7 +272,6 @@
     </div>
 
     <script>
-    // FIX 3: Robust JS Variable Initialization
     const dbPercent = Number("${not empty progressPercent ? progressPercent : 0}");
     const savedPageIndex = Number("${not empty lastPage ? lastPage : 0}");
     const totalSections = Number("${fn:length(module.articleSections)}");
@@ -295,12 +284,11 @@
     let currentSectionIndex = 0;
 
     window.onload = function() {
-        updateProgressUI(dbPercent); // This triggers the bar to fill up correctly
+        updateProgressUI(dbPercent); 
 var iframe = document.getElementById('videoFrame');
         if (iframe) {
             var rawUrl = iframe.getAttribute('src');
             
-            // Regex to find the Video ID from any YouTube format
             var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
             var match = rawUrl.match(regExp);
 
@@ -308,13 +296,11 @@ var iframe = document.getElementById('videoFrame');
                 var videoId = match[2];
                 var embedUrl = "https://www.youtube.com/embed/" + videoId;
                 
-                // Only reload if the URL is actually different
                 if (rawUrl !== embedUrl) {
                     iframe.setAttribute('src', embedUrl);
                 }
             }
         }
-        // --- ARTICLE LOGIC ---
         if(contentType === 'Article' && totalSections > 0) {
             if (dbPercent === 100) {
                 openArticleSection(totalSections - 1);
@@ -324,7 +310,6 @@ var iframe = document.getElementById('videoFrame');
             }
         }
 
-        // --- INTERACTIVE LOGIC ---
         if(contentType === 'Interactive') {
             if (dbPercent >= 100) {
                 switchQuizTab('assessment');
@@ -338,7 +323,6 @@ var iframe = document.getElementById('videoFrame');
         }
     };
 
-    /* --- FORM SUBMISSION LOGIC --- */
     function submitProgressForm() {
         document.getElementById('form-percent').value = currentCalculatedPercent;
         document.getElementById('form-pageIndex').value = currentSectionIndex; 
@@ -356,7 +340,6 @@ var iframe = document.getElementById('videoFrame');
         document.getElementById('ratingForm').submit();
     }
 
-    /* --- MODAL UI --- */
     function openRatingModal() {
         document.getElementById('ratingModal').style.display = 'flex';
     }
@@ -375,7 +358,6 @@ var iframe = document.getElementById('videoFrame');
         }
     }
 
-    /* --- UI UPDATE HELPER --- */
     function updateProgressUI(percent) {
         currentCalculatedPercent = percent;
         let fill = document.getElementById('progress-bar');
@@ -385,7 +367,6 @@ var iframe = document.getElementById('videoFrame');
         if(label) label.innerText = percent + '%';
     }
 
-    /* --- SAVE LOGIC --- */
     function saveFixedProgress(e, percent) {
         e.preventDefault();
         currentCalculatedPercent = percent;
@@ -399,9 +380,7 @@ var iframe = document.getElementById('videoFrame');
         showSaveModal(null);
     }
 
-    /* --- ARTICLE NAVIGATION --- */
     function openArticleSection(indexStr) {
-        // Convert to number because dataset values are strings
         const index = Number(indexStr); 
         currentSectionIndex = index;
 
@@ -441,7 +420,6 @@ var iframe = document.getElementById('videoFrame');
         }
     }
 
-    /* --- QUIZ INTERACTION --- */
     function startQuiz() {
         switchQuizTab('assessment');
         updateProgressUI(80);
@@ -497,7 +475,6 @@ var iframe = document.getElementById('videoFrame');
         document.getElementById('quizForm').submit();
     }
 
-    /* --- QUIZ RESULTS --- */
    function populateAndGradeQuiz() {
         if (!savedAnswers) return;
 

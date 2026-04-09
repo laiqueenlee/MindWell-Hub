@@ -51,7 +51,6 @@ public class StudentReport {
         this.createdAt = LocalDateTime.now();
     }
 
-    // Getters and setters
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
 

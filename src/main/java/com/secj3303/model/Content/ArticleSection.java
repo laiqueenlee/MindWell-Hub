@@ -1,6 +1,13 @@
 package com.secj3303.model.Content;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "ARTICLE_SECTION")
@@ -13,13 +20,12 @@ public class ArticleSection {
     private String subtitle;
 
     @Lob
-    private String body; // The HTML content
+    private String body; 
 
     @ManyToOne
     @JoinColumn(name = "content_id")
     private Content content;
 
-    // Getters and Setters
     public void setContent(Content content) { this.content = content; }
 
     public int getId() {

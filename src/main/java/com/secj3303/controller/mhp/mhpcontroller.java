@@ -2,6 +2,7 @@ package com.secj3303.controller.mhp;
 
 import java.time.LocalDate;
 import java.util.List;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.secj3303.dao.ContentDao;
 import com.secj3303.dao.MhpAvailabilityDao;
 import com.secj3303.dao.VirtualSessionDao;
-import com.secj3303.model.Role;
-import com.secj3303.model.User;
 import com.secj3303.model.Content.Content;
 import com.secj3303.model.MhpAvailability;
+import com.secj3303.model.Role;
+import com.secj3303.model.User;
 
 @Controller
 @RequestMapping("/mhp")
@@ -28,13 +29,12 @@ public class mhpcontroller {
     private ContentDao contentDao;
 
     @Autowired
-    private MhpAvailabilityDao mhpAvailabilityDao; // Added
+    private MhpAvailabilityDao mhpAvailabilityDao; 
 
     @Autowired
     private VirtualSessionDao virtualSessionDao;
     
 
-    // --- MHP DASHBOARD ---
     @GetMapping({"/home", "/content"})
     public String showMhpDashboard(Model model, HttpSession session) {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
@@ -55,7 +55,6 @@ public class mhpcontroller {
         model.addAttribute("totalStudents", totalStudents);
 
 
-        // FETCH REAL DATA FROM REPOSITORY
         List<Content> contentList = contentDao.findAll();
 
         model.addAttribute("user", loggedInUser);
@@ -67,17 +66,13 @@ public class mhpcontroller {
 
     @GetMapping("/chatbot")
     public String showChatbotPage(Model model, HttpSession session) {
-        // 1. Security Check
         User loggedInUser = (User) session.getAttribute("loggedInUser");
         if (loggedInUser == null || loggedInUser.getRole() != Role.MENTAL_HEALTH_PROFESSIONAL) {
             return "redirect:/auth/login";
         }
 
-        // 2. Add user to model (for the Navbar "Hello, Dr. Name")
         model.addAttribute("user", loggedInUser);
 
-        // 3. Return the JSP view
-        // This assumes your file is located at: /WEB-INF/views/mhp/chatbot.jsp
         return "mhp/chatbot"; 
     }
 
@@ -105,7 +100,6 @@ public class mhpcontroller {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
         
         if (loggedInUser != null && loggedInUser.getRole() == Role.MENTAL_HEALTH_PROFESSIONAL) {
-            // Validation: Ensure start is before end (Optional but recommended)
             if (startTime.compareTo(endTime) < 0) {
                 String combinedTime = startTime + " - " + endTime; // e.g. "09:00 - 10:00"
                 MhpAvailability newSlot = new MhpAvailability(loggedInUser, day, combinedTime);
@@ -126,7 +120,7 @@ public class mhpcontroller {
 
     @GetMapping("/logout")
     public String mhpLogout(HttpSession session) {
-        session.invalidate();  // Invalidate the session to log out
-        return "redirect:/auth/login";  // Redirect to the login page
+        session.invalidate();  
+        return "redirect:/auth/login";  
     }
 }

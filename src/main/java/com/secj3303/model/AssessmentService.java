@@ -5,12 +5,9 @@ import java.util.Map;
 
 public class AssessmentService {
 
-    /**
-     * Calculate assessment result based on responses
-     */
+
     public static AssessmentResult calculateResult(String assessmentType, int[] answers) {
         int totalScore = 0;
-        // Defensive: if no answers provided, return a safe default result
         if (answers == null || answers.length == 0) {
             int overallScore = 0;
             String category = categorizeScore(overallScore);
@@ -27,15 +24,12 @@ public class AssessmentService {
             return result;
         }
 
-        // Calculate total score from answers
         for (int answer : answers) {
             totalScore += answer;
         }
 
-        // Calculate average score per question (each question is 1-5, so max total is answers.length * 5)
-        // We'll scale it to 25 for display purposes
-        int maxPossibleScore = answers.length * 5;  // If all answers were 5
-        int overallScore = (totalScore * 25) / maxPossibleScore;  // Scale to 0-25
+        int maxPossibleScore = answers.length * 5; 
+        int overallScore = (totalScore * 25) / maxPossibleScore;  
         overallScore = Math.min(25, Math.max(0, overallScore));
 
         String category = categorizeScore(overallScore);
@@ -44,7 +38,6 @@ public class AssessmentService {
 
         AssessmentResult result = new AssessmentResult(overallScore, category, feedback, recommendations);
 
-        // Add metrics
         result.setMetrics(new AssessmentResult.AssessmentMetrics(
                 generateEngagementScore(),
                 generateConsistencyScore(),
@@ -54,25 +47,20 @@ public class AssessmentService {
         return result;
     }
 
-    /**
-     * Categorize score into categories
-     * Updated thresholds for 0-25 scale
-     */
+
     private static String categorizeScore(int score) {
-        if (score >= 18) {  // 18-25 (72%+)
+        if (score >= 18) {  
             return "Excellent";
-        } else if (score >= 13) {  // 13-17 (52-68%)
+        } else if (score >= 13) {  
             return "Good";
-        } else if (score >= 8) {  // 8-12 (32-48%)
+        } else if (score >= 8) {  
             return "Fair";
-        } else {  // 0-7 (0-28%)
+        } else {  
             return "Poor";
         }
     }
 
-    /**
-     * Get personalized feedback based on assessment type and score
-     */
+
     private static String getFeedback(String assessmentType, String category, int score) {
         Map<String, String> excellentFeedback = new HashMap<>();
         excellentFeedback.put("mood", "You're in an excellent emotional state. Keep up the positive momentum and continue your wellness practices.");
@@ -112,9 +100,7 @@ public class AssessmentService {
         return feedbackMap.getOrDefault(assessmentType, "Keep working on your wellness journey.");
     }
 
-    /**
-     * Get personalized recommendations based on assessment type and category
-     */
+
     private static String[] getRecommendations(String assessmentType, String category) {
         if ("mood".equals(assessmentType)) {
             if ("Excellent".equals(category) || "Good".equals(category)) {
@@ -158,7 +144,7 @@ public class AssessmentService {
                         "Schedule a session with a counselor"
                 };
             }
-        } else { // wellbeing
+        } else { 
             if ("Excellent".equals(category) || "Good".equals(category)) {
                 return new String[]{
                         "Continue your current wellness practices",
@@ -175,24 +161,17 @@ public class AssessmentService {
         }
     }
 
-    /**
-     * Generate random engagement score for demo
-     */
+
     private static int generateEngagementScore() {
-        return 60 + (int) (Math.random() * 30); // 60-90%
+        return 60 + (int) (Math.random() * 30); 
     }
 
-    /**
-     * Generate random consistency score for demo
-     */
     private static int generateConsistencyScore() {
-        return 50 + (int) (Math.random() * 40); // 50-90%
+        return 50 + (int) (Math.random() * 40); 
     }
 
-    /**
-     * Generate random progress score for demo
-     */
+
     private static int generateProgressScore() {
-        return 55 + (int) (Math.random() * 35); // 55-90%
+        return 55 + (int) (Math.random() * 35); 
     }
 }
