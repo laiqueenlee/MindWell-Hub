@@ -50,7 +50,5 @@ The system is built on a **Model-View-Controller (MVC)** inspired architecture t
 ---
 
 ## 📝 Course Information
-* **Course:** SECJ 2253 - Requirements Engineering & Software Modeling
 * **Institution:** Universiti Teknologi Malaysia (UTM)
-* **Semester:** Semester 02, 2024/2025
 * **Case Study:** Digital Mental Health Literacy Hub for Higher Education Students
